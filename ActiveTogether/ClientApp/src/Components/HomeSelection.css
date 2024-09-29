@@ -1,0 +1,29 @@
+.home-selection {
+  position: relative;
+}
+
+.home-selection img {
+  width: 100%;
+  filter: brightness(0.7);
+}
+
+.home-link {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transition-duration: 0.25s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5em;
+  color: white;
+  text-shadow: 1px 0 1px rgba(0,0,0,0.8);
+}
+
+.home-link:hover {
+  background-color: rgba(0,0,0,0.4);
+  text-shadow: none;
+  font-weight: bold;
+}

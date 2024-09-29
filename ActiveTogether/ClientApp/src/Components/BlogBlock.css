@@ -1,0 +1,33 @@
+.blog-block {
+  column-gap: 20px;
+  padding: 1rem;
+  margin: 1rem 0;
+  transition-duration: 0.25s;
+}
+
+.blog-block:hover {
+  background-color: var(--lightest);
+}
+
+.blog-block-img {
+  width: 30%;
+  transition-duration: 0.25s;
+}
+
+.blog-block:hover .blog-block-img {
+  scale: 1.04;
+}
+
+.blog-block-author {
+  color: black;
+}
+
+.blog-block-author img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.blog-block-author span:hover {
+  text-decoration: underline;
+}

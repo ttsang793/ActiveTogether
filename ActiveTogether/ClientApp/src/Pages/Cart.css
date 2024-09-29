@@ -1,0 +1,7 @@
+.cart-table thead {
+  font-size: 20px;
+}
+
+.cart-table th, .cart-table td {
+  vertical-align: middle;
+}

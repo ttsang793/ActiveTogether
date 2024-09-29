@@ -1,0 +1,26 @@
+footer {
+  user-select: none;
+  background-color: var(--lightest);
+  color: var(--darkest);
+  padding-left: 8rem;
+  padding-right: 8rem;
+}
+
+footer a {
+  color: var(--darkest)!important;
+}
+
+footer h1 {
+  font-size: 30px;
+  font-weight: 700;
+  font-style: italic;
+}
+
+footer li {
+  cursor: pointer;
+  transition-duration: 0.15s;
+}
+
+footer li:hover {
+  font-weight: bold;
+}

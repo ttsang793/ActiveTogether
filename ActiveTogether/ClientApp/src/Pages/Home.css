@@ -1,0 +1,54 @@
+.banner {
+  width: 100%;
+}
+
+.home-content-box {
+  position: relative;
+  color: white;
+}
+
+.home-content-detail {
+  background-color: rgba(0,0,0,0.6);
+  padding: 5rem 5%;
+}
+
+.main-margin {
+  margin: 30px 5%;
+}
+
+.home-welcome-banner {
+  text-align: center;
+  padding: 10rem 5%;
+}
+
+.home-welcome {
+  font-size: 3rem;
+  font-weight: bold;
+  padding: 0.5rem 0;
+}
+
+.home-title {
+  font-weight: bold;
+  text-align: center;
+  padding-bottom: 1rem;
+  font-size: 2.5rem;
+}
+
+.home-description {
+  font-style: italic;
+  font-size: 24px;
+}
+
+.subscription {
+  margin-top: 1.5rem;
+  width: 50%;
+  font-size: 18px;
+  padding: 6px 12px;
+  border: none;
+}
+
+.subscription-register {
+  font-size: 18px;
+  padding: 6px 12px;
+  border: none;
+}

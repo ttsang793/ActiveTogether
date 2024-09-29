@@ -1,0 +1,7 @@
+.order-tab {
+  column-gap: 20px;
+}
+
+.order-tab select {
+  padding-right: 10px;
+}
