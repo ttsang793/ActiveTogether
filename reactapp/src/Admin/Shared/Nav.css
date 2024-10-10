@@ -1,0 +1,29 @@
+.nav-logo {
+  max-width: 150px;
+  width: 100%
+}
+
+.nav-buttons {
+  background-color: var(--lightest);
+}
+
+ul.nav-list {
+  padding-left: 0;
+}
+
+li.nav {
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+li.nav:hover {
+  background-color: var(--lighter);
+}
+
+a.nav-link {
+  color: black;
+}
+
+a.nav-link:hover {
+  text-decoration: underline!important;
+}

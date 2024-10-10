@@ -1,0 +1,2 @@
+E:\Test\ActiveTogether\reactapp\obj\Debug\reactapp.esproj.CoreCompileInputs.cache
+D:\SGU\DoAnCode\ActiveTogether\reactapp\obj\Debug\reactapp.esproj.CoreCompileInputs.cache
