@@ -60,6 +60,14 @@ a {
   margin-top: 20px;
 }
 
+.c-10 {
+  column-gap: 10px;
+}
+
+.w-10 {
+  width: 10%;
+}
+
 .at-btn:hover {
   background-color: var(--darkest);
 }

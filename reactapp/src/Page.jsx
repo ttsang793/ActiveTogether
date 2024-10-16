@@ -21,7 +21,9 @@ import PageTitle from "./Shared/PageTitle";
 
 /* Admin */
 import Product from "./Admin/Pages/Product.jsx"
-import ProductCategory from "./Admin/Pages/ProductCategory.jsx"
+import Category from "./Admin/Pages/ProductCategory.jsx"
+import Brand from './Admin/Pages/Brand.jsx'
+import Sport from './Admin/Pages/Sport.jsx'
 import Review from "./Admin/Pages/Review.jsx"
 import Input from './Admin/Pages/Input.jsx'
 import Order from './Admin/Pages/Order.jsx'
@@ -43,10 +45,6 @@ import {
   Routes, Route
 } from "react-router-dom"
 
-import phd from "/src/img/placeholder.png"
-import phd2 from "/src/img/placeholder2.png"
-import phd3 from "/src/img/placeholder3.png"
-
 function RenderMain() {
   if (!location.pathname.includes("/admin"))
     return (
@@ -63,10 +61,7 @@ function RenderMain() {
           <Route path="*" element={<><FourOFour /> <PageTitle title="404 | Trang không tìm thấy"/></>} />
 
           {/* Trang con của Sản phẩm */}
-          <Route path="/san-pham/:id" element={
-            <ProductDetail title="Giày Adidas" images={[phd, phd2, phd3]} currentPrice={100000}
-              oldPrice={120000} size={['S', 'M', 'L', 'XL']} color={["Tím", "Đỏ", "Xanh lá"]} />
-          } />
+          <Route path="/san-pham/*" element={<ProductDetail />} />
 
           {/* Trang con của Người dùng */}
           <Route path="/nguoi-dung" element={<><UserDetail /> <PageTitle title="Thông tin người dùng" /></>} />
@@ -82,7 +77,9 @@ function RenderMain() {
         <Nav />
         <Routes>
           <Route path="/admin/san-pham" element={<Product />} />
-          <Route path="/admin/loai-san-pham" element={<ProductCategory />} />
+          <Route path="/admin/loai-san-pham" element={<Category />} />
+          <Route path="/admin/thuong-hieu" element={<Brand />} />
+          <Route path="/admin/the-thao" element={<Sport />} />
           <Route path="/admin/review" element={<Review />} />
           <Route path="/admin/nhap-kho" element={<Input />} />
           <Route path="/admin/don-hang" element={<Order />} />
@@ -92,6 +89,7 @@ function RenderMain() {
           <Route path="/admin/phan-quyen" element={<Permission />} />
           <Route path="/admin/thong-ke" element={<Statistic />} />
         </Routes>
+        <BackToTop />
       </div>
     </Router>
   )

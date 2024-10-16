@@ -31,8 +31,20 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
+            '^/productdetail/*': {
                 target: 'https://localhost:7126/',
+                secure: false
+            },
+            '^/api/brand/*': {
+                target: 'https://localhost:7267/',
+                secure: false
+            },
+            '^/api/category/*': {
+                target: 'https://localhost:7267/',
+                secure: false
+            },
+            '^/api/sport/*': {
+                target: 'https://localhost:7267/',
                 secure: false
             }
         },

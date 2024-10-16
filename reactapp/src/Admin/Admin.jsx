@@ -4,7 +4,9 @@ import './index.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import Product from "./Pages/Product.jsx"
-import ProductCategory from "./Pages/ProductCategory.jsx"
+import Category from "./Pages/ProductCategory.jsx"
+import Brand from './Pages/Brand.jsx'
+import Sport from './Pages/Sport.jsx'
 import Review from "./Pages/Review.jsx"
 import Input from './Pages/Input.jsx'
 import Order from './Pages/Order.jsx'
@@ -25,16 +27,18 @@ function RenderMain() {
   return (
     <Router>
       <Routes>
-        <Route path="/san-pham" element={<Product />} />
-        <Route path="/loai-san-pham" element={<ProductCategory />} />
-        <Route path="/review" element={<Review />} />
-        <Route path="/nhap-kho" element={<Input />} />
-        <Route path="/don-hang" element={<Order />} />
-        <Route path="/giam-gia" element={<Promotion />} />
-        <Route path="/tai-khoan-khach-hang" element={<User />} />
-        <Route path="/bai-blog" element={<BlogArticle />} />
-        <Route path="/phan-quyen" element={<Permission />} />
-        <Route path="/thong-ke" element={<Statistic />} />
+        <Route path="/admin/san-pham" element={<Product />} />
+        <Route path="/admin/loai-san-pham" element={<Category />} />
+        <Route path="/admin/thuong-hieu" element={<Brand />} />
+        <Route path="/admin/the-thao" element={<Sport />} />
+        <Route path="/admin/review" element={<Review />} />
+        <Route path="/admin/nhap-kho" element={<Input />} />
+        <Route path="/admin/don-hang" element={<Order />} />
+        <Route path="/admin/giam-gia" element={<Promotion />} />
+        <Route path="/admin/tai-khoan-khach-hang" element={<User />} />
+        <Route path="/admin/bai-blog" element={<BlogArticle />} />
+        <Route path="/admin/phan-quyen" element={<Permission />} />
+        <Route path="/admin/thong-ke" element={<Statistic />} />
       </Routes>
     </Router>
   )
