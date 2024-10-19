@@ -20,19 +20,20 @@ import Footer from "./Shared/Footer";
 import PageTitle from "./Shared/PageTitle";
 
 /* Admin */
-import Product from "./Admin/Pages/Product.jsx"
-import Category from "./Admin/Pages/ProductCategory.jsx"
-import Brand from './Admin/Pages/Brand.jsx'
-import Sport from './Admin/Pages/Sport.jsx'
-import Review from "./Admin/Pages/Review.jsx"
-import Input from './Admin/Pages/Input.jsx'
-import Order from './Admin/Pages/Order.jsx'
-import Promotion from './Admin/Pages/Promotion.jsx'
-import User from './Admin/Pages/User.jsx'
-import BlogArticle from "./Admin/Pages/BlogArticle.jsx"
-import Permission from './Admin/Pages/Permission.jsx'
-import Statistic from './Admin/Pages/Statistic.jsx'
-import Nav from './Admin/Shared/Nav.jsx'
+import AProduct from "./Admin/Pages/Product.jsx"
+import AProductDetail from './Admin/Pages/ProductDetail.jsx';
+import ACategory from "./Admin/Pages/Category.jsx"
+import ABrand from './Admin/Pages/Brand.jsx'
+import ASport from './Admin/Pages/Sport.jsx'
+import AReview from "./Admin/Pages/Review.jsx"
+import AInput from './Admin/Pages/Input.jsx'
+import AOrder from './Admin/Pages/Order.jsx'
+import APromotion from './Admin/Pages/Promotion.jsx'
+import AUser from './Admin/Pages/User.jsx'
+import ABlogArticle from "./Admin/Pages/BlogArticle.jsx"
+import APermission from './Admin/Pages/Permission.jsx'
+import AStatistic from './Admin/Pages/Statistic.jsx'
+import ANav from './Admin/Shared/Nav.jsx'
 
 import './index.css'
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -74,20 +75,21 @@ function RenderMain() {
   else return (
     <Router>
       <div className="admin-main">
-        <Nav />
+        <ANav />
         <Routes>
-          <Route path="/admin/san-pham" element={<Product />} />
-          <Route path="/admin/loai-san-pham" element={<Category />} />
-          <Route path="/admin/thuong-hieu" element={<Brand />} />
-          <Route path="/admin/the-thao" element={<Sport />} />
-          <Route path="/admin/review" element={<Review />} />
-          <Route path="/admin/nhap-kho" element={<Input />} />
-          <Route path="/admin/don-hang" element={<Order />} />
-          <Route path="/admin/giam-gia" element={<Promotion />} />
-          <Route path="/admin/tai-khoan-khach-hang" element={<User />} />
-          <Route path="/admin/bai-blog" element={<BlogArticle />} />
-          <Route path="/admin/phan-quyen" element={<Permission />} />
-          <Route path="/admin/thong-ke" element={<Statistic />} />
+          <Route path="/admin/san-pham" element={<AProduct />} />
+          <Route path="/admin/thong-tin-san-pham" element={<AProductDetail />} />
+          <Route path="/admin/loai-san-pham" element={<ACategory />} />
+          <Route path="/admin/thuong-hieu" element={<ABrand />} />
+          <Route path="/admin/the-thao" element={<ASport />} />
+          <Route path="/admin/review" element={<AReview />} />
+          <Route path="/admin/nhap-kho" element={<AInput />} />
+          <Route path="/admin/don-hang" element={<AOrder />} />
+          <Route path="/admin/giam-gia" element={<APromotion />} />
+          <Route path="/admin/tai-khoan-khach-hang" element={<AUser />} />
+          <Route path="/admin/bai-blog" element={<ABlogArticle />} />
+          <Route path="/admin/phan-quyen" element={<APermission />} />
+          <Route path="/admin/thong-ke" element={<AStatistic />} />
         </Routes>
         <BackToTop />
       </div>

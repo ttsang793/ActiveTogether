@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using productservices.Data;
 using productservices.Models;
 
 namespace productservices.Controllers;
@@ -11,15 +12,13 @@ public class BrandController : ControllerBase
     public BrandController(ILogger<BrandController> logger) {  _logger = logger; }
     private AtWebContext _dbContext = new AtWebContext();
 
-    [HttpGet]
-    [Route("All")]
+    [HttpGet("All")]
     public IEnumerable<Brand> GetAllBrands()
     {
         return _dbContext.Brands.AsEnumerable().ToArray();
     }
 
-    [HttpPost]
-    [Route("Add")]
+    [HttpPost("Add")]
     public StatusCodeResult Add([Bind("Name")] Brand b)
     {
         if (ModelState.IsValid)
@@ -31,8 +30,7 @@ public class BrandController : ControllerBase
         else return StatusCode(500);
     }
 
-    [HttpPost]
-    [Route("Update")]
+    [HttpPost("Update")]
     public StatusCodeResult Update([Bind("Name")] Brand b, int id)
     {
         var brand = _dbContext.Brands.FirstOrDefault(b => b.Id == id);
@@ -45,14 +43,13 @@ public class BrandController : ControllerBase
         else return StatusCode(500);
     }
 
-    [HttpPost]
-    [Route("Delete")]
-    public StatusCodeResult Delete([Bind("Name")] Brand b, int id)
+    [HttpPost("Delete")]
+    public StatusCodeResult Delete(int id)
     {
         var brand = _dbContext.Brands.FirstOrDefault(b => b.Id == id);
         if (brand != null)
         {
-            _dbContext.Remove(brand);
+            brand.IsActive = !brand.IsActive;
             _dbContext.SaveChanges();
             return StatusCode(201);
         }

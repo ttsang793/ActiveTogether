@@ -4,10 +4,10 @@ import "./Products.css"
 import React, { Component } from 'react'
 
 const fillArr = [
-  {title: "Mức giá", details: ["Dưới 500.000đ", "Từ 500.000đ - 1.000.000đ", "Trên 1.000.000đ"]},
-  {title: "Thương hiệu", details: ["Dưới 500.000đ", "Từ 500.000đ - 1.000.000đ", "Trên 1.000.000đ"]},
-  {title: "Size giày", details: ["Dưới 500.000đ", "Từ 500.000đ - 1.000.000đ", "Trên 1.000.000đ"]},
-  {title: "Size quần áo", details: ["Dưới 500.000đ", "Từ 500.000đ - 1.000.000đ", "Trên 1.000.000đ"]}
+  { title: "Mức giá", details: ["Dưới 500.000đ", "Từ 500.000đ - 1.000.000đ", "Trên 1.000.000đ"] },
+  { title: "Thương hiệu", details: ["Dưới 500.000đ", "Từ 500.000đ - 1.000.000đ", "Trên 1.000.000đ"] },
+  { title: "Size giày", details: ["Dưới 500.000đ", "Từ 500.000đ - 1.000.000đ", "Trên 1.000.000đ"] },
+  { title: "Size quần áo", details: ["Dưới 500.000đ", "Từ 500.000đ - 1.000.000đ", "Trên 1.000.000đ"] }
 ]
 
 export default class Products extends Component {
@@ -15,12 +15,67 @@ export default class Products extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { products: [], loading: true }
+    this.state = { products: [], numPerPage: 10, loading: true }
   }
 
   componentDidMount() { this.populateProductData() }
 
-  static renderProductPage(products) {
+  renderBottom() {
+    const numPage = location.search === "" ? 1 : Number(location.search.substring(6));
+    const totalPage = Math.ceil(this.state.products.length / this.state.numPerPage);
+
+    const firstButton = (numPage > 1) ? <a href="/san-pham"><button className="at-sbtn-secondary mx-1">&lt;</button></a> : "";
+    const lastButton = (numPage < totalPage) ? <a href={`?page=${totalPage}`}><button className="at-sbtn-secondary mx-1">&gt;</button></a> : "";
+
+    let pageList = [numPage];
+    switch (true) {
+      case (numPage === 1): {
+        let i = numPage + 1;
+        while (i <= totalPage && i <= numPage + 2) pageList.push(i++);
+        break;
+      }
+      case (numPage === totalPage): {
+        let i = numPage - 1;
+        while (i >= 1 && i >= numPage - 2) pageList.unshift(i--);
+        break;
+      }
+      default: {
+        pageList.unshift(numPage - 1);
+        pageList.push(numPage + 1);
+      }
+    }
+
+    return (
+      <div id="page" className="d-flex justify-content-center mt-2">
+        {firstButton}
+        <a href={`?page=${pageList[0]}`}>
+          <button className={`at-sbtn${pageList[0] === numPage ? "" : "-secondary"} mx-1`}>{pageList[0]}</button>
+        </a>
+        <a href={`?page=${pageList[1]}`}>
+          <button className={`at-sbtn${pageList[1] === numPage ? "" : "-secondary"} mx-1`}>{pageList[1]}</button>
+        </a>
+        <a href={`?page=${pageList[2]}`}>
+          <button className={`at-sbtn${pageList[2] === numPage ? "" : "-secondary"} mx-1`}>{pageList[2]}</button>
+        </a>
+        {lastButton}
+      </div>
+    )
+  }
+
+  renderProductList() {    
+    const numPage = location.search === "" ? 1 : Number(location.search.substring(6));
+    const last = Math.min(this.state.numPerPage * numPage, this.state.products.length);
+
+    const products = this.state.products.slice(this.state.numPerPage * (numPage - 1), last);
+
+    return (
+      <div className="d-flex flex-wrap justify-content-center">
+        {products.map(p => <ProductGrid key={p.urlName} urlName={p.urlName} image={`/src/img/${p.image.substring(0, p.image.indexOf(",") > -1 ? p.image.indexOf(",") : p.image.length)}`} name={p.name} price={p.price} />)}
+      </div>
+    )
+  }
+
+  renderProductPage() {
     return (
       <>
         <div className="my-4">
@@ -29,12 +84,11 @@ export default class Products extends Component {
           <div className="d-flex order-tab justify-content-flex-end mt-3">
             <div>
               <label htmlFor="sort">Số sản phẩm:&nbsp;</label>
-              <select name="" id="numPerPage" defaultValue="9">
-                <option value="9">9</option>
-                <option value="18">18</option>
-                <option value="27">27</option>
-                <option value="36">36</option>
-                <option value="Tất cả">Tất cả</option>
+              <select name="" id="numPerPage" defaultValue="10">
+                <option value="10" onChange={() => this.setState({numPerPage: 10})}>10</option>
+                <option value="25" onChange={() => this.setState({numPerPage: 25})}>25</option>
+                <option value="50" onChange={() => this.setState({numPerPage: 50})}>50</option>
+                <option value="Tất cả" onChange={() => this.setState({numPerPage: this.state.products.length})}>Tất cả</option>
               </select>
             </div>
 
@@ -55,23 +109,15 @@ export default class Products extends Component {
           </div>
         </div>
 
-        <div className="d-flex flex-wrap justify-content-center">
-          { products.map(p => <ProductGrid key={p.product.urlName} urlName={p.product.urlName} image={`/src/img/${p.image.substring(0, p.image.indexOf(",") > -1 ? p.image.indexOf(",") : p.image.length)}`} name={p.product.name} price={p.price} />) }
-        </div>
+        { this.renderProductList() }
 
-        <div id="page" className="d-flex justify-content-center mt-2">
-          <button className="btn btn-danger mx-1">1</button>
-          <button className="btn btn-outline-danger mx-1">2</button>
-          <button className="btn btn-outline-danger mx-1">3</button>
-          <button className="btn btn-outline-danger mx-1">...</button>
-          <button className="btn btn-outline-danger mx-1">20</button>
-        </div>
+        { this.renderBottom() }
       </>
     )
   }
 
   render() {
-    const content = this.state.loading ? <p>Please wait...</p> : Products.renderProductPage(this.state.products);
+    const content = this.state.loading ? <p>Please wait...</p> : this.renderProductPage();
     return (
       <main>
         <h1 className="flex-grow-1 text-center fw-bold">TẤT CẢ SẢN PHẨM</h1>

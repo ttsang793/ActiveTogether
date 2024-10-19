@@ -5,6 +5,9 @@
 
 .nav-buttons {
   background-color: var(--lightest);
+  position: fixed;
+  top: 0;
+  bottom: 0;
 }
 
 ul.nav-list {
@@ -28,6 +31,10 @@ a.nav-link:hover {
   text-decoration: underline!important;
 }
 
-main {
-  flex: 1 1 0;
+.admin-main {
+  min-height: 100vh;
+
+  main {
+    margin-left: calc(185px + 5%);
+  }
 }

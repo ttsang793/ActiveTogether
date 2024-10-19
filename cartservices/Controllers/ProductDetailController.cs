@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using cartservices.Models;
+using cartservices.DTO;
+using cartservices.Data;
 
-namespace webapi.Controllers;
+namespace cartservices.Controllers;
 
 [Route("[controller]")]
 [ApiController]
@@ -12,26 +14,33 @@ public class ProductDetailController : ControllerBase
 
     public ProductDetailController(ILogger<ProductDetailController> logger) { _logger = logger; }
 
-    [HttpGet]
-    [Route("All")]
-    public IEnumerable<Productprice> GetAllProducts()
+    [HttpGet("All")]
+    public IEnumerable<ProductreadDTO> GetAllProducts()
     {
-        List<Productprice> productList = new();
-        for (int i=1; i<=_dbContext.Products.Count(); i++)
-        {
-            var product = _dbContext.Productprices.FirstOrDefault(p => p.ProductId == i);
-            product.Product = _dbContext.Products.FirstOrDefault(p => p.Id == i);
-
-            productList.Add(product);
-        }
+        var productList = (from pr in _dbContext.Productprices.ToList()
+                           group pr by pr.ProductId into pg
+                           join p in _dbContext.Products.ToList() on pg.Key equals p.Id
+                           select new ProductreadDTO
+                           {
+                               Id = p.Id,
+                               Name = p.Name,
+                               UrlName = p.UrlName,
+                               BrandId = p.BrandId,
+                               CategoryId = p.CategoryId,
+                               Gender = p.Gender,
+                               Size = p.Size,
+                               IsChildren = p.IsChildren,
+                               Image = pg.First().Image,
+                               Price = pg.Min(m => m.Price)
+                           }).ToList();
+        
         return productList;
     }
 
-    [HttpGet]
-    [Route("ByUrlName")]
-    public IEnumerable<Productprice> GetProductByUrlName(String urlName)
+    [HttpGet("ByUrlName")]
+    public IEnumerable<Productprice> GetProductByUrlName(string urlName)
     {
-        var product = _dbContext.Products.FirstOrDefault(p => p.UrlName == urlName)!;
+        var product = _dbContext.Products.First(p => p.UrlName == urlName)!;
         int id = product.Id;
         var selectionList = (from p in _dbContext.Productprices where (p.ProductId == id) select p).ToList();
         foreach (var s in selectionList) s.Product = product;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using productservices.Data;
 using productservices.Models;
 
 namespace productservices.Controllers;
@@ -11,15 +12,13 @@ public class CategoryController : ControllerBase
     public CategoryController(ILogger<CategoryController> logger) { _logger = logger; }
     private AtWebContext _dbContext = new AtWebContext();
 
-    [HttpGet]
-    [Route("All")]
+    [HttpGet("All")]
     public IEnumerable<Category> GetAllCategories()
     {
         return _dbContext.Categories.AsEnumerable().ToArray();
     }
 
-    [HttpPost]
-    [Route("Add")]
+    [HttpPost("Add")]
     public StatusCodeResult Add([Bind("Name")] Category c)
     {
         if (ModelState.IsValid)
@@ -31,8 +30,7 @@ public class CategoryController : ControllerBase
         else return StatusCode(500);
     }
 
-    [HttpPost]
-    [Route("Update")]
+    [HttpPost("Update")]
     public StatusCodeResult Update([Bind("Name")] Category c, int id)
     {
         var category = _dbContext.Categories.FirstOrDefault(c => c.Id == id);
@@ -45,14 +43,13 @@ public class CategoryController : ControllerBase
         else return StatusCode(500);
     }
 
-    [HttpPost]
-    [Route("Delete")]
+    [HttpPost("Delete")]
     public StatusCodeResult Delete(int id)
     {
         var category = _dbContext.Categories.FirstOrDefault(c => c.Id == id);
         if (category != null)
         {
-            _dbContext.Remove(category);
+            category.IsActive = !category.IsActive;
             _dbContext.SaveChanges();
             return StatusCode(201);
         }

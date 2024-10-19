@@ -1,4 +1,10 @@
+using AutoMapper;
+using cartservices.DTO;
+using cartservices.Models;
 using System.Text.Json.Serialization;
+
+var config = new MapperConfiguration(cfg => cfg.CreateMap<ProductreadDTO, Product>());
+var mapper = config.CreateMapper();
 
 var builder = WebApplication.CreateBuilder(args);
 

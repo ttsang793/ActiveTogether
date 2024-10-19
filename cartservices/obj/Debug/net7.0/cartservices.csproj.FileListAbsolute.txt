@@ -70,3 +70,4 @@ D:\SGU\DoAnCode\ActiveTogether\cartservices\obj\Debug\net7.0\refint\cartservices
 D:\SGU\DoAnCode\ActiveTogether\cartservices\obj\Debug\net7.0\cartservices.pdb
 D:\SGU\DoAnCode\ActiveTogether\cartservices\obj\Debug\net7.0\cartservices.genruntimeconfig.cache
 D:\SGU\DoAnCode\ActiveTogether\cartservices\obj\Debug\net7.0\ref\cartservices.dll
+D:\SGU\DoAnCode\ActiveTogether\cartservices\bin\Debug\net7.0\AutoMapper.dll

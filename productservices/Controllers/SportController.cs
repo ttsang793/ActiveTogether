@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using productservices.Data;
 using productservices.Models;
 
 namespace productservices.Controllers;
@@ -11,15 +12,13 @@ public class SportController : ControllerBase
     public SportController(ILogger<SportController> logger) { _logger = logger; }
     private AtWebContext _dbContext = new AtWebContext();
 
-    [HttpGet]
-    [Route("All")]
+    [HttpGet("All")]
     public IEnumerable<Sport> GetAllSports()
     {
         return _dbContext.Sports.AsEnumerable().ToArray();
     }
 
-    [HttpPost]
-    [Route("Add")]
+    [HttpPost("Add")]
     public StatusCodeResult Add([Bind("Name")] Sport s)
     {
         if (ModelState.IsValid)
@@ -31,8 +30,7 @@ public class SportController : ControllerBase
         else return StatusCode(500);
     }
 
-    [HttpPost]
-    [Route("Update")]
+    [HttpPost("Update")]
     public StatusCodeResult Update([Bind("Name")] Sport s, int id)
     {
         var sport = _dbContext.Sports.FirstOrDefault(s => s.Id == id);
@@ -45,14 +43,13 @@ public class SportController : ControllerBase
         else return StatusCode(500);
     }
 
-    [HttpPost]
-    [Route("Delete")]
+    [HttpPost("Delete")]
     public StatusCodeResult Delete(int id)
     {
         var sport = _dbContext.Sports.FirstOrDefault(s => s.Id == id);
         if (sport != null)
         {
-            _dbContext.Remove(sport);
+            sport.IsActive = !sport.IsActive;
             _dbContext.SaveChanges();
             return StatusCode(201);
         }

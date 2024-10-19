@@ -21,7 +21,7 @@ public partial class Product
 
     public string? Size { get; set; }
 
-    public bool? Gender { get; set; }
+    public short? Gender { get; set; }
 
     public bool? IsChildren { get; set; }
 
@@ -35,7 +35,7 @@ public partial class Product
 
     public virtual ICollection<Productreview> Productreviews { get; set; } = new List<Productreview>();
 
-    public virtual ICollection<Promotiondetail> Promotiondetails { get; set; } = new List<Promotiondetail>();
+    public virtual ICollection<Productsport> Productsports { get; set; } = new List<Productsport>();
 
-    public virtual ICollection<Sport> Sports { get; set; } = new List<Sport>();
+    public virtual ICollection<Promotiondetail> Promotiondetails { get; set; } = new List<Promotiondetail>();
 }

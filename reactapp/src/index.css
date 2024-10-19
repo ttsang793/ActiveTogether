@@ -25,9 +25,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-.hover {
+.pointer {
   cursor: pointer;
-  transition-duration: 0.5s;
 }
 
 main {
@@ -46,18 +45,49 @@ a {
   text-decoration: none!important;
 }
 
-.at-btn {
-  font-size: 18px;
+.small-at-btn, .at-btn, .small-at-btn-seconary, .at-sbtn, .at-sbtn-secondary {
+  transition-duration: 0.25s;
+}
+
+.small-at-btn, .at-btn, .small-at-btn-seconary {
   border-radius: 20px;
+}
+
+.small-at-btn, .at-btn, .at-sbtn {
   background-color: var(--darker);
   color: var(--white);
   transition-duration: 0.25s;
   border: none;
+}
+
+.small-at-btn, .small-at-btn-seconary {
+  padding: 4px 1rem;
+}
+
+.small-at-btn-seconary, .at-sbtn-secondary {
+  background-color: transparent;
+  color: var(--darker);
+  border: 1px solid var(--darker);
+}
+
+.at-btn {
   padding: 6px 1.5rem;
+  font-size: 18px;
+}
+
+.at-sbtn, .at-sbtn-secondary {
+  padding: 6px 12px;
+  font-size: 18px;
+  border-radius: 5px;
 }
 
 .m-at-btn {
   margin-top: 20px;
+}
+
+.small-at-btn:hover, .at-btn:hover, .small-at-btn-seconary:hover, .at-sbtn:hover, .at-sbtn-secondary:hover {
+  background-color: var(--darkest);
+  color: var(--white);
 }
 
 .c-10 {
@@ -66,14 +96,4 @@ a {
 
 .w-10 {
   width: 10%;
-}
-
-.at-btn:hover {
-  background-color: var(--darkest);
-}
-
-.admin-main {
-  min-height: 100vh;
-  display: flex;
-  column-gap: 10px;
 }

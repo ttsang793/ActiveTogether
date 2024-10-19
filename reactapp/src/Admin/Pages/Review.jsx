@@ -1,4 +1,4 @@
-export default function Review() {
+export default function AReview() {
   return (
     <h1>Review</h1>
   )
