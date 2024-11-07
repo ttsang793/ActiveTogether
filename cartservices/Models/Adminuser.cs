@@ -3,19 +3,19 @@ using System.Collections.Generic;
 
 namespace cartservices.Models;
 
-public partial class Adminuser
+public partial class AdminUser
 {
     public int Id { get; set; }
 
     public string Password { get; set; } = null!;
 
-    public string Fullname { get; set; } = null!;
+    public string FullName { get; set; } = null!;
 
     public string Phone { get; set; } = null!;
 
     public string Email { get; set; } = null!;
 
-    public virtual ICollection<Blogarticle> Blogarticles { get; set; } = new List<Blogarticle>();
+    public virtual ICollection<BlogArticle> BlogArticles { get; set; } = new List<BlogArticle>();
 
     public virtual ICollection<Import> Imports { get; set; } = new List<Import>();
 

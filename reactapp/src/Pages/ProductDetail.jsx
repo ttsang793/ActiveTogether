@@ -10,95 +10,108 @@ export default class ProductDetail extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { product: [], loading: true }
+    this.state = { product: [], image: [], index: 0, sku: "", loading: true }
   }
 
-  componentDidMount() { this.populateProductDetail() }
+  componentDidMount() {
+    const url = location.pathname.substring(10);
+    this.populateProductDetail(url);
+  }
 
-  static renderLuaChon(option, id, title) {
+  handleIndexChange(index, total) {
+    this.setState({index: index < 0 ? total - 1 : index % total}, () => {
+      if (total < 3) {
+        document.getElementsByClassName("main-small-img")[0].classList.remove("main-small-img");
+        document.getElementsByClassName("small-img")[this.state.index].classList.add("main-small-img");
+      }
+    })
+  }
+
+  handleOptionChange(e, idList) {
+    const i = e.target.selectedIndex;
+    if (e.target.id === "color") {
+      this.handleIndexChange(e.target.value, this.state.image.length)
+      this.setState({sku: idList[i].sku + (this.state.sku.endsWith("FREE") ? "FREE" : document.getElementById("size").value)});
+    }
+    else this.setState({sku: this.state.sku.substring(0,5) + e.target.value});
+  }
+
+  renderLuaChon(option, id, title, idList = []) {
     return (
       <div className="my-2">
         <label htmlFor={id}>{title}:&nbsp;</label>
-        <select id={id} defaultValue={option[0]} className="pe-2">
-          {option.map((o, i) => <option value={o} key={i}>{o}</option>)}
+        <select id={id} defaultValue={option[0]} className="pe-2" onChange={e => this.handleOptionChange(e, idList)}>
+          {option.map((o, i) => <option value={idList.length > 0 ? i : o} key={i}>{o}</option>)}
         </select>
       </div>
     );
   }
 
-  static renderOptions(product) {
+  renderProductDetail(product, image) {
+    console.log(DisplayPrice(product[0].oldPrice))
     let colorList = []
-    product.forEach(p => { colorList.push(p.color) });
+    product.forEach(p => {
+      if (!colorList.includes(p.color)) colorList.push(p.color);
+    });
 
-    return (
-      <>
-        {(product[0].product.size.split(",").length > 1) && ProductDetail.renderLuaChon(product[0].product.size.split(","), "kichThuoc", "Kích thước")}
-        {(colorList.length > 1) && ProductDetail.renderLuaChon(colorList, "mauSac", "Màu sắc")}
-      </>
-    )
-  }
+    let sizeList = []
+    product.forEach(p => {
+      if (!sizeList.includes(p.size)) sizeList.push(p.size);
+    });
 
-  static renderProductDetail(product) {
-    let colorList = []
-    product.forEach(p => { colorList.push(p.color) });
-    const sizeList = product[0].product.size.split(",");
+    let idList = []
+    product.forEach(p => {
+      const index = Number(p.image);
+      if (idList.length === 0 || idList.findIndex(p => p.id === index) === -1) idList.push({id: index, sku: p.sku.substring(0,5)});
+    })
 
     return (
       <main>
-        <div className="d-flex product-detail">
-          <div className="d-flex flex-column">
-            <div id="showing" className="carousel slide">
-              <div className="carousel-inner">
-                <div className="carousel-item active">
-                  <img src={`/src/img/${product[0].image}`} className="showing" alt={colorList[0]} />
-                </div>
-                {
-                  colorList.map((c,i) => {
-                      if (i > 0) return (
-                        <div className="carousel-item">
-                          <img src={`/src/img/${product[i].image}`} className="showing" alt={c} />
-                        </div>
-                      )
-                    }
-                  )
-                }
-              </div>
+        <div className="d-flex product-detail">          
+          <div className="d-flex flex-column me-2">
+            <div style={{ position: "relative" }}> 
+              <button onClick={() => this.handleIndexChange(this.state.index - 1, image.length)} className="carousel-prev">&lt;</button>
+              <img src={`${image[this.state.index].image}`} className="showing" id="showing" />
+              <button onClick={() => this.handleIndexChange(this.state.index + 1, image.length)} className="carousel-next">&gt;</button>
+            </div>
 
-              <button className="carousel-control-prev" type="button" data-bs-target="#showing" data-bs-slide="prev">
-                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span className="visually-hidden">Previous</span>
-              </button>
-              <button className="carousel-control-next" type="button" data-bs-target="#showing" data-bs-slide="next">
-                <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                <span className="visually-hidden">Next</span>
-              </button>
-              
-              <div className="small-images d-flex mt-2">                
-                <img src={`/src/img/${product[0].image}`} alt={product[0].color}
-                  key={product[0].color} className="small-img active" data-bs-target="#showing" data-bs-slide-to="0"
-                  aria-current="true" onClick={e => document.getElementById("showing").src = e.target.src} />
+            
+            <div className="d-flex align-item-center c-10 mt-2"> 
+            { (image.length >= 3) ? (
+                <>
+                  <img src={`${image[this.state.index % image.length].image}`} className="small-img main-small-img" />
 
-                {product.map((_, i) => {
-                  if (i > 0) return (
-                  <img src={`/src/img/${product[i].image}`} alt={product[i].color}
-                    key={product[i].color} className="small-img" data-bs-target="#showing" data-bs-slide-to={`${i}`}
-                    onClick={e => document.getElementById("showing").src = e.target.src} />)})}
-              </div>
+                  <img src={`${image[(this.state.index + 1) % image.length].image }`}
+                    className="small-img" onClick={() => this.handleIndexChange(this.state.index + 1, image.length)} />
+                    
+                  <img src={`${image[(this.state.index + 2) % image.length].image}`}
+                    className="small-img" onClick={() => this.handleIndexChange(this.state.index + 2, image.length)} />
+                </>
+              )
+              : (
+                <>
+                  <img src={`${image[0].image}`} className="small-img main-small-img" onClick={() => this.handleIndexChange(0, image.length)} />
+                  {image.length === 2 ? <img src={`${image[1].image}`} className="small-img" onClick={() => this.handleIndexChange(1, 2)} /> : ""}
+                </>
+              )
+            }              
             </div>
           </div>
 
           <div className="flex-grow-1">
-            <h1>{product[0].product.name}</h1>
+            <h1>{product[0].name}</h1>
             <div className="price d-flex align-items-center">
               <div className="current-price">{DisplayPrice(product[0].price)}</div>
-              {/*<div className="old-price">{DisplayPrice(product.oldPrice)}</div>*/}
+              {
+                product[0].oldPrice !== null ? <div className="old-price">{DisplayPrice(product[0].oldPrice)}</div> : <></>
+              }
             </div>
             <hr />
 
-            {(sizeList.length > 1) && ProductDetail.renderLuaChon(sizeList, "kichThuoc", "Kích thước")}
-            {(colorList.length > 1) && ProductDetail.renderLuaChon(colorList, "mauSac", "Màu sắc")}
+            {(sizeList.length > 1) && this.renderLuaChon(sizeList, "size", "Kích thước")}
+            {(colorList.length > 1) && this.renderLuaChon(colorList, "color", "Màu sắc", idList)}
 
-            <AddToCart type="text" />
+            {<AddToCart type="text" product={product.find(p => p.sku === this.state.sku)} />}
           </div>
         </div>
 
@@ -137,13 +150,24 @@ export default class ProductDetail extends Component {
   }
 
   render() {
-    const content = this.state.loading ? <p>Please wait...</p> : ProductDetail.renderProductDetail(this.state.product);
+    const content = this.state.loading ? <p>Please wait...</p> : this.renderProductDetail(this.state.product, this.state.image);
     return content;
   }
 
-  async populateProductDetail() {
-    fetch(`/productdetail/ByUrlName?urlName=${location.pathname.substring(10)}`).then(response => response.json())
-      .then(data => { this.setState({ product: data, loading: false }) })
-      .catch(() => location.href = "/404");
+  async populateProductDetail(url) {
+    try {
+      const response = await fetch(`/productdetail?urlName=${url}`);
+      if (!response.ok) throw new Error('Network response was not ok');
+      const productData = await response.json();
+      this.setState({ product: productData, sku: productData[0].sku.substring(0,5) + productData[0].size });
+
+      const imageResponse = await fetch(`/productdetail/img?urlName=${url}`);
+      if (!imageResponse.ok) throw new Error('Network response was not ok');
+      const imageData = await imageResponse.json();
+      this.setState({ image: imageData, loading: false });
+    }
+    catch {
+      location.href = "/404";
+    }
   }
 }

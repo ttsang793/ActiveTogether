@@ -7,13 +7,21 @@ public partial class Refund
 {
     public int Id { get; set; }
 
-    public DateTime? DateRefunded { get; set; }
+    public int OrderDetailId { get; set; }
 
-    public int? VertifyAdmin { get; set; }
+    public decimal? Price { get; set; }
 
-    public decimal? Total { get; set; }
+    public int? Quantity { get; set; }
 
-    public virtual ICollection<Refunddetail> Refunddetails { get; set; } = new List<Refunddetail>();
+    public int? Status { get; set; }
 
-    public virtual Adminuser? VertifyAdminNavigation { get; set; }
+    public string? Reason { get; set; }
+
+    public int? CheckAdmin { get; set; }
+
+    public DateTime? DateRefund { get; set; }
+
+    public virtual AdminUser? CheckAdminNavigation { get; set; }
+
+    public virtual OrderDetail OrderDetail { get; set; } = null!;
 }

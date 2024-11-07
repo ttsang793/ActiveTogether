@@ -5,3 +5,8 @@
 .cart-table th, .cart-table td {
   vertical-align: middle;
 }
+
+.item-quantity {
+  text-align: center;
+  width: 50px;
+}

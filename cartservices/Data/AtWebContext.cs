@@ -1,5 +1,7 @@
-﻿using cartservices.Models;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using cartservices.Models;
 
 namespace cartservices.Data;
 
@@ -14,85 +16,95 @@ public partial class AtWebContext : DbContext
     {
     }
 
-    public virtual DbSet<Adminuser> Adminusers { get; set; }
+    public virtual DbSet<AdminUser> AdminUsers { get; set; }
 
-    public virtual DbSet<Blogarticle> Blogarticles { get; set; }
+    public virtual DbSet<BlogArticle> BlogArticles { get; set; }
 
     public virtual DbSet<Brand> Brands { get; set; }
+
+    public virtual DbSet<CartDetail> CartDetails { get; set; }
 
     public virtual DbSet<Category> Categories { get; set; }
 
     public virtual DbSet<Import> Imports { get; set; }
 
-    public virtual DbSet<Importdetail> Importdetails { get; set; }
+    public virtual DbSet<ImportDetail> ImportDetails { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
-    public virtual DbSet<Orderdetail> Orderdetails { get; set; }
+    public virtual DbSet<OrderDetail> OrderDetails { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
 
-    public virtual DbSet<Productprice> Productprices { get; set; }
+    public virtual DbSet<ProductColor> ProductColors { get; set; }
 
-    public virtual DbSet<Productreview> Productreviews { get; set; }
+    public virtual DbSet<ProductDetail> ProductDetails { get; set; }
 
-    public virtual DbSet<Productsport> Productsports { get; set; }
+    public virtual DbSet<ProductImage> ProductImages { get; set; }
+
+    public virtual DbSet<ProductReview> ProductReviews { get; set; }
+
+    public virtual DbSet<ProductSport> ProductSports { get; set; }
 
     public virtual DbSet<Promotion> Promotions { get; set; }
 
-    public virtual DbSet<Promotiondetail> Promotiondetails { get; set; }
+    public virtual DbSet<PromotionDetail> PromotionDetails { get; set; }
 
     public virtual DbSet<Refund> Refunds { get; set; }
-
-    public virtual DbSet<Refunddetail> Refunddetails { get; set; }
 
     public virtual DbSet<Sport> Sports { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
-    public virtual DbSet<Useraddress> Useraddresses { get; set; }
+    public virtual DbSet<UserAddress> UserAddresses { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySQL("server=localhost;uid=root;database=at_web");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+            var connectionString = configuration.GetConnectionString("AtWebCon");
+            optionsBuilder.UseMySQL(connectionString);
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Adminuser>(entity =>
+        modelBuilder.Entity<AdminUser>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("adminuser");
+            entity.ToTable("admin_user");
 
             entity.Property(e => e.Id)
-                .HasColumnType("int(6)")
+                .HasColumnType("int(11)")
                 .HasColumnName("id");
-            entity.Property(e => e.Email)
-                .HasMaxLength(150)
-                .HasColumnName("email");
-            entity.Property(e => e.Fullname)
-                .HasMaxLength(100)
-                .HasColumnName("fullname");
+            entity.Property(e => e.Email).HasColumnName("email");
+            entity.Property(e => e.FullName)
+                .HasMaxLength(200)
+                .HasColumnName("full_name");
             entity.Property(e => e.Password).HasColumnName("password");
             entity.Property(e => e.Phone)
                 .HasMaxLength(15)
                 .HasColumnName("phone");
         });
 
-        modelBuilder.Entity<Blogarticle>(entity =>
+        modelBuilder.Entity<BlogArticle>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("blogarticle");
+            entity.ToTable("blog_article");
 
-            entity.HasIndex(e => e.WrittenAdmin, "FK_BlogArticle_Admin");
+            entity.HasIndex(e => e.WrittenAdmin, "FK_BlogArticle_AdminUser");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
             entity.Property(e => e.Brief)
                 .HasMaxLength(512)
-                .HasDefaultValueSql("'NULL'")
                 .HasColumnName("brief");
             entity.Property(e => e.Content)
                 .HasDefaultValueSql("'NULL'")
@@ -101,22 +113,21 @@ public partial class AtWebContext : DbContext
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("date")
                 .HasColumnName("date_publish");
-            entity.Property(e => e.Name)
+            entity.Property(e => e.Title)
                 .HasMaxLength(200)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnName("name");
+                .HasColumnName("title");
             entity.Property(e => e.UrlName)
                 .HasMaxLength(200)
-                .HasDefaultValueSql("'NULL'")
                 .HasColumnName("url_name");
             entity.Property(e => e.WrittenAdmin)
+                .HasDefaultValueSql("'NULL'")
                 .HasColumnType("int(11)")
                 .HasColumnName("written_admin");
 
-            entity.HasOne(d => d.WrittenAdminNavigation).WithMany(p => p.Blogarticles)
+            entity.HasOne(d => d.WrittenAdminNavigation).WithMany(p => p.BlogArticles)
                 .HasForeignKey(d => d.WrittenAdmin)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_BlogArticle_Admin");
+                .HasConstraintName("FK_BlogArticle_AdminUser");
         });
 
         modelBuilder.Entity<Brand>(entity =>
@@ -125,17 +136,56 @@ public partial class AtWebContext : DbContext
 
             entity.ToTable("brand");
 
+            entity.HasIndex(e => e.Name, "name").IsUnique();
+
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
             entity.Property(e => e.IsActive)
-                .IsRequired()
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("is_active");
             entity.Property(e => e.Name)
-                .HasMaxLength(200)
-                .HasDefaultValueSql("'NULL'")
+                .HasMaxLength(100)
                 .HasColumnName("name");
+        });
+
+        modelBuilder.Entity<CartDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("cart_detail");
+
+            entity.HasIndex(e => e.Sku, "FK_CartDetail_ProductDetail");
+
+            entity.HasIndex(e => e.UserId, "FK_CartDetail_User");
+
+            entity.Property(e => e.Id)
+                .HasColumnType("int(11)")
+                .HasColumnName("id");
+            entity.Property(e => e.Price)
+                .HasPrecision(10)
+                .HasDefaultValueSql("'0'")
+                .HasColumnName("price");
+            entity.Property(e => e.Quantity)
+                .HasDefaultValueSql("'1'")
+                .HasColumnType("int(11)")
+                .HasColumnName("quantity");
+            entity.Property(e => e.Sku)
+                .HasMaxLength(50)
+                .HasColumnName("sku");
+            entity.Property(e => e.UserId)
+                .HasColumnType("int(11)")
+                .HasColumnName("user_id");
+
+            entity.HasOne(d => d.SkuNavigation).WithMany(p => p.CartDetails)
+                .HasForeignKey(d => d.Sku)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_CartDetail_ProductDetail");
+
+            entity.HasOne(d => d.User).WithMany(p => p.CartDetails)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_CartDetail_User");
         });
 
         modelBuilder.Entity<Category>(entity =>
@@ -144,15 +194,16 @@ public partial class AtWebContext : DbContext
 
             entity.ToTable("category");
 
+            entity.HasIndex(e => e.Name, "name").IsUnique();
+
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
             entity.Property(e => e.IsActive)
-                .IsRequired()
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("is_active");
             entity.Property(e => e.Name)
-                .HasDefaultValueSql("'NULL'")
+                .HasMaxLength(100)
                 .HasColumnName("name");
         });
 
@@ -162,7 +213,7 @@ public partial class AtWebContext : DbContext
 
             entity.ToTable("import");
 
-            entity.HasIndex(e => e.CheckAdmin, "FK_Import_Admin");
+            entity.HasIndex(e => e.CheckAdmin, "FK_Import_AdminUser");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
@@ -183,52 +234,57 @@ public partial class AtWebContext : DbContext
             entity.HasOne(d => d.CheckAdminNavigation).WithMany(p => p.Imports)
                 .HasForeignKey(d => d.CheckAdmin)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Import_Admin");
+                .HasConstraintName("FK_Import_AdminUser");
         });
 
-        modelBuilder.Entity<Importdetail>(entity =>
+        modelBuilder.Entity<ImportDetail>(entity =>
         {
-            entity.HasKey(e => new { e.ImportId, e.ProductpriceId }).HasName("PRIMARY");
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("importdetail");
+            entity.ToTable("import_detail");
 
-            entity.HasIndex(e => e.ProductpriceId, "FK_ImportDetail_ProductPrice");
+            entity.HasIndex(e => e.ImportId, "FK_ImportDetail_Import");
 
+            entity.HasIndex(e => e.Sku, "FK_ImportDetail_ProductDetail");
+
+            entity.Property(e => e.Id)
+                .HasColumnType("int(11)")
+                .HasColumnName("id");
             entity.Property(e => e.ImportId)
                 .HasColumnType("int(11)")
                 .HasColumnName("import_id");
-            entity.Property(e => e.ProductpriceId)
-                .HasColumnType("int(11)")
-                .HasColumnName("productprice_id");
             entity.Property(e => e.Price)
                 .HasPrecision(10)
-                .HasDefaultValueSql("'NULL'")
+                .HasDefaultValueSql("'0'")
                 .HasColumnName("price");
             entity.Property(e => e.Quantity)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("int(11)")
                 .HasColumnName("quantity");
+            entity.Property(e => e.Sku)
+                .HasMaxLength(50)
+                .HasColumnName("sku");
 
-            entity.HasOne(d => d.Import).WithMany(p => p.Importdetails)
+            entity.HasOne(d => d.Import).WithMany(p => p.ImportDetails)
                 .HasForeignKey(d => d.ImportId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_ImportDetail_Import");
 
-            entity.HasOne(d => d.Productprice).WithMany(p => p.Importdetails)
-                .HasForeignKey(d => d.ProductpriceId)
+            entity.HasOne(d => d.SkuNavigation).WithMany(p => p.ImportDetails)
+                .HasForeignKey(d => d.Sku)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_ImportDetail_ProductPrice");
+                .HasConstraintName("FK_ImportDetail_ProductDetail");
         });
 
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("orders");
+            entity.ToTable("order");
 
-            entity.HasIndex(e => e.VertifyAdmin, "FK_Orders_Admin");
+            entity.HasIndex(e => e.VertifyAdmin, "FK_Order_AdminUser");
 
-            entity.HasIndex(e => e.UserId, "FK_Orders_User");
+            entity.HasIndex(e => e.UserId, "FK_Order_User");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
@@ -246,14 +302,19 @@ public partial class AtWebContext : DbContext
                 .HasColumnType("date")
                 .HasColumnName("date_vertified");
             entity.Property(e => e.Point)
-                .HasDefaultValueSql("'NULL'")
+                .HasDefaultValueSql("'0'")
                 .HasColumnType("int(11)")
                 .HasColumnName("point");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'0'")
+                .HasColumnType("smallint(6)")
+                .HasColumnName("status");
             entity.Property(e => e.Total)
                 .HasPrecision(10)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("total");
             entity.Property(e => e.UserId)
+                .HasDefaultValueSql("'NULL'")
                 .HasColumnType("int(11)")
                 .HasColumnName("user_id");
             entity.Property(e => e.VertifyAdmin)
@@ -264,72 +325,73 @@ public partial class AtWebContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Orders_User");
+                .HasConstraintName("FK_Order_User");
 
             entity.HasOne(d => d.VertifyAdminNavigation).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.VertifyAdmin)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Orders_Admin");
+                .HasConstraintName("FK_Order_AdminUser");
         });
 
-        modelBuilder.Entity<Orderdetail>(entity =>
+        modelBuilder.Entity<OrderDetail>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("orderdetail");
+            entity.ToTable("order_detail");
 
-            entity.HasIndex(e => e.OrderId, "FK_OrderDetail_Orders");
+            entity.HasIndex(e => e.OrderId, "FK_OrderDetail_Order");
 
-            entity.HasIndex(e => e.ProductpriceId, "FK_OrderDetail_ProductPrice");
+            entity.HasIndex(e => e.Sku, "FK_OrderDetail_ProductDetail");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
+            entity.Property(e => e.IsReturn)
+                .HasDefaultValueSql("'0'")
+                .HasColumnName("is_return");
             entity.Property(e => e.OrderId)
                 .HasColumnType("int(11)")
                 .HasColumnName("order_id");
-            entity.Property(e => e.ProductpriceId)
-                .HasColumnType("int(11)")
-                .HasColumnName("productprice_id");
+            entity.Property(e => e.Price)
+                .HasPrecision(10)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("price");
             entity.Property(e => e.Quantity)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("int(11)")
                 .HasColumnName("quantity");
+            entity.Property(e => e.Sku)
+                .HasMaxLength(50)
+                .HasColumnName("sku");
 
-            entity.HasOne(d => d.Order).WithMany(p => p.Orderdetails)
+            entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_OrderDetail_Orders");
+                .HasConstraintName("FK_OrderDetail_Order");
 
-            entity.HasOne(d => d.Productprice).WithMany(p => p.Orderdetails)
-                .HasForeignKey(d => d.ProductpriceId)
+            entity.HasOne(d => d.SkuNavigation).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.Sku)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_OrderDetail_ProductPrice");
+                .HasConstraintName("FK_OrderDetail_ProductDetail");
         });
 
         modelBuilder.Entity<Product>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("products");
+            entity.ToTable("product");
 
-            entity.HasIndex(e => e.BrandId, "PK_Products_Brand");
+            entity.HasIndex(e => e.BrandId, "FK_Product_Brand");
 
-            entity.HasIndex(e => e.CategoryId, "PK_Products_Category");
-
-            entity.HasIndex(e => e.Name, "name").IsUnique();
-
-            entity.HasIndex(e => e.UrlName, "url_name").IsUnique();
+            entity.HasIndex(e => e.CategoryId, "FK_Product_Category");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
             entity.Property(e => e.BrandId)
-                .HasDefaultValueSql("'NULL'")
                 .HasColumnType("int(11)")
                 .HasColumnName("brand_id");
             entity.Property(e => e.CategoryId)
-                .HasDefaultValueSql("'NULL'")
                 .HasColumnType("int(11)")
                 .HasColumnName("category_id");
             entity.Property(e => e.Description)
@@ -337,115 +399,162 @@ public partial class AtWebContext : DbContext
                 .HasColumnName("description");
             entity.Property(e => e.Gender)
                 .HasDefaultValueSql("'NULL'")
-                .HasColumnType("smallint(2)")
+                .HasColumnType("smallint(6)")
                 .HasColumnName("gender");
             entity.Property(e => e.IsActive)
-                .HasDefaultValueSql("'NULL'")
+                .HasDefaultValueSql("'1'")
                 .HasColumnName("is_active");
             entity.Property(e => e.IsChildren)
-                .HasDefaultValueSql("'NULL'")
+                .HasDefaultValueSql("'0'")
                 .HasColumnName("is_children");
-            entity.Property(e => e.Name)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnType("longtext")
-                .HasColumnName("name");
-            entity.Property(e => e.Quantity)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnType("int(11)")
-                .HasColumnName("quantity");
-            entity.Property(e => e.Size)
-                .HasMaxLength(150)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnName("size");
-            entity.Property(e => e.UrlName)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnType("longtext")
-                .HasColumnName("url_name");
+            entity.Property(e => e.Name).HasColumnName("name");
+            entity.Property(e => e.UrlName).HasColumnName("url_name");
 
             entity.HasOne(d => d.Brand).WithMany(p => p.Products)
                 .HasForeignKey(d => d.BrandId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("PK_Products_Brand");
+                .HasConstraintName("FK_Product_Brand");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("PK_Products_Category");
+                .HasConstraintName("FK_Product_Category");
         });
 
-        modelBuilder.Entity<Productprice>(entity =>
+        modelBuilder.Entity<ProductColor>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("productprice");
+            entity.ToTable("product_color");
 
-            entity.HasIndex(e => e.ProductId, "FK_ProductPrice_Product");
+            entity.HasIndex(e => e.ProductId, "FK_ProductColor_Product");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
             entity.Property(e => e.Color)
-                .HasMaxLength(100)
-                .HasDefaultValueSql("'NULL'")
+                .HasMaxLength(20)
                 .HasColumnName("color");
+            entity.Property(e => e.ProductId)
+                .HasColumnType("int(11)")
+                .HasColumnName("product_id");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.ProductColors)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_ProductColor_Product");
+        });
+
+        modelBuilder.Entity<ProductDetail>(entity =>
+        {
+            entity.HasKey(e => e.Sku).HasName("PRIMARY");
+
+            entity.ToTable("product_detail");
+
+            entity.HasIndex(e => e.ProductColorId, "FK_ProductDetail_ProductColor");
+
+            entity.Property(e => e.Sku)
+                .HasMaxLength(50)
+                .HasColumnName("sku");
             entity.Property(e => e.DateEnd)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("date")
                 .HasColumnName("date_end");
             entity.Property(e => e.DateStart)
-                .HasDefaultValueSql("'current_timestamp()'")
+                .HasDefaultValueSql("'NULL'")
                 .HasColumnType("date")
                 .HasColumnName("date_start");
-            entity.Property(e => e.Image).HasColumnName("image");
+            entity.Property(e => e.Note).HasColumnName("note");
+            entity.Property(e => e.OldPrice)
+                .HasPrecision(10)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("old_price");
             entity.Property(e => e.Price)
                 .HasPrecision(10)
+                .HasDefaultValueSql("'0'")
                 .HasColumnName("price");
-            entity.Property(e => e.ProductId)
+            entity.Property(e => e.ProductColorId)
                 .HasColumnType("int(11)")
-                .HasColumnName("product_id");
+                .HasColumnName("product_color_id");
+            entity.Property(e => e.Quantity)
+                .HasDefaultValueSql("'0'")
+                .HasColumnType("int(11)")
+                .HasColumnName("quantity");
+            entity.Property(e => e.Size)
+                .HasMaxLength(5)
+                .HasColumnName("size");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.Productprices)
-                .HasForeignKey(d => d.ProductId)
+            entity.HasOne(d => d.ProductColor).WithMany(p => p.ProductDetails)
+                .HasForeignKey(d => d.ProductColorId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_ProductPrice_Product");
+                .HasConstraintName("FK_ProductDetail_ProductColor");
         });
 
-        modelBuilder.Entity<Productreview>(entity =>
+        modelBuilder.Entity<ProductImage>(entity =>
         {
-            entity.HasKey(e => new { e.ProductId, e.UserId }).HasName("PRIMARY");
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("productreview");
+            entity.ToTable("product_image");
 
-            entity.HasIndex(e => e.UserId, "FK_ProductReview_user");
+            entity.HasIndex(e => e.ProductColorId, "FK_ProductImage_ProductColor");
 
+            entity.Property(e => e.Id)
+                .HasColumnType("int(11)")
+                .HasColumnName("id");
+            entity.Property(e => e.Image)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("image");
+            entity.Property(e => e.ProductColorId)
+                .HasColumnType("int(11)")
+                .HasColumnName("product_color_id");
+
+            entity.HasOne(d => d.ProductColor).WithMany(p => p.ProductImages)
+                .HasForeignKey(d => d.ProductColorId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_ProductImage_ProductColor");
+        });
+
+        modelBuilder.Entity<ProductReview>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("product_review");
+
+            entity.HasIndex(e => e.ProductId, "FK_ProductReview_Product");
+
+            entity.HasIndex(e => e.UserId, "FK_ProductReview_User");
+
+            entity.Property(e => e.Id)
+                .HasColumnType("int(11)")
+                .HasColumnName("id");
             entity.Property(e => e.ProductId)
                 .HasColumnType("int(11)")
                 .HasColumnName("product_id");
+            entity.Property(e => e.Review).HasColumnName("review");
             entity.Property(e => e.UserId)
                 .HasColumnType("int(11)")
                 .HasColumnName("user_id");
-            entity.Property(e => e.Review).HasColumnName("review");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.Productreviews)
+            entity.HasOne(d => d.Product).WithMany(p => p.ProductReviews)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_ProductReview_Product");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Productreviews)
+            entity.HasOne(d => d.User).WithMany(p => p.ProductReviews)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_ProductReview_user");
+                .HasConstraintName("FK_ProductReview_User");
         });
 
-        modelBuilder.Entity<Productsport>(entity =>
+        modelBuilder.Entity<ProductSport>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("productsports");
+            entity.ToTable("product_sport");
 
-            entity.HasIndex(e => e.ProductId, "FK_PS_Product");
+            entity.HasIndex(e => e.ProductId, "FK_ProductSport_Product");
 
-            entity.HasIndex(e => e.SportId, "FK_PS_Sport");
+            entity.HasIndex(e => e.SportId, "FK_ProductSport_Sport");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
@@ -457,15 +566,15 @@ public partial class AtWebContext : DbContext
                 .HasColumnType("int(11)")
                 .HasColumnName("sport_id");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.Productsports)
+            entity.HasOne(d => d.Product).WithMany(p => p.ProductSports)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_PS_Product");
+                .HasConstraintName("FK_ProductSport_Product");
 
-            entity.HasOne(d => d.Sport).WithMany(p => p.Productsports)
+            entity.HasOne(d => d.Sport).WithMany(p => p.ProductSports)
                 .HasForeignKey(d => d.SportId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_PS_Sport");
+                .HasConstraintName("FK_ProductSport_Sport");
         });
 
         modelBuilder.Entity<Promotion>(entity =>
@@ -488,36 +597,42 @@ public partial class AtWebContext : DbContext
             entity.Property(e => e.Description)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("description");
-            entity.Property(e => e.Name)
-                .HasMaxLength(100)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnName("name");
+            entity.Property(e => e.Title)
+                .HasMaxLength(200)
+                .HasColumnName("title");
         });
 
-        modelBuilder.Entity<Promotiondetail>(entity =>
+        modelBuilder.Entity<PromotionDetail>(entity =>
         {
-            entity.HasKey(e => new { e.PromotionId, e.ProductId }).HasName("PRIMARY");
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("promotiondetail");
+            entity.ToTable("promotion_detail");
 
             entity.HasIndex(e => e.ProductId, "FK_PromotionDetail_Product");
 
-            entity.Property(e => e.PromotionId)
+            entity.HasIndex(e => e.PromotionId, "FK_PromotionDetail_Promotion");
+
+            entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
-                .HasColumnName("promotion_id");
-            entity.Property(e => e.ProductId)
-                .HasColumnType("int(11)")
-                .HasColumnName("product_id");
+                .HasColumnName("id");
             entity.Property(e => e.Percent)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("percent");
+            entity.Property(e => e.ProductId)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("int(11)")
+                .HasColumnName("product_id");
+            entity.Property(e => e.PromotionId)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("int(11)")
+                .HasColumnName("promotion_id");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.Promotiondetails)
+            entity.HasOne(d => d.Product).WithMany(p => p.PromotionDetails)
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_PromotionDetail_Product");
 
-            entity.HasOne(d => d.Promotion).WithMany(p => p.Promotiondetails)
+            entity.HasOne(d => d.Promotion).WithMany(p => p.PromotionDetails)
                 .HasForeignKey(d => d.PromotionId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_PromotionDetail_Promotion");
@@ -529,58 +644,49 @@ public partial class AtWebContext : DbContext
 
             entity.ToTable("refund");
 
-            entity.HasIndex(e => e.VertifyAdmin, "FK_Refund_Admin");
+            entity.HasIndex(e => e.CheckAdmin, "FK_Refund_AdminUser");
+
+            entity.HasIndex(e => e.OrderDetailId, "FK_Refund_OrderDetails");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
-            entity.Property(e => e.DateRefunded)
+            entity.Property(e => e.CheckAdmin)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("int(11)")
+                .HasColumnName("check_admin");
+            entity.Property(e => e.DateRefund)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("date")
-                .HasColumnName("date_refunded");
-            entity.Property(e => e.Total)
+                .HasColumnName("date_refund");
+            entity.Property(e => e.OrderDetailId)
+                .HasColumnType("int(11)")
+                .HasColumnName("order_detail_id");
+            entity.Property(e => e.Price)
                 .HasPrecision(10)
                 .HasDefaultValueSql("'NULL'")
-                .HasColumnName("total");
-            entity.Property(e => e.VertifyAdmin)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnType("int(11)")
-                .HasColumnName("vertify_admin");
-
-            entity.HasOne(d => d.VertifyAdminNavigation).WithMany(p => p.Refunds)
-                .HasForeignKey(d => d.VertifyAdmin)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Refund_Admin");
-        });
-
-        modelBuilder.Entity<Refunddetail>(entity =>
-        {
-            entity.HasKey(e => new { e.OrderdetailId, e.RefundId }).HasName("PRIMARY");
-
-            entity.ToTable("refunddetail");
-
-            entity.HasIndex(e => e.RefundId, "FK_RefundDetail_Refund");
-
-            entity.Property(e => e.OrderdetailId)
-                .HasColumnType("int(11)")
-                .HasColumnName("orderdetail_id");
-            entity.Property(e => e.RefundId)
-                .HasColumnType("int(11)")
-                .HasColumnName("refund_id");
+                .HasColumnName("price");
             entity.Property(e => e.Quantity)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("int(11)")
                 .HasColumnName("quantity");
+            entity.Property(e => e.Reason)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("reason");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'0'")
+                .HasColumnType("int(11)")
+                .HasColumnName("status");
 
-            entity.HasOne(d => d.Orderdetail).WithMany(p => p.Refunddetails)
-                .HasForeignKey(d => d.OrderdetailId)
+            entity.HasOne(d => d.CheckAdminNavigation).WithMany(p => p.Refunds)
+                .HasForeignKey(d => d.CheckAdmin)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_RefundDetail_OrderDetail");
+                .HasConstraintName("FK_Refund_AdminUser");
 
-            entity.HasOne(d => d.Refund).WithMany(p => p.Refunddetails)
-                .HasForeignKey(d => d.RefundId)
+            entity.HasOne(d => d.OrderDetail).WithMany(p => p.Refunds)
+                .HasForeignKey(d => d.OrderDetailId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_RefundDetail_Refund");
+                .HasConstraintName("FK_Refund_OrderDetails");
         });
 
         modelBuilder.Entity<Sport>(entity =>
@@ -589,15 +695,16 @@ public partial class AtWebContext : DbContext
 
             entity.ToTable("sport");
 
+            entity.HasIndex(e => e.Name, "name").IsUnique();
+
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
             entity.Property(e => e.IsActive)
-                .IsRequired()
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("is_active");
             entity.Property(e => e.Name)
-                .HasDefaultValueSql("'NULL'")
+                .HasMaxLength(50)
                 .HasColumnName("name");
         });
 
@@ -606,6 +713,8 @@ public partial class AtWebContext : DbContext
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.ToTable("user");
+
+            entity.HasIndex(e => e.Username, "username").IsUnique();
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
@@ -618,13 +727,11 @@ public partial class AtWebContext : DbContext
                 .HasMaxLength(150)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("email");
-            entity.Property(e => e.Fullname)
-                .HasMaxLength(50)
+            entity.Property(e => e.FullName)
+                .HasMaxLength(200)
                 .HasDefaultValueSql("'NULL'")
-                .HasColumnName("fullname");
-            entity.Property(e => e.Password)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnName("password");
+                .HasColumnName("full_name");
+            entity.Property(e => e.Password).HasColumnName("password");
             entity.Property(e => e.Phone)
                 .HasMaxLength(15)
                 .HasDefaultValueSql("'NULL'")
@@ -635,26 +742,30 @@ public partial class AtWebContext : DbContext
                 .HasColumnName("point");
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
-                .HasDefaultValueSql("'NULL'")
                 .HasColumnName("username");
         });
 
-        modelBuilder.Entity<Useraddress>(entity =>
+        modelBuilder.Entity<UserAddress>(entity =>
         {
-            entity.HasKey(e => new { e.Id, e.Name }).HasName("PRIMARY");
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("useraddress");
+            entity.ToTable("user_address");
+
+            entity.HasIndex(e => e.UserId, "FK_UserAddress_User");
 
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
-            entity.Property(e => e.Name)
-                .HasMaxLength(100)
-                .HasColumnName("name");
             entity.Property(e => e.Address).HasColumnName("address");
+            entity.Property(e => e.Type)
+                .HasMaxLength(100)
+                .HasColumnName("type");
+            entity.Property(e => e.UserId)
+                .HasColumnType("int(11)")
+                .HasColumnName("user_id");
 
-            entity.HasOne(d => d.IdNavigation).WithMany(p => p.Useraddresses)
-                .HasForeignKey(d => d.Id)
+            entity.HasOne(d => d.User).WithMany(p => p.UserAddresses)
+                .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_UserAddress_User");
         });

@@ -8,7 +8,7 @@ namespace cartservices.Profiles
     {
         public ProductProfile()
         {
-            CreateMap<ProductreadDTO, Product>();
+            CreateMap<ProductReadDTO, Product>();
         }
     }
 }

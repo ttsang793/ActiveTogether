@@ -3,11 +3,13 @@ using System.Collections.Generic;
 
 namespace productservices.Models;
 
-public partial class Importdetail
+public partial class ImportDetail
 {
+    public int Id { get; set; }
+
     public int ImportId { get; set; }
 
-    public int ProductpriceId { get; set; }
+    public string Sku { get; set; } = null!;
 
     public decimal? Price { get; set; }
 
@@ -15,5 +17,5 @@ public partial class Importdetail
 
     public virtual Import Import { get; set; } = null!;
 
-    public virtual Productprice Productprice { get; set; } = null!;
+    public virtual ProductDetail SkuNavigation { get; set; } = null!;
 }

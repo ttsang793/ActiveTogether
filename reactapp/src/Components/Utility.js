@@ -15,3 +15,23 @@ function BoDauTiengViet(word) {
 export function CamelToKebab(camel) {
   return BoDauTiengViet(camel.replace(" ", "-").toLowerCase());
 }
+
+export function DisplayDate(dateTime) {
+  const last = dateTime.indexOf("T");
+  return dateTime.substring(0, last);
+}
+
+export function Encode(...element) {
+  let plain = btoa(element[0] + ":" + element[1] + "$Active$Together");
+  let cypher = "#";
+  while (plain.length > 0) {
+    if (plain.length <= 7) {
+      cypher += plain;
+      break;
+    }
+    else cypher += plain.substring(0,7);
+    cypher += "#";
+    plain = plain.substring(7);
+  }
+  return cypher;
+}

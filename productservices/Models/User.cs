@@ -7,11 +7,11 @@ public partial class User
 {
     public int Id { get; set; }
 
-    public string? Username { get; set; }
+    public string Username { get; set; } = null!;
 
-    public string? Password { get; set; }
+    public string Password { get; set; } = null!;
 
-    public string? Fullname { get; set; }
+    public string? FullName { get; set; }
 
     public DateTime? DateCreated { get; set; }
 
@@ -21,9 +21,11 @@ public partial class User
 
     public int? Point { get; set; }
 
+    public virtual ICollection<CartDetail> CartDetails { get; set; } = new List<CartDetail>();
+
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
-    public virtual ICollection<Productreview> Productreviews { get; set; } = new List<Productreview>();
+    public virtual ICollection<ProductReview> ProductReviews { get; set; } = new List<ProductReview>();
 
-    public virtual ICollection<Useraddress> Useraddresses { get; set; } = new List<Useraddress>();
+    public virtual ICollection<UserAddress> UserAddresses { get; set; } = new List<UserAddress>();
 }

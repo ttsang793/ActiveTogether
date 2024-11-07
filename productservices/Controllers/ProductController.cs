@@ -12,12 +12,12 @@ public class ProductController : ControllerBase
     public ProductController(ILogger<ProductController> logger) { _logger = logger; }
     private AtWebContext _dbContext = new AtWebContext();
 
-    [HttpGet("All")]
+    [HttpGet("get")]
     public IEnumerable<Product> GetAllProducts()
     {
         return _dbContext.Products.AsEnumerable().ToArray();
     }
-
+    /*
     [HttpGet("")]
     public ProductreadDTO GetProductById(int id)
     {
@@ -40,7 +40,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet("price")]
-    public IEnumerable<Productprice> GetPriceById(int id)
+    public IEnumerable<Producte> GetPriceById(int id)
     {
         return _dbContext.Productprices.Where(p => p.ProductId == id).ToList();
     }
@@ -110,5 +110,5 @@ public class ProductController : ControllerBase
             return StatusCode(201);
         }
         else return StatusCode(500);
-    }
+    }*/
 }

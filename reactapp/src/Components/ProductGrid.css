@@ -4,9 +4,9 @@
   transition-duration: 0.25s;
   cursor: pointer;
   border: 1px solid rgb(200,200,200);
-  box-shadow: -3px 0 3px rgba(0,0,0,0.15);
+  box-shadow: -10px -5px 5px rgba(0,0,0,0.3);
   width: calc(20% - 20px);
-  color: black;
+  color: var(--darkest);
 }
 
 .product-grid:hover {
@@ -14,7 +14,7 @@
   box-shadow: none;
 }
 
-.product-grid img {
+.product-thumbnail {
   aspect-ratio: 1/1;
   border-radius: 20px;
 }
@@ -26,11 +26,29 @@
 
 .product-name {
   margin-top: 0.5rem;
-  font-size: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--darkest)!important;
+  transition: 0.25s;
+}
+
+.product-name:hover {
+  color: var(--darker);
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.product-old-price {
+  margin-top: 0.5rem;
+  font-size: 16px;
+  font-style: italic;
+  text-decoration: line-through;
 }
 
 .product-price {
+  margin-top: 0.5rem;
   margin: 0;
   font-size: 24px;
   font-weight: bold;
+  color: var(--mid-dark)
 }

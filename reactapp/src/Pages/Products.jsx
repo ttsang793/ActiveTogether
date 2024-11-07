@@ -3,29 +3,54 @@ import FilterList from "/src/Components/FilterList"
 import "./Products.css"
 import React, { Component } from 'react'
 
-const fillArr = [
-  { title: "Mức giá", details: ["Dưới 500.000đ", "Từ 500.000đ - 1.000.000đ", "Trên 1.000.000đ"] },
-  { title: "Thương hiệu", details: ["Dưới 500.000đ", "Từ 500.000đ - 1.000.000đ", "Trên 1.000.000đ"] },
-  { title: "Size giày", details: ["Dưới 500.000đ", "Từ 500.000đ - 1.000.000đ", "Trên 1.000.000đ"] },
-  { title: "Size quần áo", details: ["Dưới 500.000đ", "Từ 500.000đ - 1.000.000đ", "Trên 1.000.000đ"] }
-]
-
 export default class Products extends Component {
   static displayName = Products.name;
 
   constructor(props) {
     super(props);
-    this.state = { products: [], numPerPage: 10, loading: true }
+
+    const params = new URLSearchParams(location.search);
+    const page = params.get("page") === null ? 1 : Number(params.get("page"));
+    const numPerPage = params.get("num") === null ? 10 : Number(params.get("num"));
+    const sort = params.get("sort") === null ? 0 : Number(params.get("sort"));
+    const avail = params.get("avail") == 1;
+    const fillArr = [
+      { title: "Mức giá", details: ["Dưới 500.000đ", "Từ 500.000đ - 1.000.000đ", "Trên 1.000.000đ"] }
+    ]
+
+    this.state = { products: [], sort, page, numPerPage, avail, loading: true, fillArr }
   }
 
-  componentDidMount() { this.populateProductData() }
+  reloadPage(e, page, sort = this.state.sort) {
+    const search = { page: this.state.page, numPerPage: (this.state.numPerPage > 50) ? "All" : this.state.numPerPage, sort: sort }
+    if (e.target.id === "numPerPage")
+      search.numPerPage = (e.target.value === "Tất cả") ? "All": e.target.value;
+    search.page = page;
+
+    const url = new URL(location.origin + location.pathname);
+    let params = new URLSearchParams(url.search);
+    if (search.page > 1) params.set("page", search.page);
+    if (isNaN(search.numPerPage) || search.numPerPage > 10) params.set("num", search.numPerPage);
+
+    if (sort > 0) params.set("sort", search.sort);
+    if (document.getElementById("avail").checked) params.set("avail", 1)
+    
+    location.href = url + (params.size > 0 ? "?" : "") + params.toString();
+  }
+
+  componentDidMount() {
+    this.populateProductData();
+    this.populateFilterData();
+  }
 
   renderBottom() {
-    const numPage = location.search === "" ? 1 : Number(location.search.substring(6));
+    const numPage = this.state.page;
     const totalPage = Math.ceil(this.state.products.length / this.state.numPerPage);
+    
+    if (location.search.includes("num=All") || totalPage === 1) return <></>
 
-    const firstButton = (numPage > 1) ? <a href="/san-pham"><button className="at-sbtn-secondary mx-1">&lt;</button></a> : "";
-    const lastButton = (numPage < totalPage) ? <a href={`?page=${totalPage}`}><button className="at-sbtn-secondary mx-1">&gt;</button></a> : "";
+    const firstButton = (numPage > 1) ? <button className="at-sbtn-secondary mx-1" onClick={e => this.reloadPage(e, 1)}>&lt;</button> : "";
+    const lastButton = (numPage < totalPage) ? <button className="at-sbtn-secondary mx-1" onClick={e => this.reloadPage(e, totalPage)}>&gt;</button> : "";
 
     let pageList = [numPage];
     switch (true) {
@@ -48,29 +73,21 @@ export default class Products extends Component {
     return (
       <div id="page" className="d-flex justify-content-center mt-2">
         {firstButton}
-        <a href={`?page=${pageList[0]}`}>
-          <button className={`at-sbtn${pageList[0] === numPage ? "" : "-secondary"} mx-1`}>{pageList[0]}</button>
-        </a>
-        <a href={`?page=${pageList[1]}`}>
-          <button className={`at-sbtn${pageList[1] === numPage ? "" : "-secondary"} mx-1`}>{pageList[1]}</button>
-        </a>
-        <a href={`?page=${pageList[2]}`}>
-          <button className={`at-sbtn${pageList[2] === numPage ? "" : "-secondary"} mx-1`}>{pageList[2]}</button>
-        </a>
+          <button className={`at-sbtn${pageList[0] === numPage ? "" : "-secondary"} mx-1`} onClick={e => this.reloadPage(e, pageList[0])}>{pageList[0]}</button>
+          <button className={`at-sbtn${pageList[1] === numPage ? "" : "-secondary"} mx-1`} onClick={e => this.reloadPage(e, pageList[1])}>{pageList[1]}</button>
+          { pageList[2] !== undefined && <button className={`at-sbtn${pageList[2] === numPage ? "" : "-secondary"} mx-1`} onClick={e => this.reloadPage(e, pageList[2])}>{pageList[2]}</button> }
         {lastButton}
       </div>
     )
   }
 
-  renderProductList() {    
-    const numPage = location.search === "" ? 1 : Number(location.search.substring(6));
-    const last = Math.min(this.state.numPerPage * numPage, this.state.products.length);
-
-    const products = this.state.products.slice(this.state.numPerPage * (numPage - 1), last);
+  renderProductList() {
+    const last = Math.min(this.state.numPerPage * this.state.page, this.state.products.length);
+    const products = this.state.products.slice(this.state.numPerPage * (this.state.page - 1), last);
 
     return (
       <div className="d-flex flex-wrap justify-content-center">
-        {products.map(p => <ProductGrid key={p.urlName} urlName={p.urlName} image={`/src/img/${p.image.substring(0, p.image.indexOf(",") > -1 ? p.image.indexOf(",") : p.image.length)}`} name={p.name} price={p.price} />)}
+        {products.map(p => <ProductGrid key={p.urlName} urlName={p.urlName} image={`${p.image.substring(0, p.image.indexOf(",") > -1 ? p.image.indexOf(",") : p.image.length)}`} name={p.name} price={p.price} oldPrice={p.oldPrice} />)}
       </div>
     )
   }
@@ -79,32 +96,32 @@ export default class Products extends Component {
     return (
       <>
         <div className="my-4">
-          <FilterList filters={fillArr} />
+          <FilterList filters={this.state.fillArr} />
 
           <div className="d-flex order-tab justify-content-flex-end mt-3">
             <div>
               <label htmlFor="sort">Số sản phẩm:&nbsp;</label>
-              <select name="" id="numPerPage" defaultValue="10">
-                <option value="10" onChange={() => this.setState({numPerPage: 10})}>10</option>
-                <option value="25" onChange={() => this.setState({numPerPage: 25})}>25</option>
-                <option value="50" onChange={() => this.setState({numPerPage: 50})}>50</option>
-                <option value="Tất cả" onChange={() => this.setState({numPerPage: this.state.products.length})}>Tất cả</option>
+              <select id="numPerPage" defaultValue={`${this.state.numPerPage}`} onChange={e => this.reloadPage(e, 1)}>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="All">Tất cả</option>
               </select>
             </div>
 
             <div>
               <label htmlFor="sort">Sắp xếp:&nbsp;</label>
-              <select name="" id="sort" defaultValue="Mặc định">
-                <option value="Mặc định">Mặc định</option>
-                <option value="Từ A-Z">Từ A-Z</option>
-                <option value="Từ Z-A">Từ Z-A</option>
-                <option value="Giá thấp đến cao">Giá thấp đến cao</option>
-                <option value="Giá cao đến thấp">Giá cao đến thấp</option>
+              <select id="sort" defaultValue={`${this.state.sort}`} onChange={e => this.reloadPage(e, this.state.page, e.target.value)}>
+                <option value="0">Mặc định</option>
+                <option value="1">Giá thấp đến cao</option>
+                <option value="2">Giá cao đến thấp</option>
+                <option value="3">Từ A-Z</option>
+                <option value="4">Từ Z-A</option>
               </select>
             </div>
 
             <div>
-              <input type="checkbox" name="" id="only-available" /> Chỉ xem các sản phẩm có hàng
+              <input type="checkbox" id="avail" checked={this.state.avail} onChange={e => this.reloadPage(e, 1)} /> Chỉ xem các sản phẩm có hàng
             </div>
           </div>
         </div>
@@ -129,8 +146,19 @@ export default class Products extends Component {
   }
 
   async populateProductData() {
-    fetch("/productdetail/All").then(response => response.json()).then(data => {
-      this.setState({ products: data, loading: false });
+    fetch(`/productdetail/get?sort=${this.state.sort}`).then(response => response.json()).then(data => {
+      if (this.state.avail) data = data.filter(d => d.quantity > 0);
+      this.setState({ products: data, loading: false, numPerPage: (isNaN(this.state.numPerPage) ? data.length : this.state.numPerPage) });
+    });
+  }
+
+  async populateFilterData() {
+    fetch(`/productdetail/filter`).then(response => response.json()).then(data => {
+      const newFillArr = this.state.fillArr;
+      data.forEach(d => {
+        if (newFillArr.findIndex(f => f.title === d.title) === -1) newFillArr.push(d)
+      });
+      this.setState({ fillArr: newFillArr });
     });
   }
 }

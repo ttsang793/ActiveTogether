@@ -3,13 +3,15 @@ using System.Collections.Generic;
 
 namespace productservices.Models;
 
-public partial class Useraddress
+public partial class UserAddress
 {
     public int Id { get; set; }
 
-    public string Name { get; set; } = null!;
+    public int UserId { get; set; }
+
+    public string Type { get; set; } = null!;
 
     public string Address { get; set; } = null!;
 
-    public virtual User IdNavigation { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
 }

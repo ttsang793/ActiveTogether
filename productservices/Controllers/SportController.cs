@@ -10,7 +10,7 @@ public class SportController : ControllerBase
 {
     private ILogger<SportController> _logger;
     public SportController(ILogger<SportController> logger) { _logger = logger; }
-    private AtWebContext _dbContext = new AtWebContext();
+    private readonly AtWebContext _dbContext = new AtWebContext();
 
     [HttpGet("All")]
     public IEnumerable<Sport> GetAllSports()

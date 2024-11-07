@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace cartservices.Models;
 
-public partial class Productsport
+public partial class ProductSport
 {
     public int Id { get; set; }
 

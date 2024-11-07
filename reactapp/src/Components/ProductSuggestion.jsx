@@ -7,11 +7,11 @@ export default function ProductSuggestion(props) {
       <h2>{props.title}</h2>
       <hr />
       <div className="d-flex">
-        <ProductGrid image={phd} name="Giày Adidas" price={20000} />
-        <ProductGrid image={phd} name="Giày Adidas" price={20000} />
-        <ProductGrid image={phd} name="Giày Adidas" price={20000} />
-        <ProductGrid image={phd} name="Giày Adidas" price={20000} />
-        <ProductGrid image={phd} name="Giày Adidas" price={20000} />
+        <ProductGrid image={phd} name="Giày Adidas" price={20000} oldPrice={30000} />
+        <ProductGrid image={phd} name="Giày Adidas" price={20000} oldPrice={30000} />
+        <ProductGrid image={phd} name="Giày Adidas" price={20000} oldPrice={30000} />
+        <ProductGrid image={phd} name="Giày Adidas" price={20000} oldPrice={30000} />
+        <ProductGrid image={phd} name="Giày Adidas" price={20000} oldPrice={30000} />
       </div>
     </div>
   )

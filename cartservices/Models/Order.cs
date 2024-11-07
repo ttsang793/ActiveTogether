@@ -7,7 +7,7 @@ public partial class Order
 {
     public int Id { get; set; }
 
-    public int UserId { get; set; }
+    public int? UserId { get; set; }
 
     public decimal? Total { get; set; }
 
@@ -19,11 +19,13 @@ public partial class Order
 
     public DateTime? DateReceived { get; set; }
 
+    public short? Status { get; set; }
+
     public int? VertifyAdmin { get; set; }
 
-    public virtual ICollection<Orderdetail> Orderdetails { get; set; } = new List<Orderdetail>();
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
-    public virtual User User { get; set; } = null!;
+    public virtual User? User { get; set; }
 
-    public virtual Adminuser? VertifyAdminNavigation { get; set; }
+    public virtual AdminUser? VertifyAdminNavigation { get; set; }
 }

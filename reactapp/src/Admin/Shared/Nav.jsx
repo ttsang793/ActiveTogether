@@ -14,9 +14,9 @@ export default function Nav() {
         <a href="/admin/the-thao" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Môn thể thao</li></a>
         <a href="/admin/review" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Review khách hàng</li></a>
         <a href="/admin/nhap-kho" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Nhập kho</li></a>
-        <a href="/admin/don-hang" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Đơn hàng</li></a>
-        <a href="/admin/giam-gia" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Giảm giá</li></a>
-        <a href="/admin/tai-khoan-khach-hang" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Tài khoản khách hàng</li></a>
+        <a href="/admin/don-hang" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Đơn hàng của khách</li></a>
+        <a href="/admin/don-hoan-tra" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Đơn hoàn trả</li></a>
+        <a href="/admin/giam-gia" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Chương trình giảm giá</li></a>
         <a href="/admin/bai-blog" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Bài blog</li></a>
         <a href="/admin/phan-quyen" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Phân quyền</li></a>
         <a href="/admin/thong-ke" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Thống kê</li></a>

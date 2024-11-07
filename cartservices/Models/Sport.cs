@@ -7,9 +7,9 @@ public partial class Sport
 {
     public int Id { get; set; }
 
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     public bool? IsActive { get; set; }
 
-    public virtual ICollection<Productsport> Productsports { get; set; } = new List<Productsport>();
+    public virtual ICollection<ProductSport> ProductSports { get; set; } = new List<ProductSport>();
 }

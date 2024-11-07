@@ -3,19 +3,23 @@ using System.Collections.Generic;
 
 namespace productservices.Models;
 
-public partial class Orderdetail
+public partial class OrderDetail
 {
     public int Id { get; set; }
 
     public int OrderId { get; set; }
 
-    public int ProductpriceId { get; set; }
+    public string Sku { get; set; } = null!;
+
+    public decimal? Price { get; set; }
 
     public int? Quantity { get; set; }
 
+    public bool? IsReturn { get; set; }
+
     public virtual Order Order { get; set; } = null!;
 
-    public virtual Productprice Productprice { get; set; } = null!;
+    public virtual ICollection<Refund> Refunds { get; set; } = new List<Refund>();
 
-    public virtual ICollection<Refunddetail> Refunddetails { get; set; } = new List<Refunddetail>();
+    public virtual ProductDetail SkuNavigation { get; set; } = null!;
 }

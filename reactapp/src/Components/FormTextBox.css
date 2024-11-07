@@ -58,3 +58,17 @@
 .readonly {
   pointer-events: none;
 }
+
+.up-placeholder {
+  color: var(--darkest);
+  font-size: 15px;
+  transform: translate(-42px, -40px);
+  font-weight: bold;
+}
+
+.down-placeholder {
+  color: var(--darker);
+  font-size: 18px;
+  transform: translate(0, 0);
+  font-weight: initial
+}

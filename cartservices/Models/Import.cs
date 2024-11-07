@@ -13,7 +13,7 @@ public partial class Import
 
     public decimal? Total { get; set; }
 
-    public virtual Adminuser? CheckAdminNavigation { get; set; }
+    public virtual AdminUser? CheckAdminNavigation { get; set; }
 
-    public virtual ICollection<Importdetail> Importdetails { get; set; } = new List<Importdetail>();
+    public virtual ICollection<ImportDetail> ImportDetails { get; set; } = new List<ImportDetail>();
 }

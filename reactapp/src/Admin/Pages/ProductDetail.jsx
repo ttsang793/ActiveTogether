@@ -180,8 +180,7 @@ export default class AProductDetail extends Component {
   
       if (response.ok) { alert("Sản phẩm đã thêm thành công"), location.href = "/admin/san-pham" }
       else alert("Đã có lỗi xảy ra, sản phẩm đã thêm thất bại");
-    }
-  
+    }  
   }
   
   async updateProduct() {

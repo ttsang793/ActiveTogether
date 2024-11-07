@@ -3,15 +3,17 @@ using System.Collections.Generic;
 
 namespace productservices.Models;
 
-public partial class Promotiondetail
+public partial class PromotionDetail
 {
-    public int PromotionId { get; set; }
+    public int Id { get; set; }
 
-    public int ProductId { get; set; }
+    public int? PromotionId { get; set; }
+
+    public int? ProductId { get; set; }
 
     public float? Percent { get; set; }
 
-    public virtual Product Product { get; set; } = null!;
+    public virtual Product? Product { get; set; }
 
-    public virtual Promotion Promotion { get; set; } = null!;
+    public virtual Promotion? Promotion { get; set; }
 }

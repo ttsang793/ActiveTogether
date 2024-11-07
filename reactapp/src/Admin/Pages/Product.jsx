@@ -1,12 +1,12 @@
 import "./Product.css"
-import { Component } from "react"
+import { Component } from "react";
 
 export default class AProduct extends Component {
   static displayName = AProduct.name;
 
   constructor(props) {
     super(props);
-    this.state = { product: [] }
+    this.state = { loading: true, product: [] }
   }
 
   componentDidMount = () => this.populateProductData();
@@ -34,7 +34,7 @@ export default class AProduct extends Component {
   }
   
   render() {
-    return (
+    return this.state.loading ? "Please wait..." : (
       <main>
         <h1 className="flex-grow-1 text-center fw-bold">SẢN PHẨM</h1>
         <hr />
@@ -64,7 +64,7 @@ export default class AProduct extends Component {
   }
 
   async populateProductData() {
-    fetch("/api/product/All").then(response => response.json()).then(data => this.setState({product: data}));
+    fetch("/api/product/get").then(response => response.json()).then(data => this.setState({product: data}));
   }
 }
 

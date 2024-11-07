@@ -1,0 +1,18 @@
+.cart-table thead {
+  font-size: 20px;
+}
+
+.cart-table th, .cart-table td {
+  vertical-align: middle;
+}
+
+.item-quantity {
+  text-align: center;
+  width: 50px;
+}
+
+.header-order > td {
+  background: var(--lightest)!important;
+  font-weight: bold;
+  font-size: 20px;
+}

@@ -35,6 +35,22 @@ export default defineConfig({
                 target: 'https://localhost:7126/',
                 secure: false
             },
+            '^/cart/*': {
+                target: 'https://localhost:7126/',
+                secure: false
+            },
+            '^/order/*': {
+                target: 'https://localhost:7126/',
+                secure: false
+            },
+            '^/user/*': {
+                target: 'https://localhost:7126/',
+                secure: false
+            },
+            '^/refund/*': {
+                target: 'https://localhost:7126/',
+                secure: false
+            },
             '^/api/*': {
                 target: 'https://localhost:7267/',
                 secure: false

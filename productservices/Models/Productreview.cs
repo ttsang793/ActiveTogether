@@ -3,8 +3,10 @@ using System.Collections.Generic;
 
 namespace productservices.Models;
 
-public partial class Productreview
+public partial class ProductReview
 {
+    public int Id { get; set; }
+
     public int ProductId { get; set; }
 
     public int UserId { get; set; }
