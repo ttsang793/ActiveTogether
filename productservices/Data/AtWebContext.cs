@@ -113,6 +113,12 @@ public partial class AtWebContext : DbContext
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("date")
                 .HasColumnName("date_publish");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("is_active");
+            entity.Property(e => e.Thumbnail)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("thumbnail");
             entity.Property(e => e.Title)
                 .HasMaxLength(200)
                 .HasColumnName("title");

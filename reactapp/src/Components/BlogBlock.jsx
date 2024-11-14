@@ -13,7 +13,7 @@ export default function BlogBlock(props) {
           &nbsp;({props.date})
         </div>
         <div className="blog-block-small-desc mb-2 pb-2 fst-italic">{props.smallDesc}</div>
-        <a href="">
+        <a href={`/tin-tuc/${props.urlName}`}>
           <button className="at-btn">Xem thêm</button>
         </a>
       </div>

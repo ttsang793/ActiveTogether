@@ -10,7 +10,7 @@ public class ProductController : ControllerBase
 {
     private ILogger<ProductController> _logger;
     public ProductController(ILogger<ProductController> logger) { _logger = logger; }
-    private AtWebContext _dbContext = new AtWebContext();
+    private readonly AtWebContext _dbContext = new AtWebContext();
 
     [HttpGet("get")]
     public IEnumerable<Product> GetAllProducts()
@@ -97,7 +97,7 @@ public class ProductController : ControllerBase
             return StatusCode(201);
         }
         return StatusCode(500);
-    }
+    }*/
 
     [HttpPost("Delete")]
     public StatusCodeResult Delete(int id)
@@ -110,5 +110,5 @@ public class ProductController : ControllerBase
             return StatusCode(201);
         }
         else return StatusCode(500);
-    }*/
+    }
 }

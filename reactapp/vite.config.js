@@ -31,6 +31,10 @@ export default defineConfig({
     },
     server: {
         proxy: {
+            '^/blog/*': {
+                target: 'https://localhost:7126/',
+                secure: false
+            },
             '^/productdetail/*': {
                 target: 'https://localhost:7126/',
                 secure: false

@@ -21,6 +21,8 @@ public partial class User
 
     public int? Point { get; set; }
 
+    public string? Avatar { get; set; }
+
     public virtual ICollection<CartDetail> CartDetails { get; set; } = new List<CartDetail>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

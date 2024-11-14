@@ -1,5 +1,6 @@
 import "./ProductDetail.css";
 import ProductSuggestion from "/src/Components/ProductSuggestion";
+import ProductReview from "/src/Components/ProductReview";
 import AddToCart from "/src/Components/AddToCart";
 import { DisplayPrice } from "/src/Components/Utility.js"
 import FourOFour from "./FourOFour";
@@ -10,7 +11,7 @@ export default class ProductDetail extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { product: [], image: [], index: 0, sku: "", loading: true }
+    this.state = { product: [], image: [], review: [], index: 0, sku: "", loading: true }
   }
 
   componentDidMount() {
@@ -48,7 +49,6 @@ export default class ProductDetail extends Component {
   }
 
   renderProductDetail(product, image) {
-    console.log(DisplayPrice(product[0].oldPrice))
     let colorList = []
     product.forEach(p => {
       if (!colorList.includes(p.color)) colorList.push(p.color);
@@ -138,6 +138,17 @@ export default class ProductDetail extends Component {
           </p>
         </div>
 
+        <div>
+          <input type="text" className="form-control" />
+          <select name="" id=""></select>
+          <input type="submit" value="Đăng review" onClick={e => this.addReview(e)} />
+          {
+            this.state.review.map((r, i) =>
+              <ProductReview key={i} review={r} />
+            )
+          }
+        </div>
+
         <div className="otherProducts">
           <ProductSuggestion title="Sản phẩm liên quan" />
         </div>
@@ -164,7 +175,12 @@ export default class ProductDetail extends Component {
       const imageResponse = await fetch(`/productdetail/img?urlName=${url}`);
       if (!imageResponse.ok) throw new Error('Network response was not ok');
       const imageData = await imageResponse.json();
-      this.setState({ image: imageData, loading: false });
+      this.setState({ image: imageData });
+
+      const reviewResponse = await fetch(`/productdetail/review?urlName=${url}`);
+      if (!reviewResponse.ok) throw new Error('Network response was not ok');
+      const reviewData = await reviewResponse.json();
+      this.setState({ image: reviewData, loading: false });
     }
     catch {
       location.href = "/404";

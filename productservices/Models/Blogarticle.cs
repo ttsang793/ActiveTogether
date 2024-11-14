@@ -13,9 +13,13 @@ public partial class BlogArticle
 
     public string UrlName { get; set; } = null!;
 
+    public string? Thumbnail { get; set; }
+
     public int? WrittenAdmin { get; set; }
 
     public string? Content { get; set; }
+
+    public bool IsActive { get; set; } = true;
 
     public DateTime? DatePublish { get; set; }
 

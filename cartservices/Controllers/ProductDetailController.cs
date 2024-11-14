@@ -229,4 +229,11 @@ public class ProductDetailController : ControllerBase
                       select i).ToList();
         return images;
     }
+
+    [HttpGet("review")]
+    public IEnumerable<ProductReviewReadDTO> GetProductReview(int id)
+    {
+        var review = (from r in _dbContext.ProductReviews
+                      join c in _dbContext.
+    }
 }

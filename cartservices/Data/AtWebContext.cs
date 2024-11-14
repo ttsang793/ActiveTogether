@@ -113,6 +113,13 @@ public partial class AtWebContext : DbContext
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("date")
                 .HasColumnName("date_publish");
+            entity.Property(e => e.IsActive)
+                .IsRequired()
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("is_active");
+            entity.Property(e => e.Thumbnail)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("thumbnail");
             entity.Property(e => e.Title)
                 .HasMaxLength(200)
                 .HasColumnName("title");
@@ -522,6 +529,8 @@ public partial class AtWebContext : DbContext
 
             entity.HasIndex(e => e.ProductId, "FK_ProductReview_Product");
 
+            entity.HasIndex(e => e.Sku, "FK_ProductReview_ProductDetail");
+
             entity.HasIndex(e => e.UserId, "FK_ProductReview_User");
 
             entity.Property(e => e.Id)
@@ -530,7 +539,17 @@ public partial class AtWebContext : DbContext
             entity.Property(e => e.ProductId)
                 .HasColumnType("int(11)")
                 .HasColumnName("product_id");
+            entity.Property(e => e.Respond)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("respond");
             entity.Property(e => e.Review).HasColumnName("review");
+            entity.Property(e => e.Sku)
+                .HasMaxLength(50)
+                .HasColumnName("sku");
+            entity.Property(e => e.Star)
+                .HasDefaultValueSql("'5'")
+                .HasColumnType("int(5)")
+                .HasColumnName("star");
             entity.Property(e => e.UserId)
                 .HasColumnType("int(11)")
                 .HasColumnName("user_id");
@@ -539,6 +558,11 @@ public partial class AtWebContext : DbContext
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_ProductReview_Product");
+
+            entity.HasOne(d => d.SkuNavigation).WithMany(p => p.ProductReviews)
+                .HasForeignKey(d => d.Sku)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_ProductReview_ProductDetail");
 
             entity.HasOne(d => d.User).WithMany(p => p.ProductReviews)
                 .HasForeignKey(d => d.UserId)
@@ -719,6 +743,9 @@ public partial class AtWebContext : DbContext
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
+            entity.Property(e => e.Avatar)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("avatar");
             entity.Property(e => e.DateCreated)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("date")

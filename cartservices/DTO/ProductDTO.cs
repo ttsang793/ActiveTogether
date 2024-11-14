@@ -24,3 +24,22 @@ public class ProductReadDTO
 
     public int? Quantity { get; set; }
 }
+
+public class ProductReviewReadDTO
+{
+    public int Id { get; set; }
+
+    public int ProductId { get; set; }
+
+    public string Sku { get; set; }
+
+    public string Size { get; set; }
+
+    public string Color { get; set; }
+
+    public int UserId { get; set; }
+
+    public string UserFullName { get; set; }
+
+    public string Review { get; set; } = null!;
+}

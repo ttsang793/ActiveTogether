@@ -1,4 +1,4 @@
-import "./Blog/Blog.css"
+import "./BlogDetail.css"
 import "./Introduction.css"
 import sponsor from "/src/img/sponsor.jpg"
 

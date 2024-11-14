@@ -11,6 +11,7 @@ import Introduction from './Pages/Introduction';
 import FourOFour from './Pages/FourOFour';
 
 import ProductDetail from './Pages/ProductDetail';
+import BlogDetail from './Pages/BlogDetail';
 import UserDetail from './Pages/User/UserDetail';
 import ChangePassword from './Pages/User/ChangePassword';
 import OrdersHistory from './Pages/User/OrdersHistory';
@@ -22,6 +23,7 @@ import Footer from "./Shared/Footer";
 import PageTitle from "./Shared/PageTitle";
 
 /* Admin */
+import ALogin from "./Admin/Pages/Login"
 import AProduct from "./Admin/Pages/Product"
 import AProductDetail from './Admin/Pages/ProductDetail';
 import ACategory from "./Admin/Pages/Category"
@@ -35,6 +37,8 @@ import ARefund from './Admin/Pages/Refund';
 import APromotion from './Admin/Pages/Promotion'
 import APromotionDetail from './Admin/Pages/PromotionDetail';
 import ABlogArticle from "./Admin/Pages/BlogArticle"
+import ABlogArticleDetail from "./Admin/Pages/BlogArticleDetail"
+import ABlogArticlePreview from "./Admin/Pages/BlogArticlePreview"
 import APermission from './Admin/Pages/Permission'
 import AStatistic from './Admin/Pages/Statistic'
 import ANav from './Admin/Shared/Nav'
@@ -73,6 +77,9 @@ function RenderMain() {
           {/* Trang con của Sản phẩm */}
           <Route path="/san-pham/*" element={<ProductDetail />} />
 
+          {/* Trang con của Tin tức, blog */}
+          <Route path="/tin-tuc/*" element={<BlogDetail />} />
+
           {/* Trang con của Người dùng */}
           <Route path="/nguoi-dung" element={
             username !== null ? (<><UserDetail /> <PageTitle title="Thông tin người dùng" /></>) :
@@ -95,11 +102,12 @@ function RenderMain() {
         <Footer />
       </Router>
     )
+  else if (location.pathname === "/admin") return <Router><Routes><Route path="/admin" element={<ALogin />} /></Routes></Router>
   else return (
     <Router>
       <div className="admin-main">
         <ANav />
-        <Routes>
+        <Routes>          
           <Route path="/admin/san-pham" element={<AProduct />} />
           <Route path="/admin/thong-tin-san-pham" element={<AProductDetail />} />
           <Route path="/admin/loai-san-pham" element={<ACategory />} />
@@ -113,6 +121,8 @@ function RenderMain() {
           <Route path="/admin/giam-gia" element={<APromotion />} />
           <Route path="/admin/chuong-trinh-giam-gia" element={<APromotionDetail />} />
           <Route path="/admin/bai-blog" element={<ABlogArticle />} />
+          <Route path="/admin/thong-tin-bai-blog" element={<ABlogArticleDetail />} />
+          <Route path="/admin/xem-bai-blog" element={<ABlogArticlePreview />} />
           <Route path="/admin/phan-quyen" element={<APermission />} />
           <Route path="/admin/thong-ke" element={<AStatistic />} />
         </Routes>

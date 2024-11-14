@@ -1,8 +1,6 @@
 using AutoMapper;
-using cartservices.Data;
 using cartservices.DTO;
 using cartservices.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
 var config = new MapperConfiguration(cfg => cfg.CreateMap<ProductReadDTO, Product>());
@@ -18,7 +16,6 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddDbContext<AtWebContext>(opt => opt.UseMySQL(builder.Configuration.GetConnectionString("AtWebCon")));
 
 var app = builder.Build();
 
