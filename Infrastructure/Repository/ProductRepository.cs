@@ -150,4 +150,34 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
 
         return productList;
     }
+
+    public List<FilterDTO> GetAllFilter()
+    {
+        List<FilterDTO> filters = new List<FilterDTO>();
+        string[] brand = (from b in GetDbContext().Brands select b.Name).ToArray();
+        filters.Add(new FilterDTO { Title = "Thương hiệu", Details = brand });
+
+        var sport = (from s in GetDbContext().Sports where s.Id > 0 select s.Name).ToArray();
+        filters.Add(new FilterDTO { Title = "Thể thao", Details = sport });
+
+        var clothesSize = (from p in GetDbSet()
+                       join pc in GetDbContext().ProductColors on p.Id equals pc.ProductId
+                       join d in GetDbContext().ProductDetails on pc.Id equals d.ProductColorId
+                       where p.CategoryId < 4
+                       select d.Size).Distinct().ToArray();
+        filters.Add(new FilterDTO { Title = "Size quần áo", Details = clothesSize });
+
+        var shoeSize = (from p in GetDbContext().Products
+                       join c in GetDbContext().ProductColors on p.Id equals c.ProductId
+                       join d in GetDbContext().ProductDetails on c.Id equals d.ProductColorId
+                       where p.CategoryId == 4
+                        orderby d.Size
+                        select d.Size).Distinct().ToArray();
+        filters.Add(new FilterDTO { Title = "Size giày", Details = shoeSize });
+
+        var colors = (from c in GetDbContext().Colors select c.Name).Distinct().ToArray();
+        filters.Add(new FilterDTO { Title = "Màu sắc", Details = colors });
+
+        return filters;
+    }
 }

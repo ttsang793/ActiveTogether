@@ -64,13 +64,13 @@ export default class ACategory extends Component {
   }
 
   async populateCategoryData() {
-    fetch("/api/category/All").then(response => response.json()).then(data => this.setState({category: data}));
+    fetch("/api/category/get").then(response => response.json()).then(data => this.setState({category: data}));
   }
 }
 
 async function addCategory(name) {
   if (confirm("Bạn có chắc chắn thêm loại sản phẩm này?"))  {
-    const response = await fetch("/api/category/Add", {
+    const response = await fetch("/api/category/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,8 +86,8 @@ async function addCategory(name) {
 
 async function updateCategory(id, name) {
   if (confirm("Bạn có chắc chắn cập nhật loại sản phẩm này?"))  {
-    const response = await fetch(`/api/category/Update?id=${id}`, {
-      method: "POST",
+    const response = await fetch(`/api/category/update`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
@@ -103,8 +103,10 @@ async function updateCategory(id, name) {
 async function deleteCategory(id, isActive) {
   const action = isActive ? "khóa" : "mở khóa"
   if (confirm(`Bạn có chắc chắn ${action} loại sản phẩm này?`)) {
-    const response = await fetch(`/api/category/Delete?id=${id}`, {
-      method: "POST",
+    const url = isActive ? `/api/category/lock?id=${id}` : `/api/category/unlock?id=${id}`;
+
+    const response = await fetch(url, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",

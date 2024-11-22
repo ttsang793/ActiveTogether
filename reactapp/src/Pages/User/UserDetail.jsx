@@ -8,6 +8,7 @@ function UserDetailPartial(props) {
   let [fullName, setFullName] = useState(props.user.fullName);
   let [phone, setPhone] = useState(props.user.phone);
   let [email, setEmail] = useState(props.user.email);
+  let [avatar, setAvatar] = useState(props.user.avatar);
   let [errorFullName, setErrorFullName] = useState("");
   let [errorPhone, setErrorPhone] = useState("");
   let [errorEmail, setErrorEmail] = useState("");
@@ -38,7 +39,7 @@ function UserDetailPartial(props) {
           </div>
 
           <div className="avatar-container">
-            <img src="/src/images/avatar.jpg" alt="avatar" className="avatar" />
+            <img src={avatar} alt="avatar" className="avatar" />
             <input type="file" id="upload-thumbnail" accept="image/*" className="disabled" />
             <input type="button" value="Chọn avatar" onClick={() => document.getElementById('upload-thumbnail').click()} className="small-at-btn mb-2" />
           </div>

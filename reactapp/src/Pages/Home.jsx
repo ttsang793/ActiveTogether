@@ -11,11 +11,11 @@ export default class Home extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { loading: true, article: [] }
+    this.state = { loading: true, sport: [], article: [] }
   }
 
   componentDidMount() {
-    this.populateTopArticle();
+    this.populateData();
   }
 
   render() {
@@ -68,10 +68,9 @@ export default class Home extends Component {
           <div className="home-content-detail">          
             <h2 className="home-title">CÁC MÔN THỂ THAO</h2>
             <div className="home-content-collection">
-              <HomeSelection image="/src/images/sport/football.avif" name="Bóng đá" radius={true} />
-              <HomeSelection image="/src/images/sport/basketball.avif" name="Bóng rổ" radius={true} />
-              <HomeSelection image="/src/images/sport/badminton.avif" name="Cầu lông" radius={true} />
-              <HomeSelection image="/src/images/sport/running.webp" name="Gym, điền kinh" radius={true} />
+              {
+                this.state.sport.map(s => <HomeSelection image={s.image} name={s.name} radius={true} />)
+              }
             </div>
           </div>
         </div>
@@ -140,7 +139,9 @@ export default class Home extends Component {
     )
   }
 
-  async populateTopArticle() {
+  async populateData() {
+    fetch('/sport/get').then(response => response.json()).then(data => this.setState({ sport: data  }))
+
     fetch('/blog/get/top3').then(response => response.json()).then(data => this.setState({ loading: false, article: data }))
   }
 }

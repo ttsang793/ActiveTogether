@@ -5,7 +5,7 @@ namespace Core.Interface;
 
 public interface IUserRepository
 {
-    void Register(UserRegisterDTO user);
+    int Register(UserRegisterDTO user);
 
     Task<bool> Login(UserLoginDTO user);
 

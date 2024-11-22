@@ -13,7 +13,7 @@ export default function Nav() {
         <a href="/admin/loai-san-pham" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Loại sản phẩm</li></a>
         <a href="/admin/thuong-hieu" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Thương hiệu</li></a>
         <a href="/admin/the-thao" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Môn thể thao</li></a>
-        <a href="/admin/review" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Review khách hàng</li></a>
+        <a href="/admin/mau-sac" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Màu sắc</li></a>
         <a href="/admin/nhap-kho" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Nhập kho</li></a>
         <a href="/admin/don-hang" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Đơn hàng của khách</li></a>
         <a href="/admin/don-hoan-tra" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Đơn hoàn trả</li></a>

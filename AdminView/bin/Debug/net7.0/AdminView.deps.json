@@ -8,6 +8,9 @@
     ".NETCoreApp,Version=v7.0": {
       "AdminView/1.0.0": {
         "dependencies": {
+          "Application": "1.0.0",
+          "Core": "1.0.0",
+          "Infrastructure": "1.0.0",
           "Microsoft.AspNetCore.OpenApi": "7.0.14",
           "Microsoft.EntityFrameworkCore": "7.0.14",
           "Microsoft.EntityFrameworkCore.Tools": "7.0.14",
@@ -506,6 +509,30 @@
             "fileVersion": "0.7.1.0"
           }
         }
+      },
+      "Application/1.0.0": {
+        "dependencies": {
+          "Core": "1.0.0",
+          "Infrastructure": "1.0.0"
+        },
+        "runtime": {
+          "Application.dll": {}
+        }
+      },
+      "Core/1.0.0": {
+        "runtime": {
+          "Core.dll": {}
+        }
+      },
+      "Infrastructure/1.0.0": {
+        "dependencies": {
+          "Core": "1.0.0",
+          "Microsoft.EntityFrameworkCore": "7.0.14",
+          "MySql.EntityFrameworkCore": "7.0.14"
+        },
+        "runtime": {
+          "Infrastructure.dll": {}
+        }
       }
     }
   },
@@ -927,6 +954,21 @@
       "sha512": "sha512-Idgg+mJEyAujqDPzA3APy9dNoyw0YQcNA65GgYjktDRtJ+nvx/hv+J+m6Eax3JJMGEYGy04oc5YNP6ZvQ3Y1vQ==",
       "path": "zstdsharp.port/0.7.1",
       "hashPath": "zstdsharp.port.0.7.1.nupkg.sha512"
+    },
+    "Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Infrastructure/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

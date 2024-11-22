@@ -63,3 +63,9 @@ D:\SGU\DoAnCode\ActiveTogether\AdminView\obj\Debug\net7.0\refint\AdminView.dll
 D:\SGU\DoAnCode\ActiveTogether\AdminView\obj\Debug\net7.0\AdminView.pdb
 D:\SGU\DoAnCode\ActiveTogether\AdminView\obj\Debug\net7.0\AdminView.genruntimeconfig.cache
 D:\SGU\DoAnCode\ActiveTogether\AdminView\obj\Debug\net7.0\ref\AdminView.dll
+D:\SGU\DoAnCode\ActiveTogether\AdminView\bin\Debug\net7.0\Application.dll
+D:\SGU\DoAnCode\ActiveTogether\AdminView\bin\Debug\net7.0\Core.dll
+D:\SGU\DoAnCode\ActiveTogether\AdminView\bin\Debug\net7.0\Infrastructure.dll
+D:\SGU\DoAnCode\ActiveTogether\AdminView\bin\Debug\net7.0\Application.pdb
+D:\SGU\DoAnCode\ActiveTogether\AdminView\bin\Debug\net7.0\Core.pdb
+D:\SGU\DoAnCode\ActiveTogether\AdminView\bin\Debug\net7.0\Infrastructure.pdb

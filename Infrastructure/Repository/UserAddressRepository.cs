@@ -1,4 +1,4 @@
-using Core.Interface;
+﻿using Core.Interface;
 using Core.Entity;
 using Core.DTO;
 using Infrastructure.Data;
@@ -30,5 +30,15 @@ public class UserAddressRepository : BaseRepository<UserAddress>, IUserAddressRe
                 Address = a.Address,
                 Type = a.Type
             });
+    }
+
+    public void CreateInitialAddress(UserAddressListDTO address)
+    {
+        GetDbSet().Add(new UserAddress
+        {
+            UserId = address.UserId,
+            Address = address.Address,
+            Type = "Mặc định"
+        });
     }
 }

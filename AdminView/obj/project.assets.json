@@ -981,6 +981,45 @@
         "runtime": {
           "lib/net7.0/ZstdSharp.dll": {}
         }
+      },
+      "Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "dependencies": {
+          "Core": "1.0.0",
+          "Infrastructure": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Application.dll": {}
+        }
+      },
+      "Core/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Core.dll": {}
+        }
+      },
+      "Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "dependencies": {
+          "Core": "1.0.0",
+          "Microsoft.EntityFrameworkCore": "7.0.14",
+          "MySql.EntityFrameworkCore": "7.0.14"
+        },
+        "compile": {
+          "bin/placeholder/Infrastructure.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Infrastructure.dll": {}
+        }
       }
     }
   },
@@ -3062,10 +3101,28 @@
         "zstdsharp.port.0.7.1.nupkg.sha512",
         "zstdsharp.port.nuspec"
       ]
+    },
+    "Application/1.0.0": {
+      "type": "project",
+      "path": "../Application/Application.csproj",
+      "msbuildProject": "../Application/Application.csproj"
+    },
+    "Core/1.0.0": {
+      "type": "project",
+      "path": "../Core/Core.csproj",
+      "msbuildProject": "../Core/Core.csproj"
+    },
+    "Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../Infrastructure/Infrastructure.csproj",
+      "msbuildProject": "../Infrastructure/Infrastructure.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net7.0": [
+      "Application >= 1.0.0",
+      "Core >= 1.0.0",
+      "Infrastructure >= 1.0.0",
       "Microsoft.AspNetCore.OpenApi >= 7.0.14",
       "Microsoft.EntityFrameworkCore >= 7.0.14",
       "Microsoft.EntityFrameworkCore.Tools >= 7.0.14",
@@ -3099,7 +3156,17 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "D:\\SGU\\DoAnCode\\ActiveTogether\\Application\\Application.csproj": {
+              "projectPath": "D:\\SGU\\DoAnCode\\ActiveTogether\\Application\\Application.csproj"
+            },
+            "D:\\SGU\\DoAnCode\\ActiveTogether\\Core\\Core.csproj": {
+              "projectPath": "D:\\SGU\\DoAnCode\\ActiveTogether\\Core\\Core.csproj"
+            },
+            "D:\\SGU\\DoAnCode\\ActiveTogether\\Infrastructure\\Infrastructure.csproj": {
+              "projectPath": "D:\\SGU\\DoAnCode\\ActiveTogether\\Infrastructure\\Infrastructure.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

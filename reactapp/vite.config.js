@@ -55,6 +55,10 @@ export default defineConfig({
                 target: 'https://localhost:7126/',
                 secure: false
             },
+            '^/sport/*': {
+                target: 'https://localhost:7126/',
+                secure: false
+            },
             '^/api/*': {
                 target: 'https://localhost:7267/',
                 secure: false

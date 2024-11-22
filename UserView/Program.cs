@@ -16,6 +16,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductDetailService, ProductDetailService>();
 builder.Services.AddScoped<IProductReviewService, ProductReviewService>();
 builder.Services.AddScoped<IRefundService, RefundService>();
+builder.Services.AddScoped<ISportService, SportService>();
 builder.Services.AddScoped<IUserAddressService, UserAddressService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddControllers().AddJsonOptions(x =>

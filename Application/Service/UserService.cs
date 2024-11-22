@@ -16,7 +16,8 @@ public class UserService : IUserService
 
     public async Task<bool> Register(UserRegisterDTO user)
     {
-        _unitOfWork.Users.Register(user);
+        int id =_unitOfWork.Users.Register(user);
+        _unitOfWork.UserAddresses.CreateInitialAddress(new UserAddressListDTO { UserId = id, Address = user.Address! });
         return await _unitOfWork.SaveChangesAsync();
     }
 
@@ -28,6 +29,11 @@ public class UserService : IUserService
     public User GetUserByUsername(string username)
     {
         return _unitOfWork.Users.GetUserByUsername(username);
+    }
+
+    public int GetUserIdByUsername(string username)
+    {
+        return _unitOfWork.Users.GetUserIdByUsername(username);
     }
 
     public async Task<bool> UpdateInfo(UserUpdateInfoDTO user, string username)

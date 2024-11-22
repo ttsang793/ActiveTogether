@@ -30,4 +30,9 @@ public class ProductService : IProductService
             _ => new List<ProductReadDTO>(),
         };
     }
+    
+    public List<FilterDTO> GetAllFilter()
+    {
+        return _unitOfWork.Products.GetAllFilter();
+    }
 }

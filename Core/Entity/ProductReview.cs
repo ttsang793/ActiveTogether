@@ -2,8 +2,6 @@
 
 public partial class ProductReview : BaseEntity
 {
-    public int Id { get; set; }
-
     public int? ProductId { get; set; }
 
     public string? Sku { get; set; }

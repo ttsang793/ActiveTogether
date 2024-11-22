@@ -40,6 +40,7 @@ export default function Register() {
 
   async function RegisterUser(e) {
     e.preventDefault();
+
     const error = [];
     let errorFlag = false;
     if (usernameSU === "") {
@@ -104,7 +105,7 @@ export default function Register() {
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
-        body: JSON.stringify({usernameSU, password, phoneSU, emailSU, addressSU})
+        body: JSON.stringify({username: usernameSU, password, phone: phoneSU, email: emailSU, address: addressSU})
       })
 
       if (response.ok) { alert("Tài khoản đã được đăng ký. Vui lòng đăng nhập"); location.reload() }

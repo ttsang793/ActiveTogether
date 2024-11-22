@@ -1,0 +1,11 @@
+.color-viewer {
+  border-radius: 50%;
+  border: 1px solid var(--black);
+  height: 30px;
+  width: 30px;
+}
+
+.color-picker {
+  height: 40px;
+  width: 60px!important;
+}

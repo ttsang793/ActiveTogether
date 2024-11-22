@@ -13,4 +13,6 @@ public interface IProductRepository
     IEnumerable<ProductReadDTO> GetAllProductsNameAsc(string search);
     
     IEnumerable<ProductReadDTO> GetAllProductsNameDesc(string search);
+
+    List<FilterDTO> GetAllFilter();
 }

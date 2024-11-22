@@ -1,58 +1,48 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using productservices.Data;
-using productservices.Models;
+﻿using Application.Interface;
+using Core.Entity;
+using Microsoft.AspNetCore.Mvc;
 
-namespace productservices.Controllers;
+namespace AdminView.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 public class BrandController : ControllerBase
 {
-    private ILogger<BrandController> _logger;
-    public BrandController(ILogger<BrandController> logger) {  _logger = logger; }
-    private AtWebContext _dbContext = new AtWebContext();
+    private readonly ILogger<BrandController> _logger;
+    private readonly IBrandService _brandService;
+    public BrandController(ILogger<BrandController> logger, IBrandService brandService)
+    {
+        _logger = logger;
+        _brandService = brandService;
+    }
 
-    [HttpGet("All")]
+    [HttpGet("get")]
     public IEnumerable<Brand> GetAllBrands()
     {
-        return _dbContext.Brands.AsEnumerable().ToArray();
+        return _brandService.GetAllBrands();
+    }
+    
+    [HttpPost("add")]
+    public async Task<StatusCodeResult> Insert(Brand brand)
+    {
+        return (await _brandService.Insert(brand)) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPost("Add")]
-    public StatusCodeResult Add([Bind("Name")] Brand b)
+    [HttpPut("update")]
+    public async Task<StatusCodeResult> Update(Brand brand)
     {
-        if (ModelState.IsValid)
-        {
-            _dbContext.Brands.Add(new Brand { Name = b.Name });
-            _dbContext.SaveChanges();
-            return StatusCode(201);
-        }
-        else return StatusCode(500);
+        return (await _brandService.Update(brand)) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPost("Update")]
-    public StatusCodeResult Update([Bind("Name")] Brand b, int id)
+    [HttpPut("lock")]
+    public async Task<StatusCodeResult> Lock(int id)
     {
-        var brand = _dbContext.Brands.FirstOrDefault(b => b.Id == id);
-        if (brand != null && ModelState.IsValid)
-        {
-            brand.Name = b.Name;
-            _dbContext.SaveChanges();
-            return StatusCode(201);
-        }
-        else return StatusCode(500);
+        return (await _brandService.Lock(id)) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPost("Delete")]
-    public StatusCodeResult Delete(int id)
+    [HttpPut("unlock")]
+    public async Task<StatusCodeResult> Unlock(int id)
     {
-        var brand = _dbContext.Brands.FirstOrDefault(b => b.Id == id);
-        if (brand != null)
-        {
-            brand.IsActive = !brand.IsActive;
-            _dbContext.SaveChanges();
-            return StatusCode(201);
-        }
-        else return StatusCode(500);
+        return (await _brandService.Unlock(id)) ? StatusCode(200) : StatusCode(404);
     }
 }

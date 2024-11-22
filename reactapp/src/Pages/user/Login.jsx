@@ -20,8 +20,8 @@ export default function Login() {
 
   const handleUsernameLGChange = (newUsernameLG) => setUsernameLG(usernameLG = newUsernameLG);
   const handlePasswordLGChange = (newPasswordLG) => setPasswordLG(passwordLG = newPasswordLG);
-  const handleUsernameLGError = (newErrorUsernameLG) => setErrorUsernameLG(errorUsernameLG = newErrorUsernameLG);
-  const handlePasswordLGError = (newErrorPasswordLG) => setErrorPasswordLG(errorPasswordLG = newErrorPasswordLG);
+  const handleUsernameLGError = (newErrorUsernameLG) => setErrorUsernameLG(newErrorUsernameLG);
+  const handlePasswordLGError = (newErrorPasswordLG) => setErrorPasswordLG(newErrorPasswordLG);
   
 
   async function LoginUser(e) {
@@ -54,12 +54,16 @@ export default function Login() {
       },
       body: JSON.stringify({username: usernameLG, password})
     });
-    console.log({username: usernameLG, password})
     
     if (response.ok) {
       alert("Đăng nhập thành công");
-      localStorage.setItem("userLogin", usernameLG);
-      location.href = "/";
+
+      fetch(`/user/get/avatar?username=${usernameLG}`).then(response => response.text()).then(data => {
+        console.log(data);
+        localStorage.setItem("userLogin", usernameLG);
+        localStorage.setItem("userAvatar", data);
+        //location.href = "/";
+      })
     }
     else if (response.status === 404) handleUsernameLGError("Tài khoản không tồn tại. Vui lòng kiểm tra lại.");
     else if (response.status === 500) handlePasswordLGError("Sai mật khẩu, vui lòng nhập lại.");

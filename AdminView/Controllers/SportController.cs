@@ -1,58 +1,48 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using productservices.Data;
-using productservices.Models;
+﻿using Application.Interface;
+using Core.Entity;
+using Microsoft.AspNetCore.Mvc;
 
-namespace productservices.Controllers;
+namespace AdminView.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 public class SportController : ControllerBase
 {
-    private ILogger<SportController> _logger;
-    public SportController(ILogger<SportController> logger) { _logger = logger; }
-    private readonly AtWebContext _dbContext = new AtWebContext();
+    private readonly ILogger<SportController> _logger;
+    private readonly ISportService _sportService;
+    public SportController(ILogger<SportController> logger, ISportService sportService)
+    {
+        _logger = logger;
+        _sportService = sportService;
+    }
 
-    [HttpGet("All")]
+    [HttpGet("get")]
     public IEnumerable<Sport> GetAllSports()
     {
-        return _dbContext.Sports.AsEnumerable().ToArray();
+        return _sportService.GetAllSports();
+    }
+    
+    [HttpPost("add")]
+    public async Task<StatusCodeResult> Insert(Sport sport)
+    {
+        return (await _sportService.Insert(sport)) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPost("Add")]
-    public StatusCodeResult Add([Bind("Name")] Sport s)
+    [HttpPut("update")]
+    public async Task<StatusCodeResult> Update(Sport sport)
     {
-        if (ModelState.IsValid)
-        {
-            _dbContext.Sports.Add(new Sport { Name = s.Name });
-            _dbContext.SaveChanges();
-            return StatusCode(201);
-        }
-        else return StatusCode(500);
+        return (await _sportService.Update(sport)) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPost("Update")]
-    public StatusCodeResult Update([Bind("Name")] Sport s, int id)
+    [HttpPut("lock")]
+    public async Task<StatusCodeResult> Lock(int id)
     {
-        var sport = _dbContext.Sports.FirstOrDefault(s => s.Id == id);
-        if (sport != null && ModelState.IsValid)
-        {
-            sport.Name = s.Name;
-            _dbContext.SaveChanges();
-            return StatusCode(201);
-        }
-        else return StatusCode(500);
+        return (await _sportService.Lock(id)) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPost("Delete")]
-    public StatusCodeResult Delete(int id)
+    [HttpPut("unlock")]
+    public async Task<StatusCodeResult> Unlock(int id)
     {
-        var sport = _dbContext.Sports.FirstOrDefault(s => s.Id == id);
-        if (sport != null)
-        {
-            sport.IsActive = !sport.IsActive;
-            _dbContext.SaveChanges();
-            return StatusCode(201);
-        }
-        else return StatusCode(500);
+        return (await _sportService.Unlock(id)) ? StatusCode(200) : StatusCode(404);
     }
 }

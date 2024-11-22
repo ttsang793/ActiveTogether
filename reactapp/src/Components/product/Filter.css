@@ -1,0 +1,39 @@
+.filter-button {
+  padding: 8px 0;
+  border-radius: 0;
+  border: 0;
+  font-size: 16px;
+  /*border-right: 2px solid rgb(202, 202, 202);*/
+  background-color: var(--lightest);
+  cursor: pointer;
+  transition-duration: 0.15s;
+}
+
+.dropdown {
+  cursor: pointer;
+  transition-duration: 0.15s;
+  user-select: none;
+}
+
+.dropdown:hover, .dropdown:hover .filter-button {
+  background-color: var(--lighter);
+}
+
+.dropdown-menu {
+  margin-top: -2px!important;
+  border-radius: 0!important;
+  width: 100%;
+  border: none;
+  background-color: var(--lightest);
+  height: 190px;
+  overflow: overlay;
+}
+
+.filter-item {
+  padding: 5px 10px;
+  cursor: default;
+}
+
+.filter-item input[type="checkbox"] {
+  cursor: pointer;
+}

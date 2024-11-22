@@ -2,6 +2,7 @@
 using Core.Entity;
 using Core.DTO;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository;
 public class UserRepository : BaseRepository<User>, IUserRepository
@@ -10,17 +11,20 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     {
     }
 
-    public void Register(UserRegisterDTO user)
+    public int Register(UserRegisterDTO user)
     {
         GetDbSet().Add(new User
         {
             Username = user.Username,
             Password = user.Password,
-            Email = user.Email,
+            DateCreated = DateTime.Now,
             Phone = user.Phone,
+            Email = user.Email,
             Point = 0,
-            DateCreated = DateTime.Now
+            Avatar = "/src/images/avatar/default.jpg"
         });
+
+        return GetDbSet().OrderByDescending(o => o.Id).First().Id;
     }
 
     public async Task<bool> Login(UserLoginDTO user)
@@ -31,7 +35,12 @@ public class UserRepository : BaseRepository<User>, IUserRepository
 
     public int GetUserIdByUsername(string username)
     {
-        return GetDbSet().First(u => u.Username == username).Id;
+        try {
+            return GetDbSet().First(u => u.Username == username).Id;
+        }
+        catch {
+            return -1;
+        }
     }
 
     public User GetUserByUsername(string username)

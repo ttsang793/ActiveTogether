@@ -8,4 +8,6 @@ public interface IUserAddressRepository
     IEnumerable<UserAddress> GetAddressByUsername(string username);
 
     void UpdateAddressByUsername(UserAddressDTO address, string username);
+
+    void CreateInitialAddress(UserAddressListDTO address);
 }

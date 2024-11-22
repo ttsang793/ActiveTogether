@@ -1,9 +1,9 @@
 import ProductGrid from "/src/Components/product/ProductGrid"
-//import FilterList from "/src/Components/FilterList"
+import FilterList from "/src/Components/product/FilterList"
 import PleaseWait from "/src/Shared/PleaseWait"
 import "./Products.css"
 import React, { Component } from 'react'
-import ProductEmpty from "../../Components/product/ProductEmpty";
+import ProductEmpty from "/src/Components/product/ProductEmpty";
 
 export default class Products extends Component {
   static displayName = Products.name;
@@ -44,7 +44,7 @@ export default class Products extends Component {
 
   componentDidMount() {
     this.populateProductData();
-    //this.populateFilterData();
+    this.populateFilterData();
   }
 
   renderBottom() {
@@ -101,7 +101,7 @@ export default class Products extends Component {
       <>
         <div className="my-4">
           {
-            //<FilterList filters={this.state.fillArr} />
+            <FilterList filters={this.state.fillArr} />
           }
 
           <div className="order-tab mt-3">

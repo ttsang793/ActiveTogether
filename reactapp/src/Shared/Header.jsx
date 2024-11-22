@@ -26,14 +26,6 @@ export default function Header() {
     document.body.style.overflow = "initial";
   }
 
-  function SearchIconOff() {
-    document.getElementsByClassName("bi-search")[0].classList.add("disabled");
-  }
-
-  function SearchIconOn() {
-    document.getElementsByClassName("bi-search")[0].classList.remove("disabled");
-  }
-
   function Logout() {
     localStorage.removeItem("userLogin");
     location.href = "/";
@@ -59,7 +51,7 @@ export default function Header() {
     ) : (
       <div>
         <button type="button" className="btn account-btn" data-bs-toggle="dropdown">
-          <img src="/src/images/avatar.jpg" alt="username" className="dropdown-avatar" />
+          <img src={localStorage.getItem("userAvatar")} alt="username" className="dropdown-avatar" />
           <span>&nbsp;{username}</span>
         </button>
         <ul className="dropdown-menu">
@@ -90,10 +82,7 @@ export default function Header() {
     <header className="user-header">
       <div className="d-flex top">
         <input type="search" placeholder="Nhập nội dung tìm kiếm" id="search" value={search} onChange={handleSearch}
-          className="flex-grow-1 search px-3" onFocus={SearchIconOn} />
-        <div onClick={RedirectToSearch}>
-          <abbr className="pointer" title="Tìm sản phẩm"><i className="bi bi-search disabled"></i></abbr>
-        </div>
+          onKeyDown={e => { if (e.which == 13) RedirectToSearch() } } className="flex-grow-1 search px-3" />
         <a href="/gio-hang">
           <abbr className="pointer" title="Giỏ hàng"><i className="bi bi-cart px-2"></i></abbr>
         </a>

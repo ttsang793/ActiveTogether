@@ -24,7 +24,7 @@ export default class ABrand extends Component {
               <td className="align-middle">{b.id}</td>
               <td className="align-middle">{b.name}</td>
               <td>
-                <button className="small-at-btn" onClick={() => deleteBrand(b.id, b.isAcvite)}>{b.isActive? "Khóa" : "Mở khóa"}</button>
+                <button className="small-at-btn" onClick={() => deleteBrand(b.id, b.isActive)}>{b.isActive? "Khóa" : "Mở khóa"}</button>
               </td>
             </tr>
           )
@@ -64,13 +64,13 @@ export default class ABrand extends Component {
   }
 
   async populateBrandData() {
-    fetch("/api/brand/All").then(response => response.json()).then(data => this.setState({brand: data}));
+    fetch("/api/brand/get").then(response => response.json()).then(data => this.setState({brand: data}));
   }
 }
 
 async function addBrand(name) {
   if (confirm("Bạn có chắc chắn thêm thương hiệu này?"))  {
-    const response = await fetch("/api/brand/Add", {
+    const response = await fetch("/api/brand/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,8 +86,8 @@ async function addBrand(name) {
 
 async function updateBrand(id, name) {
   if (confirm("Bạn có chắc chắn cập nhật thương hiệu này?"))  {
-    const response = await fetch(`/api/brand/Update?id=${id}`, {
-      method: "POST",
+    const response = await fetch(`/api/brand/update`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
@@ -103,8 +103,10 @@ async function updateBrand(id, name) {
 async function deleteBrand(id, isActive) {
   const action = isActive ? "khóa" : "mở khóa"
   if (confirm(`Bạn có chắc chắn ${action} thương hiệu này?`)) {
-    const response = await fetch(`/api/brand/Delete?id=${id}`, {
-      method: "POST",
+    const url = isActive ? `/api/brand/lock?id=${id}` : `/api/brand/unlock?id=${id}`;
+
+    const response = await fetch(url, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",

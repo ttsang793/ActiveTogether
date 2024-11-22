@@ -29,8 +29,14 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public async Task<StatusCodeResult> Login([Bind("Username", "Password")] UserLoginDTO user)
     {
-        if (_userService.GetUserByUsername(user.Username) == null) return StatusCode(404);
+        if (_userService.GetUserIdByUsername(user.Username) == -1) return StatusCode(404);
         return (await _userService.Login(user)) ? StatusCode(200) : StatusCode(500);
+    }
+
+    [HttpGet("get/avatar")]
+    public string GetAvatarByUsername(string username)
+    {
+        return GetUserByUsername(username).Avatar;
     }
 
     [HttpGet("")]

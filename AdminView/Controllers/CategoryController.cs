@@ -1,58 +1,48 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using productservices.Data;
-using productservices.Models;
+﻿using Application.Interface;
+using Core.Entity;
+using Microsoft.AspNetCore.Mvc;
 
-namespace productservices.Controllers;
+namespace AdminView.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 public class CategoryController : ControllerBase
 {
-    private ILogger<CategoryController> _logger;
-    public CategoryController(ILogger<CategoryController> logger) { _logger = logger; }
-    private AtWebContext _dbContext = new AtWebContext();
-
-    [HttpGet("All")]
-    public IEnumerable<Category> GetAllCategories()
+    private readonly ILogger<CategoryController> _logger;
+    private readonly ICategoryService _categoryService;
+    public CategoryController(ILogger<CategoryController> logger, ICategoryService categoryService)
     {
-        return _dbContext.Categories.AsEnumerable().ToArray();
+        _logger = logger;
+        _categoryService = categoryService;
     }
 
-    [HttpPost("Add")]
-    public StatusCodeResult Add([Bind("Name")] Category c)
+    [HttpGet("get")]
+    public IEnumerable<Category> GetAllCaterories()
     {
-        if (ModelState.IsValid)
-        {
-            _dbContext.Categories.Add(new Category { Name = c.Name });
-            _dbContext.SaveChanges();
-            return StatusCode(201);
-        }
-        else return StatusCode(500);
+        return _categoryService.GetAllCategories();
+    }
+    
+    [HttpPost("add")]
+    public async Task<StatusCodeResult> Insert(Category category)
+    {
+        return (await _categoryService.Insert(category)) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPost("Update")]
-    public StatusCodeResult Update([Bind("Name")] Category c, int id)
+    [HttpPut("update")]
+    public async Task<StatusCodeResult> Update(Category category)
     {
-        var category = _dbContext.Categories.FirstOrDefault(c => c.Id == id);
-        if (category != null && ModelState.IsValid)
-        {
-            category.Name = c.Name;
-            _dbContext.SaveChanges();
-            return StatusCode(201);
-        }
-        else return StatusCode(500);
+        return (await _categoryService.Update(category)) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPost("Delete")]
-    public StatusCodeResult Delete(int id)
+    [HttpPut("lock")]
+    public async Task<StatusCodeResult> Lock(int id)
     {
-        var category = _dbContext.Categories.FirstOrDefault(c => c.Id == id);
-        if (category != null)
-        {
-            category.IsActive = !category.IsActive;
-            _dbContext.SaveChanges();
-            return StatusCode(201);
-        }
-        else return StatusCode(500);
+        return (await _categoryService.Lock(id)) ? StatusCode(200) : StatusCode(404);
+    }
+
+    [HttpPut("unlock")]
+    public async Task<StatusCodeResult> Unlock(int id)
+    {
+        return (await _categoryService.Unlock(id)) ? StatusCode(200) : StatusCode(404);
     }
 }

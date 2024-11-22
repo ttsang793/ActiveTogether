@@ -33,9 +33,9 @@ import AWider from './Admin/Shared/Wider'
 //import AProductDetail from './Admin/Pages/ProductDetail';
 import ACategory from "./Admin/Pages/Category"
 import ABrand from './Admin/Pages/Brand'
-/*import ASport from './Admin/Pages/Sport'
-import AReview from "./Admin/Pages/Review"
-import AImport from './Admin/Pages/Import'
+import ASport from './Admin/Pages/Sport'
+import AColor from "./Admin/Pages/Color"
+/*import AImport from './Admin/Pages/Import'
 import AImportDetail from './Admin/Pages/ImportDetail';
 import AOrder from './Admin/Pages/Order'
 import ARefund from './Admin/Pages/Refund';
@@ -140,13 +140,14 @@ function RenderMain() {
             
             <Route path="/admin/loai-san-pham" element={<ACategory />} />
             <Route path="/admin/thuong-hieu" element={<ABrand />} />
+            <Route path="/admin/the-thao" element={<ASport />} />
+            <Route path="/admin/mau-sac" element={<AColor />} />
             {
             //<Route path="/admin/san-pham" element={<AProduct />} />
             //<Route path="/admin/thong-tin-san-pham" element={<AProductDetail />} />
 
             /*
-            <Route path="/admin/the-thao" element={<ASport />} />
-            <Route path="/admin/review" element={<AReview />} />
+            
             <Route path="/admin/nhap-kho" element={<AImport />} />
             <Route path="/admin/thong-tin-nhap-kho" element={<AImportDetail />} />
             <Route path="/admin/don-hang" element={<AOrder />} />

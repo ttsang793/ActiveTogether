@@ -11,6 +11,8 @@ public interface IUserService
 
     User GetUserByUsername(string username);
 
+    int GetUserIdByUsername(string username);
+
     Task<bool> UpdateInfo(UserUpdateInfoDTO user, string username);
 
     Task<bool> UpdatePassword(UserUpdateDTO user, string username);

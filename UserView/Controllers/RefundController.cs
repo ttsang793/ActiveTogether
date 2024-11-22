@@ -2,6 +2,8 @@ using Application.Interface;
 using Core.DTO;
 using Microsoft.AspNetCore.Mvc;
 
+namespace UserView.Controllers;
+
 [Route("[controller]")]
 [ApiController]
 public class RefundController : ControllerBase

@@ -3,7 +3,7 @@ using Core.DTO;
 using Core.Entity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Orderservices.Controllers;
+namespace UserView.Controllers;
 
 [Route("[controller]")]
 [ApiController]

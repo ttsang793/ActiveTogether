@@ -41,6 +41,12 @@ public class ProductController : ControllerBase
         return _productDetailService.GetProductImages(urlName);
     }
 
+    [HttpGet("filter")]
+    public List<FilterDTO> GetAllFilter()
+    {
+        return _productService.GetAllFilter();
+    }
+
     [HttpGet("review/get")]
     public IEnumerable<ProductReviewReadDTO> GetAllReviewByUrl(string urlName)
     {

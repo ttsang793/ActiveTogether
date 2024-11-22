@@ -24,7 +24,7 @@ public class BaseRepository<T> where T : BaseEntity
         return _dbContext.Set<T>();
     }
 
-    public virtual async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression = null)
+    public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression = null)
     {
         if (expression == null) return await GetDbSet().ToListAsync();
         else return await GetDbSet().Where(expression).ToListAsync();
