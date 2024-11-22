@@ -1,0 +1,42 @@
+.review {
+  padding: 6px 18px;
+  flex: 1 1 0;
+  background-color: var(--lighterer);
+  box-shadow: -3px -3px 10px var(--shadow);
+  min-width: 350px;
+
+  .review-header {
+    display: flex;
+    column-gap: 10px;
+
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50px;
+    }
+
+    .review-header-name {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .review-sku {
+      font-size: 14px;
+      font-weight: 200px;
+      font-style: italic;
+    }
+  }
+
+  @media (max-width: 350px) {
+    .review-header-name {
+      display: inline-block!important;
+    }    
+  }
+
+  @media (max-width: 699px) {
+    & {
+      min-width: 0px;
+      width: 100%;
+    }
+  }
+}

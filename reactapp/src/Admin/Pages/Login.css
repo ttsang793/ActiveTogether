@@ -1,4 +1,36 @@
 .admin-login-main {
-  display: grid;
-  place-items: center;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(225deg, var(--mid-dark), var(--darkest));
+  color: var(--lightest);
+  height: 100vh;
+  width: 100vw;
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    width: 500px;
+    padding: 40px 20px;
+
+    background-color: var(--white);
+    box-shadow: -10px -10px 10px var(--shadow), 10px 10px 10px var(--shadow);
+  }
+
+  @media (max-width: 499px) {
+    & {
+      background: var(--white);
+      color: var(--darker);
+
+      .login-form {
+        box-shadow: none;
+        width: 100%;
+      }
+    }
+  }
 }

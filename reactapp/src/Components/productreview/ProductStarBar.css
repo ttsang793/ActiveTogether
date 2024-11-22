@@ -1,0 +1,12 @@
+.line {
+  border-radius: 4px;
+  height: 8px;
+  background-color: var(--light-gray);
+  flex: 1 1 0;
+}
+
+.display-line {
+  border-radius: 4px;
+  height: 8px;
+  background-color: var(--mid-light);
+}

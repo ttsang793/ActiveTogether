@@ -1,0 +1,43 @@
+.order-container {
+  column-gap: 20px;
+
+  select {
+    padding: 0.5rem 15px;
+    border-radius: 25px;
+    border: none;
+    background: var(--lightest);
+    font-size: 20px;
+    width: 100%;
+    cursor: pointer;
+    transition-duration: 0.5s;
+    font-size: 18px;
+    color: var(--darker);
+
+    &:focus {
+      outline: none;
+      cursor: initial;
+    }
+  }
+
+  .item-list {
+    flex: 1 1 0;
+    
+    img {
+      width: 10dvw;
+      height: 100%;
+      aspect-ratio: 1/1;
+      margin-right: 10px;
+    }
+
+    .item-detail > * {
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+  }
+
+  @media (max-width: 699px) {
+    & {
+      flex-direction: column;
+    }
+  }
+}

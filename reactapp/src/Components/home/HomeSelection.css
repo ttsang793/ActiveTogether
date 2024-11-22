@@ -1,0 +1,51 @@
+.home-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition-duration: 0.3s;
+  background-color: transparent;
+  margin: 25px;
+  transition-duration: 0.3s;
+  border-radius: 25px;
+
+  .radius {
+    border-radius: 50%;
+  }
+
+  img {
+    max-height: 100px;
+    height: 100%;
+    transition-duration: 0.3s;
+  }
+
+  span {
+    color: var(--white)!important;
+    font-size: 1.5rem;
+    transition-duration: 0.3s;  
+  }
+
+  &:hover {
+    background-color: var(--white-tran);
+    margin: 0px;
+    padding: 25px;
+    
+    img {
+      scale: 1.2;
+    }
+
+    span {
+      transform: translate(0, 15px);      
+      text-shadow: 2px 2px 1px var(--white-tran);
+    }    
+
+    ~:not(:hover) {
+      filter: brightness(50%) grayscale(100%);
+      scale: 0.8;
+    }
+  }
+
+  &:has(~:hover) {
+    filter: brightness(50%) grayscale(100%);
+    scale: 0.8;
+  }
+}

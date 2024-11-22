@@ -1,0 +1,75 @@
+.form-input-container {
+  position: relative;
+  margin-top: 2rem;
+  margin-bottom: 10px;
+  width: 100%;
+  
+  i {
+    position: absolute;
+    font-size: 26px;
+    color: var(--darkest);
+  }
+
+  .form-input {
+    padding-left: 50px;
+    padding-right: 15px;
+    border-radius: 25px;
+    border: none;
+    background: var(--lightest);
+    font-size: 20px;
+    width: 100%;
+    cursor: pointer;
+    transition-duration: 0.5s;
+    color: var(--darker);
+
+    &:focus {
+      outline: none;
+      cursor: initial;
+    }
+  }
+
+  .symbol {
+    left: 10px;
+  }
+  
+  .password-input {
+    padding-right: 50px;
+  }
+  
+  .password-eye {
+    right: 10px;
+    cursor: pointer;
+    transition-duration: 0.25s;
+  }
+  
+  .password-eye:hover {
+    color: var(--darker);
+  }
+  
+  .form-placeholder {
+    position: absolute;
+    left: 42px;
+    font-size: 18px;
+    color: var(--darker);
+    transition-duration: 0.5s;
+    cursor: pointer;
+  }
+  
+  .readonly {
+    pointer-events: none;
+  }
+  
+  .up-placeholder {
+    color: var(--darkest);
+    font-size: 14px;
+    transform: translate(-42px, -40px);
+    font-weight: bold;
+  }
+  
+  .down-placeholder {
+    color: var(--darker);
+    font-size: 18px;
+    transform: translate(0, 0);
+    font-weight: initial;
+  }
+}

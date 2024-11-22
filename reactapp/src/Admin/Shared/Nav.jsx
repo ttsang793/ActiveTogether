@@ -8,6 +8,7 @@ export default function Nav() {
       </div>
 
       <ul className="nav-list">
+        <a href="/admin/thong-ke" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Trang chủ</li></a>
         <a href="/admin/san-pham" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Sản phẩm</li></a>
         <a href="/admin/loai-san-pham" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Loại sản phẩm</li></a>
         <a href="/admin/thuong-hieu" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Thương hiệu</li></a>
@@ -19,7 +20,6 @@ export default function Nav() {
         <a href="/admin/giam-gia" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Chương trình giảm giá</li></a>
         <a href="/admin/bai-blog" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Bài blog</li></a>
         <a href="/admin/phan-quyen" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Phân quyền</li></a>
-        <a href="/admin/thong-ke" className="nav-link"><li className="nav py-2 ps-2 pe-4 mb-1">Thống kê</li></a>
       </ul>
     </nav>
   )

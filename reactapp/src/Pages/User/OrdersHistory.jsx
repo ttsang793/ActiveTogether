@@ -1,12 +1,13 @@
-import { DisplayPrice, DisplayDate } from "/src/Components/Utility"
+import { DisplayPrice, DisplayDate } from "/src/Scripts/Utility"
 import { Component } from "react"
 import "./OrdersHistory.css";
-import OrderRow from "/src/Components/OrderRow";
+import OrderRow from "/src/Components/product/OrderRow";
+import PleaseWait from "/src/Shared/PleaseWait";
 
 export default class OrdersHistory extends Component {
   constructor(props) {
     super(props);
-    this.state = { orders: [], orderDetails: [] }
+    this.state = { loading: true, orders: [], orderDetails: [] }
   }
 
   componentDidMount() {
@@ -26,34 +27,35 @@ export default class OrdersHistory extends Component {
     }
   }
 
+  displayStatus(status) {
+    switch (status) {
+      case -1: case '-1': return "Đã hủy đơn"
+      case 0: case '0': return "Chưa xác thực"
+      case 1: case '1': return "Đã xác thực"
+      case 2: case '2': return "Đang vận chuyển"
+      case 3: case '3': return "Đã nhận hàng"
+      case 4: case '4': return "Có sản phẩm bị trả đơn"
+    }
+  }
+
   renderOrderList() {
     return (
-      <main>
-        <h1 className="flex-grow-1 text-center fw-bold">ĐƠN HÀNG CỦA BẠN</h1>
+      <main className="user-main">
+        <h1 className="text-center fw-bold">ĐƠN HÀNG CỦA BẠN</h1>
         <hr />
 
-        <table className="text-center table table-bordered cart-table table-hover">
-          <thead>
-            <tr>
-              <th width="10%">Hình ảnh</th>
-              <th width="53%">Tên sản phẩm</th>
-              <th width="10%">Số lượng</th>
-              <th width="15%">Giá</th>
-              <th width="12%"></th>
-            </tr>
-          </thead>
-
+        <table className="table table-bordered cart-table table-hover">
           <tbody>
             {
               this.state.orders.map(or => {
                 return (
                   <React.Fragment key={or.id}>
                     <tr className="header-order pointer" onClick={e => this.handleTidy(e, or.id)}>
-                      <td colSpan={3}>ĐƠN HÀNG {or.id} - {DisplayDate(or.datePurchased)} (Trạng thái: {or.status})</td>
-                      <td>{DisplayPrice(or.total)}</td>
-                      <td>
-                        { or.status === 0 && <button className="btn btn-danger" onClick={() => this.cancelOrder(or.id)}>Hủy đơn hàng</button> }
-                        { or.status === 2 && <button className="btn btn-success" onClick={() => this.receiveOrder(or.id)}>Đã nhận hàng</button> }
+                      <td>ĐƠN HÀNG {or.id} - {DisplayDate(or.datePurchased)} (Trạng thái: {this.displayStatus(or.status)})</td>
+                      <td className="text-center">{DisplayPrice(or.total)}</td>
+                      <td className="return-btn-group">
+                        { or.status === 0 && <button className="btn btn-danger" onClick={() => this.cancelOrder(or.id)}>Hủy đơn</button> }
+                        { or.status === 2 && <button className="btn btn-success" onClick={() => this.receiveOrder(or.id)}>Nhận hàng</button> }
                       </td>
                     </tr>
                     {
@@ -70,11 +72,7 @@ export default class OrdersHistory extends Component {
   }
 
   render() {
-    return (
-      <>
-        {this.renderOrderList()}
-      </>
-    )
+    return this.state.loading ? <PleaseWait /> : this.renderOrderList();
   }
 
   async fetchOrderDetails() {
@@ -85,7 +83,7 @@ export default class OrdersHistory extends Component {
 
 
     fetch(`/order/getDetails?username=${username}`).then(response => response.json()).then(data => {
-      this.setState({ orderDetails: data });
+      this.setState({ loading: false, orderDetails: data });
     })
   }
 

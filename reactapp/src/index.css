@@ -1,52 +1,106 @@
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("/src/fonts/IBMPlexSans.ttf");
+}
+
 :root {
   --darkest: #4d1e00;
   --darker: #843400;
   --mid-dark: #d25900;
-  --mid-light: #ff7d1e;
-  --lighter: #ffc194;
-  --lightest: #fff0e5;
+  --mid-light: #ff9245;
+  --light: #faae78;
+  --lighter: #ffe0ca;
+  --lighterer: #fff0e5;
+  --lightest: #fdf6f0;
+  --gray: #7f7f7f;
   --light-gray: #e1e1e1;
+  --black: #464646;
   --white: #ffffff;
   --white-tran: #ffffff4d;
+  --shadow: rgba(0,0,0,0.3);
+  --dark-shadow: rgba(0,0,0,0.65);
+}
 
-  user-select: none;
+#root {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100dvh;
 }
 
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  min-height: 100dvh;
+  height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
-.text-justify {
-  text-align: justify;
-}
-
-.pointer {
-  cursor: pointer;
-}
-
-main {
-  margin: 30px 5%;
+  user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'IBM Plex Sans', serif!important;
+  color: var(--black)!important;
 }
 
 .home-main {
   margin: 0;
 }
 
+.user-main-container {
+  background-color: var(--lightest);
+  padding: 1% 0;
+  flex: 1 1 0;
+  place-content: center;
+}
+
+.user-main {
+  margin: 3% 4%;
+  padding: 40px;
+  box-shadow: -10px -10px 10px var(--shadow), 10px 10px 10px var(--shadow);
+  background-color: var(--white);
+}
+
+.admin-main-container {
+  padding: 1% 2%;
+  padding-left: 215px;
+}
+
+@media (max-width: 500px) {
+  .user-main {
+    padding: 40px 20px;
+  }
+
+  .user-main-container {
+    flex: initial;
+  }
+}
+
+@media (max-width: 850px) {
+  .user-main-container {
+    padding: 0;
+  }
+
+  .user-main {
+    box-shadow: none;
+    margin: 0;
+  }
+}
+
+
+/* Cài đặt mặc định */
 input:focus {
   outline: none;
 }
 
 a {
   text-decoration: none!important;
+}
+
+
+/* Các class chung */
+.text-justify {
+  text-align: justify;
+}
+
+.pointer {
+  cursor: pointer!important;
 }
 
 .small-at-btn, .at-btn, .small-at-btn-secondary, .at-sbtn, .at-sbtn-secondary {
@@ -102,6 +156,18 @@ a {
   width: 10%;
 }
 
+.flex-1 {
+  flex: 1 1 0;
+}
+
 .disabled {
-  display: disabled;
+  display: none;
+}
+
+.error-value {
+  margin-top: 0.5rem;
+  color: red;
+  font-style: italic;
+  font-size: 16px;
+  text-align: left;
 }

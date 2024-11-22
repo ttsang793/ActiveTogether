@@ -1,0 +1,22 @@
+#change-address-form {
+  .type {
+    min-width: 100px;
+    width: 100%;
+  }
+
+  th, td {
+    vertical-align: middle;
+  }
+
+  .bi {
+    font-size: 20px;
+    transition-duration: 0.15s;
+    cursor: pointer;
+    padding: 0 5px;
+
+    &:hover {
+      background-color: var(--darkest);
+      color: var(--white);
+    }
+  }
+} 

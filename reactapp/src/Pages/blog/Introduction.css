@@ -1,0 +1,98 @@
+.intro-article {
+  h2 {
+    margin-top: 0;
+  }
+
+  .intro-paragraph {
+    padding: 3rem 0;
+  
+    h2 {
+      font-family: "Playwrite BR", 'Segoe UI', 'san-serif';
+      margin-bottom: 20px;
+    }
+  
+    q {
+      font-weight: bold;
+      font-style: italic;
+    }
+  
+    .sponsor {
+      display: grid;
+      grid-template-columns: auto auto auto;
+      justify-content: center;
+    }
+    
+    .sponsor img {
+      max-width: 200px;
+      width: 100%;
+      cursor: pointer;
+      transition-duration: 0.5s;
+    }
+    
+    .sponsor img:hover {
+      scale: 1.1;
+    }
+    
+    .intro-img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+    }
+    
+    .intro-goal {
+      list-style-type: none;
+      padding-left: 0px;
+    }
+    
+    .intro-goal li {
+      line-height: 2.5rem;
+    }
+    
+    .quote {
+      font-size: 2rem;
+      line-height: 4rem;
+      font-style: italic;
+    }
+    
+    .quote-author {
+      font-size: 1.6rem;
+      line-height: 3.2rem;
+    }
+  }  
+  
+  .quotes {
+    display: flex;
+    column-gap: 20px;
+    
+    & > div {
+      flex: 1 1 0;
+    }
+  }
+
+  & > .intro-paragraph:last-child {
+    padding: 0;
+  }
+
+  @media (max-width: 850px) {
+    .col-3 {
+      display: none!important;
+    }
+
+    .quotes {
+      display: flex;
+      flex-direction: column;
+      row-gap: 50px;
+    } 
+    
+    .quote {
+      font-size: 1.5rem;
+      line-height: 3rem;
+      font-style: italic;
+    }
+    
+    .quote-author {
+      font-size: 1.2rem;
+      line-height: 2.4rem;
+    }
+  }
+}

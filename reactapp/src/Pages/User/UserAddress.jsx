@@ -1,4 +1,6 @@
 import { Component } from "react";
+import PleaseWait from "/src/Shared/PleaseWait";
+import "./UserAddress.css";
 
 export default class UserAddress extends Component {
   static displayName = UserAddress.name;
@@ -69,15 +71,15 @@ export default class UserAddress extends Component {
           <input type="text" className="form-control address" onChange={e => this.handleAddressChange(e, i)} value={a.address} />
         </td>
         <td>
-          <button className="btn btn-danger" onClick={e => this.deleteAddressInput(e,i)}>Xóa</button>
+          <i className="bi bi-x" onClick={e => this.deleteAddressInput(e,i)}></i>
         </td>
       </tr>
     )
   }
 
   render() {
-    return this.state.loading ? "Please wait..." : (
-      <main>
+    return this.state.loading ? <PleaseWait /> : (
+      <main className="user-main">
         <h1 className="flex-grow-1 text-center fw-bold">ĐỊA CHỈ CỦA NGƯỜI DÙNG</h1>
         <hr />
         <form className="text-center" id="change-address-form">

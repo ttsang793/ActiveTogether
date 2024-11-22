@@ -1,0 +1,23 @@
+.wider {
+  display: none;
+
+  @media (max-width: 639px) or (max-height: 479px) {
+    & {
+      display: flex;
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+
+      background: linear-gradient(225deg, var(--mid-dark), var(--darkest));
+
+      * {
+        color: var(--lightest);
+        font-size: 5vw;
+      }
+    }
+  }
+}

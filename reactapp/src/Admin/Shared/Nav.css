@@ -1,40 +1,37 @@
-.nav-logo {
-  max-width: 150px;
-  width: 100%
-}
 
 .nav-buttons {
-  background-color: var(--lightest);
+  background: linear-gradient(225deg, var(--lighter), var(--light));
   position: fixed;
   top: 0;
   bottom: 0;
-}
+  overflow-y: auto;
 
-ul.nav-list {
-  padding-left: 0;
-}
-
-li.nav {
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-li.nav:hover {
-  background-color: var(--lighter);
-}
-
-a.nav-link {
-  color: black;
-}
-
-a.nav-link:hover {
-  text-decoration: underline!important;
-}
-
-.admin-main {
-  min-height: 100vh;
-
-  main {
-    margin-left: calc(185px + 5%);
+  .nav-logo {
+    max-width: 150px;
+    width: 100%
   }
+
+  ul.nav-list {
+    padding-left: 0;
+  }
+  
+  li.nav {
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  
+  li.nav:hover {
+    background-color: var(--mid-dark);
+    color: var(--white);
+    text-decoration: underline solid var(--white);
+  }
+  
+  a.nav-link {
+    color: black;
+  }
+  
+  a.nav-link:hover {
+    text-decoration: underline!important;
+  }  
 }
+

@@ -1,0 +1,13 @@
+.item-td {
+  img {
+    width: 10dvw;
+    height: 100%;
+    aspect-ratio: 1/1;
+    margin-right: 10px;
+  }
+
+  .item-detail > * {
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+}

@@ -1,0 +1,57 @@
+.order-tab {
+  & > select {
+    padding-right: 10px;
+  }
+
+  @media (max-width: 799px) {
+    & {
+      display: inline-block;
+
+      & > * {
+        margin-bottom: 0.25rem;
+      }
+    }
+  }
+
+  @media (min-width: 800px) {
+    & {
+      display: flex;
+      column-gap: 20px;
+    }
+  }
+}
+
+.product-list {
+  display: grid;
+  gap: 20px;
+
+  @media (max-width: 549px) {
+    & {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: 550px) and (max-width: 749px) {
+    & {
+      grid-template-columns: 1fr 1fr;
+    }    
+  }
+
+  @media (min-width: 751px) and (max-width: 999px) {
+    & {
+      grid-template-columns: 1fr 1fr 1fr;
+    }    
+  }
+
+  @media (min-width: 1000px) and (max-width: 1239px) {
+    & {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+    }    
+  }
+
+  @media (min-width: 1240px) {
+    & {
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    }    
+  }
+}

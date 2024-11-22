@@ -1,0 +1,48 @@
+.add-to-cart {
+  .minus, .plus, .cart, .quantity, .buy-now {
+    border: none;
+    cursor: pointer;
+    transition-duration: 0.15s;
+    font-size: 18px;
+    outline: none;
+  }
+  
+  
+  .quantity {
+    width: 48px;
+    height: 36px;
+    text-align: center;
+  }
+  
+  .minus, .plus {
+    width: 36px;
+    height: 36px;
+    background-color: var(--lighterer);
+
+    &:hover {
+      background-color: var(--lighter);
+    }
+  }
+  
+  .cart {
+    background-color: var(--light);
+
+    &:hover {
+      background-color: var(--mid-light);
+    }
+  }
+
+  .text .cart {
+    padding: 6px 18px;
+  }
+
+  .buy-now {
+    padding: 6px 18px;
+    background-color: var(--mid-dark);
+    color: var(--lightest);
+
+    &:hover {
+      background-color: var(--darker)
+    }
+  }
+}

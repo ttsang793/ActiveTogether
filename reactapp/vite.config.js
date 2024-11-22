@@ -35,7 +35,7 @@ export default defineConfig({
                 target: 'https://localhost:7126/',
                 secure: false
             },
-            '^/productdetail/*': {
+            '^/product/*': {
                 target: 'https://localhost:7126/',
                 secure: false
             },

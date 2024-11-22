@@ -1,7 +1,7 @@
-import "/src/Pages/Login.css";
+import "/src/Pages/user/Login.css";
 import { useState } from 'react';
-import { Encode } from "/src/Components/Utility";
-import FormTextBox from "/src/Components/FormTextBox";
+import { Encode } from "/src/Scripts/Utility";
+import FormTextBox from "/src/Components/shared/FormTextBox";
 
 export default function ChangePassword() {
   let [oldPass, setOldPass] = useState("");
@@ -14,7 +14,7 @@ export default function ChangePassword() {
 
   async function update(e) {
     e.preventDefault();
-    if (confirm("Bạn có muốn cập nhật thông tin tài khoản?")) {
+    if (confirm("Bạn có muốn cập nhật mật khẩu?")) {
       const username = localStorage.getItem("userLogin");
       const response = await fetch(`/user/update?username=${username}`, {
         method: "POST",
@@ -31,17 +31,16 @@ export default function ChangePassword() {
   }
 
   return (
-    <main>
+    <main className="login-main">
       <h1 className="flex-grow-1 text-center fw-bold">ĐỔI MẬT KHẨU</h1>
       <hr />
-      <div className="login-form" id="change-password-form">
-
-        <FormTextBox type="oldPassword" placeholder="Nhập mật khẩu cũ" icon="bi-lock-fill" onValueChange={handleOldPass} />
-        <FormTextBox type="newPassword" placeholder="Nhập mật khẩu mới" icon="bi-lock-fill" onValueChange={handleNewPass} />
-        <FormTextBox type="vertifiedPassword" placeholder="Xác nhận mật khẩu mới" icon="bi-lock-fill" onValueChange={handleConPass} />
+      <form className="login-form" id="change-password-form">
+        <FormTextBox type="oldPassword" placeholder="Mật khẩu cũ" icon="bi-lock-fill" onValueChange={handleOldPass} />
+        <FormTextBox type="newPassword" placeholder="Mật khẩu mới" icon="bi-lock-fill" onValueChange={handleNewPass} />
+        <FormTextBox type="vertifiedPassword" placeholder="Xác nhận mật khẩu" icon="bi-lock-fill" onValueChange={handleConPass} />
 
         <input type="submit" value="Thay đổi mật khẩu" className="at-btn m-at-btn" onClick={e => update(e)} />
-      </div>
+      </form>
     </main>
   )
 }

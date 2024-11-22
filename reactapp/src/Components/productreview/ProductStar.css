@@ -1,0 +1,9 @@
+.star-one {
+  color: var(--mid-light);
+}
+
+.star-half {
+  background: linear-gradient(to right, var(--mid-light) 60%, black 60%);
+  background-clip: text;
+  color: transparent;
+}
