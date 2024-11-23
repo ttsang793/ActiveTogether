@@ -14,6 +14,16 @@ public class OrderService : IOrderService
         _unitOfWork = unitOfWork;
     }
     
+    public IEnumerable<OrderAdminDTO> GetAllOrders()
+    {
+        return _unitOfWork.Orders.GetAllOrders();
+    }
+
+    public IEnumerable<BillDetailAdminDTO> GetAllOrderDetails()
+    {
+        return _unitOfWork.Orders.GetAllOrderDetails();
+    }
+
     public IEnumerable<Order> GetOrdersByUsername(string username)
     {
         return _unitOfWork.Orders.GetOrdersByUsername(username);
@@ -41,8 +51,6 @@ public class OrderService : IOrderService
         order.Point = (int)(order.UserId > 0 ? o.Total / 10000 : 0);
 
         int id = _unitOfWork.Orders.AddOrder(order);
-        if (order.UserId > 0)
-            _unitOfWork.Users.GainPoint(order.UserId, order.Point);
 
         foreach (var odDTO in o.OrderDetails)
         {
@@ -53,11 +61,7 @@ public class OrderService : IOrderService
                 Price = odDTO.Price,
                 Quantity = odDTO.Quantity
             };
-            bool valid = _unitOfWork.ProductDetails.CheckChangeQuantity(od.Sku, (int)(od.Quantity * -1));
-            if (!valid) return false;
-
             _unitOfWork.Orders.AddOrderDetail(od);
-            _unitOfWork.ProductDetails.ChangeQuantity(od.Sku, (int)(od.Quantity * -1));
             _unitOfWork.Carts.Delete((int)(order.UserId), od.Sku);
         }
         return await _unitOfWork.SaveChangesAsync();
@@ -72,6 +76,27 @@ public class OrderService : IOrderService
     public async Task<bool> ReceiveOrder(int id)
     {
         _unitOfWork.Orders.ReceiveOrder(id);
+
+        var order = _unitOfWork.Orders.GetOrderById(id);
+        if (order.UserId > 0)
+            _unitOfWork.Users.GainPoint(order.UserId, order.Point);
+
+        var orderDetails = _unitOfWork.Orders.GetOrderDetailsById(id);
+
+        foreach (var od in orderDetails)
+        {
+            bool valid = _unitOfWork.ProductDetails.CheckChangeQuantity(od.Sku, (int)(od.Quantity * -1));
+            if (!valid) return false;
+
+            _unitOfWork.ProductDetails.ChangeQuantity(od.Sku, (int)(od.Quantity * -1));
+        }
+
+        return await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<bool> ChangeStatus(OrderVertifyDTO o)
+    {
+        _unitOfWork.Orders.ChangeStatus(o);
         return await _unitOfWork.SaveChangesAsync();
     }
 }

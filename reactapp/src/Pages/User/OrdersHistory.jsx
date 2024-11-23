@@ -16,7 +16,6 @@ export default class OrdersHistory extends Component {
 
   handleTidy(e, id) {
     e.preventDefault();
-    console.log(e);
     if (e.target.classList.contains("tidy")) {
       document.querySelectorAll(`.order-${id}`).forEach(o => o.classList.remove("disabled"))
       e.target.classList.remove("tidy")
@@ -33,8 +32,8 @@ export default class OrdersHistory extends Component {
       case 0: case '0': return "Chưa xác thực"
       case 1: case '1': return "Đã xác thực"
       case 2: case '2': return "Đang vận chuyển"
-      case 3: case '3': return "Đã nhận hàng"
-      case 4: case '4': return "Có sản phẩm bị trả đơn"
+      case 3: case '3': return "Đã giao hàng"
+      case 4: case '4': return "Đã nhận hàng"
     }
   }
 
@@ -54,8 +53,8 @@ export default class OrdersHistory extends Component {
                       <td>ĐƠN HÀNG {or.id} - {DisplayDate(or.datePurchased)} (Trạng thái: {this.displayStatus(or.status)})</td>
                       <td className="text-center">{DisplayPrice(or.total)}</td>
                       <td className="return-btn-group">
-                        { or.status === 0 && <button className="btn btn-danger" onClick={() => this.cancelOrder(or.id)}>Hủy đơn</button> }
-                        { or.status === 2 && <button className="btn btn-success" onClick={() => this.receiveOrder(or.id)}>Nhận hàng</button> }
+                        { (or.status === 0 || or.status === 1) && <button className="btn btn-danger" onClick={() => this.cancelOrder(or.id)}>Hủy đơn</button> }
+                        { or.status === 3 && <button className="btn btn-success" onClick={() => this.receiveOrder(or.id)}>Nhận hàng</button> }
                       </td>
                     </tr>
                     {
@@ -90,7 +89,7 @@ export default class OrdersHistory extends Component {
   async cancelOrder(id) {
     if (confirm("Bạn có chắc chắn muốn hủy đơn hàng này? Một khi hủy thì không thể phục hồi.")) {
       const response = await fetch(`/order/cancel?id=${id}`, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
@@ -106,7 +105,7 @@ export default class OrdersHistory extends Component {
   async receiveOrder(id) {
     if (confirm("Bạn chắc chắn đã nhận các sản phẩm đơn hàng này?")) {
       const response = await fetch(`/order/receive?id=${id}`, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'

@@ -2,18 +2,20 @@ using Core.Interface;
 using Core.Entity;
 using Infrastructure.Data;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Repository;
 public class SportRepository : BaseRepository<Sport>, ISportRepository
 {
+    private readonly string _uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "..\\reactapp\\src\\Images\\sport");
     public SportRepository(AtWebContext dbContext) : base(dbContext)
     {
     }
 
     public IEnumerable<Sport> GetAllSports(Expression<Func<Sport, bool>> expression = null)
     {
-      if (expression == null) return GetDbSet().ToList();
-      else return GetDbSet().Where(expression).ToList();
+        if (expression == null) return GetDbSet().ToList();
+        else return GetDbSet().Where(expression).ToList();
     }
 
     private Sport GetById(int id)
@@ -23,11 +25,14 @@ public class SportRepository : BaseRepository<Sport>, ISportRepository
 
     public void Insert(Sport sport)
     {
+        sport.Id = GetDbSet().OrderByDescending(s => s.Id).First().Id + 1;
+        sport.IsActive = true;
         GetDbSet().Add(sport);
     }
 
     public void Update(Sport sport)
     {
+        sport.IsActive = true;
         GetDbSet().Update(sport);
     }
 
@@ -41,5 +46,23 @@ public class SportRepository : BaseRepository<Sport>, ISportRepository
     {
         var sport = GetById(id);
         sport.IsActive = true;
+    }
+
+    public async Task<bool> UploadImage(IFormFile file, string name)
+    {
+        try
+        {
+            var fileName = name + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(_uploadDirectory, fileName);
+
+            using var stream = new FileStream(filePath, FileMode.Create);
+            await file.CopyToAsync(stream);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

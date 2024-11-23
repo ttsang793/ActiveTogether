@@ -6,9 +6,7 @@ public interface IColorService
 {
     IEnumerable<Color> GetAllColors();
 
-    Task<bool> Insert(Color color);
-
-    Task<bool> Update(Color color);
+    Task<sbyte> Save(Color color);
 
     Task<bool> Lock(string code);
 

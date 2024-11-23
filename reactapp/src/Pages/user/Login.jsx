@@ -62,7 +62,7 @@ export default function Login() {
         console.log(data);
         localStorage.setItem("userLogin", usernameLG);
         localStorage.setItem("userAvatar", data);
-        //location.href = "/";
+        location.href = "/";
       })
     }
     else if (response.status === 404) handleUsernameLGError("Tài khoản không tồn tại. Vui lòng kiểm tra lại.");

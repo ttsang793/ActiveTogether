@@ -35,7 +35,6 @@ public class UnitOfWork : IUnitOfWork
     public IProductReviewRepository ProductReviews => _productReviewRepository ??= new ProductReviewRepository(_dbContext);
     public IRefundRepository Refunds => _refundRepository ??= new RefundRepository(_dbContext);
     public ISportRepository Sports => _sportRepository ??= new SportRepository(_dbContext);
-
     public IUserAddressRepository UserAddresses => _userAddressRepository ??= new UserAddressRepository(_dbContext);
     public IUserRepository Users => _userRepository ??= new UserRepository(_dbContext);
 

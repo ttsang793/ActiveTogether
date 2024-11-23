@@ -17,9 +17,9 @@ public class ColorRepository : BaseRepository<Color>, IColorRepository
     }
 
 
-    private Color GetByColorCode(string code)
+    public Color GetByColorCode(string code)
     {
-        return GetDbSet().First(c => c.Code == code);
+        return GetDbSet().FirstOrDefault(c => c.Code == code);
     }
 
     public void Insert(Color color)

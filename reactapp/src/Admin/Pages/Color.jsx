@@ -6,14 +6,14 @@ export default class AColor extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {color: [], cCode: "", cName: ""}
+    this.state = {color: [], cCode: "#000000", cName: ""}
   }
 
   componentDidMount() { this.populateColorData() }
 
   async saveNewColor(e) {
     e.preventDefault();
-    (this.state.bId !== "") ? updateColor(this.state.bId, this.state.bName) : addColor(this.state.bName);
+    (this.state.cId !== "") ? updateColor(this.state.cId, this.state.cName) : addColor(this.state.cName);
   }
 
   renderTable(colors) {
@@ -27,7 +27,7 @@ export default class AColor extends Component {
               </td>
               <td className="align-middle">{c.name}</td>
               <td>
-                <button className="small-at-btn" onClick={() => deleteColor(c.id, c.isActive)}>{c.isActive? "Khóa" : "Mở khóa"}</button>
+                <button className="small-at-btn" onClick={() => deleteColor(c.code, c.isActive)}>{c.isActive? "Khóa" : "Mở khóa"}</button>
               </td>
             </tr>
           )
@@ -43,10 +43,10 @@ export default class AColor extends Component {
         <hr />
 
         <div className="d-flex c-10">
-          <input type="color" value={this.state.cCode} className="form-control color-picker" />
-          <input type="text" onChange={(e) => this.setState({cName: e.target.value})} value={this.state.cName} className="form-control" placeholder="Tên màu sắc" />
+          <input type="color" value={this.state.cCode} onChange={e => this.setState({cCode: e.target.value})} className="form-control color-picker" />
+          <input type="text" onChange={e => this.setState({cName: e.target.value})} value={this.state.cName} className="form-control" placeholder="Tên màu sắc" />
           
-          <input type="submit" value="Lưu" onClick={e => this.saveNewColor(e)} className="at-btn" />
+          <input type="submit" value="Lưu" onClick={e => addColor(e, this.state.cCode, this.state.cName)} className="at-btn" />
         </div>
 
         <table className="table table-striped table-bordered table-hover pointer mt-3">
@@ -71,26 +71,13 @@ export default class AColor extends Component {
   }
 }
 
-async function addColor(name) {
-  if (confirm("Bạn có chắc chắn thêm màu sắc này?"))  {
-    const response = await fetch("/api/color/add", {
+async function addColor(e, code, name) {
+  e.preventDefault();
+  code = "%23" + code.substring(1).toUpperCase();
+
+  if (confirm("Bạn có chắc chắn lưu màu sắc này?"))  {
+    const response = await fetch("/api/color/save", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-      },
-      body: JSON.stringify({name})
-    })
-
-    if (response.ok) { alert("Thêm màu sắc thành công."); location.reload(); }
-    else alert("Đã có lỗi xảy ra. Thêm màu sắc thất bại.")
-  }
-}
-
-async function updateColor(code, name) {
-  if (confirm("Bạn có chắc chắn cập nhật màu sắc này?"))  {
-    const response = await fetch(`/api/color/update`, {
-      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
@@ -98,12 +85,15 @@ async function updateColor(code, name) {
       body: JSON.stringify({code, name})
     })
 
-    if (response.ok) { alert("Cập nhật màu sắc thành công."); location.reload(); }
-    else alert("Đã có lỗi xảy ra. Cập nhật màu sắc thất bại.")
+    if (response.status == 200) { alert("Thêm màu sắc thành công."); location.reload(); }
+    else if (response.status == 201) { alert("Cập nhật màu sắc thành công."); location.reload(); }
+    else alert("Đã có lỗi xảy ra. Lưu màu sắc thất bại.")
   }
 }
 
 async function deleteColor(code, isActive) {
+  code = "%23" + code.substring(1);
+
   const action = isActive ? "khóa" : "mở khóa"
   if (confirm(`Bạn có chắc chắn ${action} màu sắc này?`)) {
     const url = isActive ? `/api/color/lock?code=${code}` : `/api/color/unlock?code=${code}`;
@@ -117,7 +107,7 @@ async function deleteColor(code, isActive) {
       body: JSON.stringify({code})
     })
 
-    if (response.ok) { alert(`Thương hiệu đã ${action} thành công.`); location.reload(); }
-    else alert(`Đã có lỗi xảy ra. Thương hiệu đã ${action} thất bại.`)
+    if (response.ok) { alert(`Màu sắc đã ${action} thành công.`); location.reload(); }
+    else alert(`Đã có lỗi xảy ra. Mầu sắc đã ${action} thất bại.`)
   }
 }

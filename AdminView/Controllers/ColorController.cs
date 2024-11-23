@@ -22,16 +22,11 @@ public class ColorController : ControllerBase
         return _colorService.GetAllColors();
     }
     
-    [HttpPost("add")]
-    public async Task<StatusCodeResult> Insert(Color color)
+    [HttpPost("save")]
+    public async Task<StatusCodeResult> Save(Color color)
     {
-        return (await _colorService.Insert(color)) ? StatusCode(200) : StatusCode(404);
-    }
-
-    [HttpPut("update")]
-    public async Task<StatusCodeResult> Update(Color color)
-    {
-        return (await _colorService.Update(color)) ? StatusCode(200) : StatusCode(404);
+        sbyte result = await _colorService.Save(color);
+        return (result == 0) ? StatusCode(200) : ((result == 1) ? StatusCode(201) : StatusCode(404));
     }
 
     [HttpPut("lock")]

@@ -9,3 +9,4 @@ D:\SGU\DoAnCode\ActiveTogether\Core\obj\Debug\net7.0\Core.dll
 D:\SGU\DoAnCode\ActiveTogether\Core\obj\Debug\net7.0\refint\Core.dll
 D:\SGU\DoAnCode\ActiveTogether\Core\obj\Debug\net7.0\Core.pdb
 D:\SGU\DoAnCode\ActiveTogether\Core\obj\Debug\net7.0\ref\Core.dll
+D:\SGU\DoAnCode\ActiveTogether\Core\obj\Debug\net7.0\Core.csproj.AssemblyReference.cache

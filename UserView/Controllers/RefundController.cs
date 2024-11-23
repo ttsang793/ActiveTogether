@@ -19,7 +19,7 @@ public class RefundController : ControllerBase
 	
 	[HttpPost("request")]
 
-    public async Task<bool> RequestRefund([Bind("OrderDetailId", "Quantity", "Reason")] RefundRequestDTO refund)
+    public async Task<bool> RequestRefund([Bind("OrderDetailId", "Price", "Quantity", "Reason")] RefundRequestDTO refund)
     {
 		return await _refundService.RequestRefund(refund);
     }

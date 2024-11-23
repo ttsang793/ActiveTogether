@@ -18,16 +18,20 @@ public class ColorService : IColorService
         return _unitOfWork.Colors.GetAllColors();
     }
 
-    public async Task<bool> Insert(Color color)
+    public async Task<sbyte> Save(Color color)
     {
-        _unitOfWork.Colors.Insert(color);
-        return await _unitOfWork.SaveChangesAsync();
-    }
-
-    public async Task<bool> Update(Color color)
-    {
-        _unitOfWork.Colors.Update(color);
-        return await _unitOfWork.SaveChangesAsync();
+        Color c = _unitOfWork.Colors.GetByColorCode(color.Code);
+        Console.WriteLine(c == null);
+        if (c == null)
+        {
+            _unitOfWork.Colors.Insert(color);
+            return (await _unitOfWork.SaveChangesAsync()) ? (sbyte)0 : (sbyte)-1;
+        }
+        else
+        {
+            _unitOfWork.Colors.Update(color);
+            return (await _unitOfWork.SaveChangesAsync()) ? (sbyte)1 : (sbyte)-1;
+        }
     }
 
     public async Task<bool> Lock(string code)

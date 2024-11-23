@@ -36,13 +36,13 @@ public class OrderController : ControllerBase
         return (await _orderService.AddOrder(o)) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPost("cancel")]
+    [HttpPut("cancel")]
     public async Task<StatusCodeResult> CancelOrder(int id)
     {
         return (await _orderService.CancelOrder(id)) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPost("receive")]
+    [HttpPut("receive")]
     public async Task<StatusCodeResult> ReceiveOrder(int id)
     {
         return (await _orderService.ReceiveOrder(id)) ? StatusCode(200) : StatusCode(404);

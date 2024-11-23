@@ -5,6 +5,10 @@ namespace Application.Interface;
 
 public interface IOrderService
 {
+    IEnumerable<OrderAdminDTO> GetAllOrders();
+
+    IEnumerable<BillDetailAdminDTO> GetAllOrderDetails();
+
     IEnumerable<Order> GetOrdersByUsername(string username);
 
     IEnumerable<OrderDetailReadDTO> GetOrderDetailsByUsername(string username);
@@ -14,4 +18,6 @@ public interface IOrderService
     Task<bool> CancelOrder(int id);
 
     Task<bool> ReceiveOrder(int id);
+
+    Task<bool> ChangeStatus(OrderVertifyDTO o);
 }

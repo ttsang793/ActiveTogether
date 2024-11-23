@@ -1,10 +1,10 @@
 ﻿using Core.Entity;
-using Core.DTO;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Http;
 
 namespace Core.Interface;
 
-public interface IRepository<T> where T : BaseDTO
+public interface IRepository<T> where T : BaseEntity
 {
     Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression = null);
 }
@@ -34,7 +34,7 @@ public interface IUnlock
     void Unlock(int id);
 }
 
-public interface IChangeStatus
+public interface IUploadImage
 {
-    void ChangeStatus(int id, int status);
+    Task<bool> UploadImage(IFormFile file, string name);
 }

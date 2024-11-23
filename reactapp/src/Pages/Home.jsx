@@ -140,8 +140,8 @@ export default class Home extends Component {
   }
 
   async populateData() {
-    fetch('/sport/get').then(response => response.json()).then(data => this.setState({ sport: data  }))
+    fetch('/sport/get').then(response => response.json()).then(data => this.setState({ sport: data })).catch()
 
-    fetch('/blog/get/top3').then(response => response.json()).then(data => this.setState({ loading: false, article: data }))
+    fetch('/blog/get/top3').then(response => response.json()).then(data => this.setState({ loading: false, article: data })).catch(this.setState({ loading: false }))
   }
 }

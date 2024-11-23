@@ -5,7 +5,7 @@ import "./OrderRow.css";
 
 export default function OrderRow(props) {  
   const [show, setShow] = useState(false);
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const [reason, setReason] = useState("");
   const handleHide = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -14,18 +14,18 @@ export default function OrderRow(props) {
 
   function renderModal(orderDetailId) {  
     return (
-      <Modal show={show} onHide={handleHide} animation={false} size="lg" centered>
+      <Modal show={show} onHide={handleHide} animation={false} size="xl" centered>
         <Modal.Header closeButton>
           <Modal.Title>Đơn đề nghị đổi trả hàng</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>
-            <input className="form-control" type="number" placeholder="Nhập số lượng hàng cần trả" value={quantity} onChange={handleQuantity} required />
+            <input className="form-control mb-2" type="number" min="1" max={props.orderDetail.quantity} placeholder="Nhập số lượng hàng cần trả" value={quantity} onChange={handleQuantity} required />
             <textarea className="form-control" value={reason} onChange={handleReason} placeholder="Lý do hủy" required></textarea>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button className="small-at-btn" onClick={() => requestRefund(orderDetailId, quantity, reason)}>Đề xuất</button>
+          <button className="small-at-btn" onClick={() => requestRefund(orderDetailId, props.orderDetail.price, quantity, reason)}>Đề xuất</button>
           <button className="small-at-btn-secondary" onClick={handleHide}>Hủy</button>
         </Modal.Footer>
       </Modal>
@@ -34,7 +34,7 @@ export default function OrderRow(props) {
 
   return (
     <>
-      <tr>
+      <tr className={`order-${props.order.id}`}>
         <td className="item-td" colSpan={2}>
           <div className="d-flex" key={props.orderDetail.sku}>
             <img src={props.orderDetail.image} alt={props.orderDetail.name} />
@@ -48,7 +48,7 @@ export default function OrderRow(props) {
           </div>
         </td>
         <td>
-          { props.order.status === 3 && props.orderDetail.refundStatus === null && <button className="btn btn-danger" onClick={handleShow}>Hoàn trả</button> }
+          { props.order.status === 4 && props.orderDetail.refundStatus === null && <button className="btn btn-danger" onClick={handleShow}>Hoàn trả</button> }
         </td>
       </tr>
       
@@ -57,15 +57,15 @@ export default function OrderRow(props) {
   )
 }
 
-async function requestRefund(orderDetailId, quantity, reason) {
-  if (confirm(`Bạn có chắc chắn cập nhật tình trạng đơn hàng này?`)) {
+async function requestRefund(orderDetailId, price, quantity, reason) {
+  if (confirm(`Bạn có muốn đề nghị đổi trả sản phẩm này?`)) {
     const response = await fetch("/refund/request", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json"
       },
-      body: JSON.stringify({orderDetailId, quantity, reason})
+      body: JSON.stringify({orderDetailId, price, quantity, reason})
     })
 
     if (response.ok) { alert("Đơn của bạn đã được đưa cho admin, bạn vui lòng chờ tí xíu nhé!"); location.reload(); }

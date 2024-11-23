@@ -9,6 +9,7 @@ namespace AdminView.Controllers;
 public class SportController : ControllerBase
 {
     private readonly ILogger<SportController> _logger;
+    private static string name = "";
     private readonly ISportService _sportService;
     public SportController(ILogger<SportController> logger, ISportService sportService)
     {
@@ -25,13 +26,21 @@ public class SportController : ControllerBase
     [HttpPost("add")]
     public async Task<StatusCodeResult> Insert(Sport sport)
     {
+        name = sport.Name;
         return (await _sportService.Insert(sport)) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("update")]
     public async Task<StatusCodeResult> Update(Sport sport)
     {
+        name = sport.Name;
         return (await _sportService.Update(sport)) ? StatusCode(200) : StatusCode(404);
+    }
+
+    [HttpPost("image/upload")]
+    public async Task<StatusCodeResult> UploadImage(IFormFile file)
+    {
+        return (await _sportService.UploadImage(file, name)) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("lock")]

@@ -36,10 +36,10 @@ import ABrand from './Admin/Pages/Brand'
 import ASport from './Admin/Pages/Sport'
 import AColor from "./Admin/Pages/Color"
 /*import AImport from './Admin/Pages/Import'
-import AImportDetail from './Admin/Pages/ImportDetail';
+import AImportDetail from './Admin/Pages/ImportDetail';*/
 import AOrder from './Admin/Pages/Order'
 import ARefund from './Admin/Pages/Refund';
-import APromotion from './Admin/Pages/Promotion'
+/*import APromotion from './Admin/Pages/Promotion'
 import APromotionDetail from './Admin/Pages/PromotionDetail';
 import ABlogArticle from "./Admin/Pages/BlogArticle"
 import ABlogArticleDetail from "./Admin/Pages/BlogArticleDetail"
@@ -138,10 +138,14 @@ function RenderMain() {
             <Route path="/admin/home" element={<><AHome /> <PageTitle title="Trang chủ của quản trị viên" /></>} />
 
             
-            <Route path="/admin/loai-san-pham" element={<ACategory />} />
-            <Route path="/admin/thuong-hieu" element={<ABrand />} />
-            <Route path="/admin/the-thao" element={<ASport />} />
-            <Route path="/admin/mau-sac" element={<AColor />} />
+            <Route path="/admin/loai-san-pham" element={<><ACategory /> <PageTitle title="Quản lý loại sản phẩm"/></>} />
+            <Route path="/admin/thuong-hieu" element={<><ABrand /> <PageTitle title="Quản lý thương hiệu"/></>} />
+            <Route path="/admin/the-thao" element={<><ASport /> <PageTitle title="Quản lý môn thể thao"/></>} />
+            <Route path="/admin/mau-sac" element={<><AColor /> <PageTitle title="Quản lý màu sắc"/></>} />
+            <Route path="/admin/don-hang" element={<><AOrder /> <PageTitle title="Quản lý đơn hàng đã đặt"/></>} />
+            <Route path="/admin/don-hoan-tra" element={<><ARefund /> <PageTitle title="Quản lý trả hàng"/></>} />
+
+            <Route path="/admin/*" element={<><FourOFour /> <PageTitle title="404 | Trang không tìm thấy"/></>} />
             {
             //<Route path="/admin/san-pham" element={<AProduct />} />
             //<Route path="/admin/thong-tin-san-pham" element={<AProductDetail />} />
@@ -150,8 +154,6 @@ function RenderMain() {
             
             <Route path="/admin/nhap-kho" element={<AImport />} />
             <Route path="/admin/thong-tin-nhap-kho" element={<AImportDetail />} />
-            <Route path="/admin/don-hang" element={<AOrder />} />
-            <Route path="/admin/don-hoan-tra" element={<ARefund />} />
             <Route path="/admin/giam-gia" element={<APromotion />} />
             <Route path="/admin/chuong-trinh-giam-gia" element={<APromotionDetail />} />
             <Route path="/admin/bai-blog" element={<ABlogArticle />} />
