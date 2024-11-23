@@ -1,6 +1,8 @@
 ﻿using Application.Interface;
 using Core.DTO;
+using Core.Entity;
 using Core.Interface;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Service;
 
@@ -13,9 +15,9 @@ public class BlogService : IBlogService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IEnumerable<BlogReadDTO>> GetAllBlogs()
+    public async Task<IEnumerable<BlogReadDTO>> GetAllReadBlogs()
     {
-        return await _unitOfWork.Blogs.GetAllBlogs();
+        return await _unitOfWork.Blogs.GetAllReadBlogs();
     }
     
     public async Task<IEnumerable<BlogReadDTO>> GetTop3Blogs()
@@ -26,5 +28,44 @@ public class BlogService : IBlogService
     public async Task<BlogDetailReadDTO> GetByUrlAsync(string url)
     {
         return await _unitOfWork.Blogs.GetByUrlAsync(url);
+    }
+
+    public IEnumerable<BlogArticle> GetAllBlogs()
+    {
+        return _unitOfWork.Blogs.GetAllBlogs();
+    }
+
+    public BlogArticle GetBlogById(int id)
+    {
+        return _unitOfWork.Blogs.GetBlogById(id);
+    }
+
+    public async Task<bool> Insert(BlogArticle blog)
+    {
+        _unitOfWork.Blogs.Insert(blog);
+        return (await _unitOfWork.SaveChangesAsync());
+    }
+
+    public async Task<bool> Update(BlogArticle blog)
+    {
+        _unitOfWork.Blogs.Update(blog);
+        return (await _unitOfWork.SaveChangesAsync());
+    }
+
+    public async Task<bool> UploadImage(IFormFile file, string name)
+    {
+        return (await _unitOfWork.Blogs.UploadImage(file, name));
+    }
+
+    public async Task<bool> Lock(int id)
+    {
+        _unitOfWork.Blogs.Lock(id);
+        return (await _unitOfWork.SaveChangesAsync());
+    }
+
+    public async Task<bool> Unlock(int id)
+    {
+        _unitOfWork.Blogs.Unlock(id);
+        return (await _unitOfWork.SaveChangesAsync());
     }
 }

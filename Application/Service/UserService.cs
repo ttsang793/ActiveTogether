@@ -2,6 +2,7 @@ using Application.Interface;
 using Core.DTO;
 using Core.Entity;
 using Core.Interface;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Service;
 
@@ -24,6 +25,11 @@ public class UserService : IUserService
     public async Task<bool> Login(UserLoginDTO user)
     {
         return await _unitOfWork.Users.Login(user);
+    }
+
+    public async Task<bool> UploadImage(IFormFile file, string username)
+    {
+        return await _unitOfWork.Users.UploadImage(file, username);
     }
 
     public User GetUserByUsername(string username)

@@ -1,4 +1,5 @@
 import FormTextBox from "/src/Components/shared/FormTextBox";
+import axios from 'axios';
 import PleaseWait from "/src/Shared/PleaseWait"
 import { useState, Component } from "react";
 import "./UserDetail.css"
@@ -20,9 +21,92 @@ function UserDetailPartial(props) {
   const handlePhoneError = newErrorPhone => setErrorPhone(errorPhone = newErrorPhone);
   const handleEmailError = newErrorEmail => setErrorEmail(errorEmail = newErrorEmail);
 
-  const updateInfo = e => {
+  function handleFileUpload(e) {
+    setAvatar(e.target.files[0])
+
+    var reader = new FileReader();
+    reader.onload = e => document.getElementById('avatar').src = e.target.result;
+    reader.readAsDataURL(e.target.files[0]);
+  }
+
+  async function uploadImage() {
+    const formData = new FormData();
+    formData.append('file', avatar);
+
+    try {
+      const response = await axios.post('/user/avatar/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.status === 200;
+    }
+    catch (error) {
+      return false
+    }
+  }
+
+  async function updateInfo(e) {
     e.preventDefault();
-    props.updateInfo({username, fullName, phone, email});
+
+    const error = [];
+    let errorFlag = false;
+    if (fullName === "") {
+      error.push("Vui lòng nhập tên đầy đủ của bạn.");
+      errorFlag = true;
+    }
+    else error.push("");
+    if (phone === "") {
+      error.push("Số điện thoại không được để trống");
+      errorFlag = true;
+    }
+    else if (!phone.match(/^0(([3,5,7,8,9][0-9]{8})|([2][0-9]{9}))$/gm)) {
+      error.push("Số điện thoại phải đúng định dạng (10 hoặc 11 số)");
+      errorFlag = true;
+    }
+    else error.push("");
+    if (email === "") {
+      error.push("Email không được để trống");
+      errorFlag = true;
+    }
+    else if (!email.match(/.+@[a-z]+(\.[a-z]*)+/gm)) {
+      error.push("Email phải đúng định dạng (example@mail.com)");
+      errorFlag = true;
+    }
+    else error.push("");
+    
+
+    if (errorFlag) {
+      handleFullNameError(error[0])
+      handlePhoneError(error[1])
+      handleEmailError(error[2])
+      return;
+    }
+    
+    if (confirm("Bạn có muốn cập nhật thông tin tài khoản?")) {
+      const username = props.user.username;
+      let image = "";
+    
+      if (typeof(avatar) !== "string")
+        image = "/src/images/avatar/" + username + avatar.name.substring(avatar.name.lastIndexOf("."));
+      else image = avatar;
+      
+      const response = await fetch(`/user/updateInfo?username=${username}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({fullName, phone, email, avatar: image})
+      })
+  
+      if ((typeof(avatar) === "string" || uploadImage()) && response.ok) {
+        alert("Tài khoản đã được cập nhật thành công");
+        localStorage.setItem("userAvatar", image);
+        location.reload()
+      }
+      else alert("Đã có lỗi xảy ra, cập nhật tài khoản thất bại.");
+    }
   }
 
   return (
@@ -39,8 +123,8 @@ function UserDetailPartial(props) {
           </div>
 
           <div className="avatar-container">
-            <img src={avatar} alt="avatar" className="avatar" />
-            <input type="file" id="upload-thumbnail" accept="image/*" className="disabled" />
+            <img src={avatar} alt="avatar" className="avatar" id="avatar" />
+            <input type="file" id="upload-thumbnail" accept="image/*" className="disabled" onChange={handleFileUpload} />
             <input type="button" value="Chọn avatar" onClick={() => document.getElementById('upload-thumbnail').click()} className="small-at-btn mb-2" />
           </div>
         </div>
@@ -88,22 +172,6 @@ export default class UserDetail extends Component {
   handleEmailChange = newEmail => this.setState({email: newEmail});
 
   render() {
-    return this.state.loading ? <PleaseWait /> : <UserDetailPartial user={this.state.user} updateInfo={this.updateInfo} />
-  }
-
-  async updateInfo(usr) {
-    if (confirm("Bạn có muốn cập nhật thông tin tài khoản?")) {
-      const response = await fetch(`/user/updateInfo?username=${usr.username}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify(usr)
-      })
-  
-      if (response.ok) { alert("Tài khoản đã được cập nhật thành công"); location.reload() }
-      else alert("Đã có lỗi xảy ra, cập nhật tài khoản thất bại.");
-    }
+    return this.state.loading ? <PleaseWait /> : <UserDetailPartial user={this.state.user} />
   }
 }

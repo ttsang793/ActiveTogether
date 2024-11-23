@@ -2,7 +2,8 @@
 using Core.Entity;
 
 namespace Core.Interface;
-public interface IProductRepository
+
+public interface IProductRepository : ILock, IUnlock
 {
     IEnumerable<ProductReadDTO> GetAllProductsDefault(string search);
 

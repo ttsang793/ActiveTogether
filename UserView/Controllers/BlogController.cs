@@ -18,9 +18,9 @@ public class BlogController : ControllerBase
     }
 
     [HttpGet("get")]
-    public async Task<IEnumerable<BlogReadDTO>> GetAllBlogs()
+    public async Task<IEnumerable<BlogReadDTO>> GetAllReadBlogs()
     {
-        return await _blogService.GetAllBlogs();
+        return await _blogService.GetAllReadBlogs();
     }
 
     [HttpGet("get/top3")]

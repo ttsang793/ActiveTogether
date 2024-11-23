@@ -47,6 +47,10 @@ export default function Register() {
       error.push("Vui lòng nhập tên đăng nhập.");
       errorFlag = true;
     }
+    else if (!usernameSU.match(/^\w{6,}$/gm)) {
+      error.push("Tên đăng nhập phải từ 6 kí tự trở lên, và chỉ được chứa chữ hoặc số.");
+      errorFlag = true;
+    }
     else error.push("");
     if (passwordSU === "") {
       error.push("Mật khẩu không được để trống");

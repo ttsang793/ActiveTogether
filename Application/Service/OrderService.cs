@@ -81,15 +81,15 @@ public class OrderService : IOrderService
         if (order.UserId > 0)
             _unitOfWork.Users.GainPoint(order.UserId, order.Point);
 
-        var orderDetails = _unitOfWork.Orders.GetOrderDetailsById(id);
+        /*var orderDetails = await  _unitOfWork.Orders.GetOrderDetailsById(id);
 
         foreach (var od in orderDetails)
         {
-            bool valid = _unitOfWork.ProductDetails.CheckChangeQuantity(od.Sku, (int)(od.Quantity * -1));
+            /*bool valid = await _unitOfWork.ProductDetails.CheckChangeQuantity(od.Sku, (int)(od.Quantity * -1));
             if (!valid) return false;
 
-            _unitOfWork.ProductDetails.ChangeQuantity(od.Sku, (int)(od.Quantity * -1));
-        }
+            await _unitOfWork.ProductDetails.ChangeQuantity(od.Sku, (int)(od.Quantity * -1));
+        }*/
 
         return await _unitOfWork.SaveChangesAsync();
     }

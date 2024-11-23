@@ -24,14 +24,14 @@ public class ProductDetailService : IProductDetailService
         return _unitOfWork.ProductDetails.GetProductImages(urlName);
     }
 
-    public ProductDetail GetProductDetailBySku(string sku)
+    public async Task<ProductDetail> GetProductDetailBySku(string sku)
     {
-        return _unitOfWork.ProductDetails.GetProductDetailBySku(sku);
+        return await _unitOfWork.ProductDetails.GetProductDetailBySku(sku);
     }
 
     public async Task<bool> ChangeQuantity(string sku, int change)
     {
-        _unitOfWork.ProductDetails.ChangeQuantity(sku, change);
+        await _unitOfWork.ProductDetails.ChangeQuantity(sku, change);
         return await _unitOfWork.SaveChangesAsync();
     }
 }

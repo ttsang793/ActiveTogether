@@ -109,9 +109,9 @@ export default class ASport extends Component {
         alert("Vui lòng chọn hình tiêu đề của môn thể thao!");
         return;
       }
-
-      else fileName = "/src/images/sport/" + CamelToKebab(this.state.sName) + this.state.sImage.name.substring(this.state.sImage.name.lastIndexOf("."));
     }
+    
+    fileName = "/src/images/sport/" + CamelToKebab(this.state.sName) + this.state.sImage.name.substring(this.state.sImage.name.lastIndexOf("."));
 
     (this.state.sId !== "") ? this.updateSport(this.state.sId, this.state.sName, fileName) : this.addSport(this.state.sName, fileName);
   }

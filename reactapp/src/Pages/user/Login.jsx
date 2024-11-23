@@ -58,7 +58,7 @@ export default function Login() {
     if (response.ok) {
       alert("Đăng nhập thành công");
 
-      fetch(`/user/get/avatar?username=${usernameLG}`).then(response => response.text()).then(data => {
+      fetch(`/user/avatar/get?username=${usernameLG}`).then(response => response.text()).then(data => {
         console.log(data);
         localStorage.setItem("userLogin", usernameLG);
         localStorage.setItem("userAvatar", data);

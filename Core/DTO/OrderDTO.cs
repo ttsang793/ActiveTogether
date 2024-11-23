@@ -76,7 +76,7 @@ public class OrderAdminDTO : BaseDTO
     }
 }
 
-public class OrderVertifyDTO
+public class OrderVertifyDTO : BaseDTO
 {
     public int Id { get; set; }
 

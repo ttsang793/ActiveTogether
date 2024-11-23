@@ -16,8 +16,6 @@ public class ProductService : IProductService
     
     public IEnumerable<ProductReadDTO> GetAllProducts(string? search, int sort)
     {
-        Console.WriteLine(search == null);
-        Console.WriteLine(search == "");
         search = (search == null) ? string.Empty : search.ToLower();
 
         return sort switch
@@ -34,5 +32,17 @@ public class ProductService : IProductService
     public List<FilterDTO> GetAllFilter()
     {
         return _unitOfWork.Products.GetAllFilter();
+    }
+
+    public async Task<bool> Lock(int id)
+    {
+        _unitOfWork.Products.Lock(id);
+        return await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<bool> Unlock(int id)
+    {
+        _unitOfWork.Products.Unlock(id);
+        return await _unitOfWork.SaveChangesAsync();
     }
 }

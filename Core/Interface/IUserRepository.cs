@@ -3,7 +3,7 @@ using Core.Entity;
 
 namespace Core.Interface;
 
-public interface IUserRepository
+public interface IUserRepository : IUploadImage
 {
     int Register(UserRegisterDTO user);
 

@@ -12,6 +12,7 @@ public class UserController : ControllerBase
     private readonly ILogger<UserController> _logger;
     private readonly IUserService _userService;
     private readonly IUserAddressService _userAddressService;
+    private static string userChange = "";
 
     public UserController(ILogger<UserController> logger, IUserService userService, IUserAddressService userAddressService)
     {
@@ -33,7 +34,13 @@ public class UserController : ControllerBase
         return (await _userService.Login(user)) ? StatusCode(200) : StatusCode(500);
     }
 
-    [HttpGet("get/avatar")]
+    [HttpPost("avatar/upload")]
+    public async Task<StatusCodeResult> UploadImage(IFormFile file)
+    {
+        return (await _userService.UploadImage(file, userChange)) ? StatusCode(200) : StatusCode(404);
+    }
+
+    [HttpGet("avatar/get")]
     public string GetAvatarByUsername(string username)
     {
         return GetUserByUsername(username).Avatar;
@@ -46,8 +53,9 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("updateInfo")]
-    public async Task<StatusCodeResult> UpdateInfo([Bind("Fullname", "Phone", "Email")] UserUpdateInfoDTO user, string username)
+    public async Task<StatusCodeResult> UpdateInfo([Bind("Fullname", "Phone", "Email", "Avatar")] UserUpdateInfoDTO user, string username)
     {
+        userChange = username;
         return (await _userService.UpdateInfo(user, username)) ? StatusCode(200) : StatusCode(404);
     }
 

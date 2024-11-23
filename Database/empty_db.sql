@@ -239,6 +239,8 @@ CREATE TABLE `cart_detail` (
 );
 
 /* Dua du lieu */
+INSERT INTO `sport` (`id`, `name`, `image`) VALUES (0, 'Tất cả', '');
+
 INSERT INTO permission (`name`) VALUES
 ('Xem sản phẩm'),
 ('Thêm sản phẩm'),
@@ -279,7 +281,6 @@ INSERT INTO permission (`name`) VALUES
 ('Khóa vai trò');
 
 INSERT INTO `role` (`name`) values ('Adminstrator');
-
 
 INSERT INTO `admin_user` (`id`, `password`, `full_name`, `phone`, `email`, `role_id`, `avatar`) VALUES
 (240101, '#YWRtaW5#Ub2c6ZX#RoJGVyY#WRtaW5j#dCQkaXZ#hQEBl', 'Admin', '0123456789', 'admin@gmail.com', 1, "/src/images/avatar/default.jpg"),

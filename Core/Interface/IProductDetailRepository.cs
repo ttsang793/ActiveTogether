@@ -9,9 +9,9 @@ public interface IProductDetailRepository
     
     IEnumerable<ProductImage> GetProductImages(string urlName);
 
-    ProductDetail GetProductDetailBySku(string sku);
+    Task<ProductDetail> GetProductDetailBySku(string sku);
 
-    bool CheckChangeQuantity(string sku, int change);
+    Task<bool> CheckChangeQuantity(string sku, int change);
 
-    void ChangeQuantity(string sku, int change);
+    Task<bool> ChangeQuantity(string sku, int change);
 }

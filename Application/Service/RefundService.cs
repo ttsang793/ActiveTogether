@@ -31,10 +31,10 @@ public class RefundService : IRefundService
     {
         _unitOfWork.Refunds.UpdateStatus(r);
 
-        if (r.Status == 1 && updateQuantity) _unitOfWork.ProductDetails.ChangeQuantity(r.Sku, (int)r.Quantity);
+        if (r.Status == 1 && updateQuantity) await _unitOfWork.ProductDetails.ChangeQuantity(r.Sku, (int)r.Quantity);
         if (r.Status == 2)
         {
-            decimal newPrice = (decimal)(_unitOfWork.ProductDetails.GetProductDetailBySku(r.Sku).Price * r.Quantity);
+            decimal newPrice = (decimal)((await _unitOfWork.ProductDetails.GetProductDetailBySku(r.Sku)).Price * r.Quantity);
 
             int id = _unitOfWork.Orders.AddRefundOrder(r, newPrice);
 

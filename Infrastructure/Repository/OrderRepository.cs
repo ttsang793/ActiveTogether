@@ -127,7 +127,7 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
     public void ReceiveOrder(int id)
 	{
         var order = GetDbSet().First(o => o.Id == id);
-        order.Status = 3;
+        order.Status = 4;
         order.DateReceived = DateTime.Now;
     }
 

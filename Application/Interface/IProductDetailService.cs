@@ -9,7 +9,7 @@ public interface IProductDetailService
 
     IEnumerable<ProductImage> GetProductImages(string urlName);
 
-    ProductDetail GetProductDetailBySku(string sku);
+    Task<ProductDetail> GetProductDetailBySku(string sku);
     
     Task<bool> ChangeQuantity(string sku, int change);
 }

@@ -4,16 +4,17 @@ using Core.Entity;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Repository;
 public class BlogRepository : BaseRepository<BlogArticle>, IBlogRepository
 {
+    private readonly string _uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "..\\reactapp\\src\\Images\\blog");
     public BlogRepository(AtWebContext dbContext) : base(dbContext)
     {
     }
 
-    public async Task<IEnumerable<BlogReadDTO>> GetAllBlogs(Expression<Func<BlogArticle, bool>> expression = null)
+    public async Task<IEnumerable<BlogReadDTO>> GetAllReadBlogs(Expression<Func<BlogArticle, bool>> expression = null)
     {
         var blogList = await ((expression == null) ?
             GetDbSet().Include(b => b.WrittenAdminNavigation).OrderByDescending(b => b.DatePublish).ToListAsync() :
@@ -32,7 +33,7 @@ public class BlogRepository : BaseRepository<BlogArticle>, IBlogRepository
 
     public async Task<IEnumerable<BlogReadDTO>> GetTop3Blogs()
     {
-        return (await GetAllBlogs()).Take(2);
+        return (await GetAllReadBlogs()).Take(2);
     }
 
     public async Task<BlogDetailReadDTO> GetByUrlAsync(string url)
@@ -47,5 +48,58 @@ public class BlogRepository : BaseRepository<BlogArticle>, IBlogRepository
             Content = blog.Content,
             DatePublish = blog.DatePublish
         };
+    }
+
+    public IEnumerable<BlogArticle> GetAllBlogs()
+    {
+        return GetDbSet().ToList();
+    }
+    
+    public BlogArticle GetBlogById(int id)
+    {
+        return GetDbSet().First(b => b.Id == id);
+    }
+
+    public void Insert(BlogArticle blog)
+    {
+        blog.DatePublish = DateTime.Now;
+        GetDbSet().Add(blog);
+    }
+
+    public void Update(BlogArticle blog)
+    {      
+        GetDbSet().Update(blog);
+    }
+
+    public void Lock(int id)
+    {
+        var blog = GetBlogById(id);
+        blog.IsActive = false;
+    }
+
+    public void Unlock(int id)
+    {
+        var blog = GetBlogById(id);
+        blog.IsActive = true;
+    }
+
+    public async Task<bool> UploadImage(IFormFile file, string id)
+    {
+        try
+        {
+            var fileName = "thumbnail_" + id + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(_uploadDirectory, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

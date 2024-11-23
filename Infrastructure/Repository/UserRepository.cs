@@ -2,11 +2,12 @@
 using Core.Entity;
 using Core.DTO;
 using Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Repository;
 public class UserRepository : BaseRepository<User>, IUserRepository
 {
+    private readonly string _uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "..\\reactapp\\src\\Images\\avatar");
     public UserRepository(AtWebContext dbContext) : base(dbContext)
     {
     }
@@ -59,7 +60,9 @@ public class UserRepository : BaseRepository<User>, IUserRepository
             u.FullName = user.FullName;
             u.Phone = user.Phone;
             u.Email = user.Email;
+            u.Avatar = user.Avatar;
         }
+        GetDbSet().Update(u);
     }
 
     public void UpdatePassword(UserUpdateDTO user, string username)
@@ -72,5 +75,24 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     {
         var u = GetDbSet().First(u => u.Id == userId);
         u.Point += point;
+    }
+
+    public async Task<bool> UploadImage(IFormFile file, string username)
+    {
+        try
+        {
+            var fileName = username + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(_uploadDirectory, fileName);
+            Console.WriteLine(filePath);
+
+            using var stream = new FileStream(filePath, FileMode.Create);
+            await file.CopyToAsync(stream);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

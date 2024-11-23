@@ -2,6 +2,7 @@ using Core.DTO;
 using Core.Entity;
 using Core.Interface;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository;
 
@@ -51,19 +52,25 @@ public class ProductDetailRepository : BaseRepository<ProductDetail>, IProductDe
         return images;
     }
 
-    public ProductDetail GetProductDetailBySku(string sku)
+    public async Task<ProductDetail> GetProductDetailBySku(string sku)
     {
-      return GetDbSet().Where(p => p.Sku == sku).First();
+        var productDetail = await GetDbSet().FirstAsync(s => s.Sku == sku);
+        return productDetail;
     }
 
-    public bool CheckChangeQuantity(string sku, int change)
+    public async Task<bool> CheckChangeQuantity(string sku, int change)
     {
-        var productDetail = GetProductDetailBySku(sku);
-        return productDetail.Quantity + change >= 0;
+        var productDetail = await GetProductDetailBySku(sku);
+        Console.WriteLine("{0} {1}", productDetail.Price, productDetail.Quantity);
+        return true;
+
+        //return productDetail.Quantity + change >= 0;
     }
 
-    public void ChangeQuantity(string sku, int change) {
-        var productDetail = GetProductDetailBySku(sku);
+    public async Task<bool> ChangeQuantity(string sku, int change)
+    {
+        var productDetail = await GetProductDetailBySku(sku);
         productDetail.Quantity += change;
+        return true;
     }
 }

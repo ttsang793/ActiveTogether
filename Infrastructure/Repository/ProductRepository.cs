@@ -33,7 +33,8 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                                Image = g.Select(x => x.i.Image).First(),
                                Price = g.Select(x => x.d.Price).First(),
                                OldPrice = g.Select(x => x.d.OldPrice).First(),
-                               Quantity = g.Sum(x => x.d.Quantity)
+                               Quantity = g.Sum(x => x.d.Quantity),
+                               IsActive = g.Select(x => x.p.IsActive).First()
                            });
 
         return productList;
@@ -61,7 +62,8 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                                Image = g.Select(x => x.i.Image).First(),
                                Price = g.Select(x => x.d.Price).First(),
                                OldPrice = g.Select(x => x.d.OldPrice).First(),
-                               Quantity = g.Sum(x => x.d.Quantity)
+                               Quantity = g.Sum(x => x.d.Quantity),
+                               IsActive = g.Select(x => x.p.IsActive).First()
                            });
 
         return productList;
@@ -89,7 +91,8 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                                Image = g.Select(x => x.i.Image).First(),
                                Price = g.Select(x => x.d.Price).First(),
                                OldPrice = g.Select(x => x.d.OldPrice).First(),
-                               Quantity = g.Sum(x => x.d.Quantity)
+                               Quantity = g.Sum(x => x.d.Quantity),
+                               IsActive = g.Select(x => x.p.IsActive).First()
                            });
 
         return productList;
@@ -117,7 +120,8 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                                Image = g.Select(x => x.i.Image).First(),
                                Price = g.Select(x => x.d.Price).First(),
                                OldPrice = g.Select(x => x.d.OldPrice).First(),
-                               Quantity = g.Sum(x => x.d.Quantity)
+                               Quantity = g.Sum(x => x.d.Quantity),
+                               IsActive = g.Select(x => x.p.IsActive).First()
                            });
 
         return productList;
@@ -145,7 +149,8 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                                Image = g.Select(x => x.i.Image).First(),
                                Price = g.Select(x => x.d.Price).First(),
                                OldPrice = g.Select(x => x.d.OldPrice).First(),
-                               Quantity = g.Sum(x => x.d.Quantity)
+                               Quantity = g.Sum(x => x.d.Quantity),
+                               IsActive = g.Select(x => x.p.IsActive).First()
                            });
 
         return productList;
@@ -179,5 +184,22 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
         filters.Add(new FilterDTO { Title = "Màu sắc", Details = colors });
 
         return filters;
+    }
+
+    private Product GetById(int id)
+    {
+        return GetDbSet().First(p => p.Id == id);
+    }
+
+    public void Lock(int id)
+    {
+        var product = GetById(id);
+        product.IsActive = false;
+    }
+
+    public void Unlock(int id)
+    {
+        var product = GetById(id);
+        product.IsActive = true;
     }
 }

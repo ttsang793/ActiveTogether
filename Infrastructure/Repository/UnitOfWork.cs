@@ -10,10 +10,12 @@ public class UnitOfWork : IUnitOfWork
     private ICartRepository? _cartRepository;
     private ICategoryRepository? _categoryRepository;
     private IColorRepository? _colorRepository;
+    private IImportRepository? _importRepository;
     private IOrderRepository? _orderRepository;
     private IProductRepository? _productRepository;
     private IProductDetailRepository? _productDetailRepository;
     private IProductReviewRepository? _productReviewRepository;
+    private IPromotionRepository? _promotionRepository;
     private IRefundRepository? _refundRepository;
     private ISportRepository? _sportRepository;
     private IUserAddressRepository? _userAddressRepository;
@@ -29,10 +31,12 @@ public class UnitOfWork : IUnitOfWork
     public ICartRepository Carts => _cartRepository ??= new CartRepository(_dbContext);
     public ICategoryRepository Categories => _categoryRepository ??= new CategoryRepository(_dbContext);
     public IColorRepository Colors => _colorRepository ??= new ColorRepository(_dbContext);
+    public IImportRepository Imports => _importRepository ??= new ImportRepository(_dbContext);
     public IOrderRepository Orders => _orderRepository ??= new OrderRepository(_dbContext);
     public IProductRepository Products => _productRepository ??= new ProductRepository(_dbContext);
     public IProductDetailRepository ProductDetails => _productDetailRepository ??= new ProductDetailRepository(_dbContext);
     public IProductReviewRepository ProductReviews => _productReviewRepository ??= new ProductReviewRepository(_dbContext);
+    public IPromotionRepository Promotions => _promotionRepository ??= new PromotionRepository(_dbContext);
     public IRefundRepository Refunds => _refundRepository ??= new RefundRepository(_dbContext);
     public ISportRepository Sports => _sportRepository ??= new SportRepository(_dbContext);
     public IUserAddressRepository UserAddresses => _userAddressRepository ??= new UserAddressRepository(_dbContext);
