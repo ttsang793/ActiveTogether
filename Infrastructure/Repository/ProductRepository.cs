@@ -2,8 +2,6 @@
 using Core.Entity;
 using Core.Interface;
 using Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Infrastructure.Repository;
 
@@ -31,8 +29,7 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                                Gender = g.Select(x => x.p.Gender).First(),
                                IsChildren = g.Select(x => x.p.IsChildren).First(),
                                Image = g.Select(x => x.i.Image).First(),
-                               Price = g.Select(x => x.d.Price).First(),
-                               OldPrice = g.Select(x => x.d.OldPrice).First(),
+                               Price = g.Select(x => x.p.Price).First(),
                                Quantity = g.Sum(x => x.d.Quantity),
                                IsActive = g.Select(x => x.p.IsActive).First()
                            });
@@ -49,7 +46,7 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                            join d in GetDbContext().ProductDetails on c.Id equals d.ProductColorId
                            where i.Image!.Contains("-1.") && (p.Name.ToLower().Contains(search))
                            group new { p, c, i, d } by p.Id into g
-                           orderby g.Select(x => x.d.Price).FirstOrDefault()
+                           orderby g.Select(x => x.p.Price).FirstOrDefault()
                            select new ProductReadDTO
                            {
                                Id = g.Key,
@@ -60,8 +57,7 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                                Gender = g.Select(x => x.p.Gender).First(),
                                IsChildren = g.Select(x => x.p.IsChildren).First(),
                                Image = g.Select(x => x.i.Image).First(),
-                               Price = g.Select(x => x.d.Price).First(),
-                               OldPrice = g.Select(x => x.d.OldPrice).First(),
+                               Price = g.Select(x => x.p.Price).First(),
                                Quantity = g.Sum(x => x.d.Quantity),
                                IsActive = g.Select(x => x.p.IsActive).First()
                            });
@@ -78,7 +74,7 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                            join d in GetDbContext().ProductDetails on c.Id equals d.ProductColorId
                            where i.Image!.Contains("-1.") && (p.Name.ToLower().Contains(search))
                            group new { p, c, i, d } by p.Id into g
-                           orderby g.Select(x => x.d.Price).FirstOrDefault() descending
+                           orderby g.Select(x => x.p.Price).FirstOrDefault() descending
                            select new ProductReadDTO
                            {
                                Id = g.Key,
@@ -89,8 +85,7 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                                Gender = g.Select(x => x.p.Gender).First(),
                                IsChildren = g.Select(x => x.p.IsChildren).First(),
                                Image = g.Select(x => x.i.Image).First(),
-                               Price = g.Select(x => x.d.Price).First(),
-                               OldPrice = g.Select(x => x.d.OldPrice).First(),
+                               Price = g.Select(x => x.p.Price).First(),
                                Quantity = g.Sum(x => x.d.Quantity),
                                IsActive = g.Select(x => x.p.IsActive).First()
                            });
@@ -118,8 +113,7 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                                Gender = g.Select(x => x.p.Gender).First(),
                                IsChildren = g.Select(x => x.p.IsChildren).First(),
                                Image = g.Select(x => x.i.Image).First(),
-                               Price = g.Select(x => x.d.Price).First(),
-                               OldPrice = g.Select(x => x.d.OldPrice).First(),
+                               Price = g.Select(x => x.p.Price).First(),
                                Quantity = g.Sum(x => x.d.Quantity),
                                IsActive = g.Select(x => x.p.IsActive).First()
                            });
@@ -147,8 +141,7 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                                Gender = g.Select(x => x.p.Gender).First(),
                                IsChildren = g.Select(x => x.p.IsChildren).First(),
                                Image = g.Select(x => x.i.Image).First(),
-                               Price = g.Select(x => x.d.Price).First(),
-                               OldPrice = g.Select(x => x.d.OldPrice).First(),
+                               Price = g.Select(x => x.p.Price).First(),
                                Quantity = g.Sum(x => x.d.Quantity),
                                IsActive = g.Select(x => x.p.IsActive).First()
                            });

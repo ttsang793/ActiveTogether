@@ -29,8 +29,11 @@ import AHome from './Admin/Pages/Home'
 
 import ANav from './Admin/Shared/Nav'
 import AWider from './Admin/Shared/Wider'
+import AHeader from './Admin/Shared/Header';
+
 import AProduct from "./Admin/Pages/Product"
-//import AProductDetail from './Admin/Pages/ProductDetail';
+import AProductColor from './Admin/Pages/ProductColor';
+import AProductDetail from './Admin/Pages/ProductDetail';
 import ACategory from "./Admin/Pages/Category"
 import ABrand from './Admin/Pages/Brand'
 import ASport from './Admin/Pages/Sport'
@@ -40,7 +43,7 @@ import AImportDetail from './Admin/Pages/ImportDetail';
 import AOrder from './Admin/Pages/Order'
 import ARefund from './Admin/Pages/Refund';
 import APromotion from './Admin/Pages/Promotion'
-import APromotionDetail from './Admin/Pages/PromotionDetail';
+//import APromotionDetail from './Admin/Pages/PromotionDetail';
 import ABlogArticle from "./Admin/Pages/BlogArticle"
 import ABlogArticleDetail from "./Admin/Pages/BlogArticleDetail"
 import ABlogArticlePreview from "./Admin/Pages/BlogArticlePreview"
@@ -132,11 +135,14 @@ function RenderMain() {
     else return (
       <Router>
         <ANav />
+        <AHeader />
         <AWider />
         <div className="admin-main-container">
           <Routes>          
             <Route path="/admin/home" element={<><AHome /> <PageTitle title="Trang chủ của quản trị viên" /></>} />
             <Route path="/admin/san-pham" element={<><AProduct /> <PageTitle title="Quản lý sản phẩm"/></>} />
+            <Route path="/admin/thong-tin-san-pham/*" element={<><AProductColor /> <PageTitle title="Quản lý màu sắc sản phẩm"/></>} />
+            <Route path="/admin/thong-tin-mau-sac-san-pham/*" element={<><AProductDetail /> <PageTitle title="Quản lý chi tiết màu sắc sản phẩm"/></>} />
             <Route path="/admin/loai-san-pham" element={<><ACategory /> <PageTitle title="Quản lý loại sản phẩm"/></>} />
             <Route path="/admin/thuong-hieu" element={<><ABrand /> <PageTitle title="Quản lý thương hiệu"/></>} />
             <Route path="/admin/the-thao" element={<><ASport /> <PageTitle title="Quản lý môn thể thao"/></>} />
@@ -146,14 +152,14 @@ function RenderMain() {
             <Route path="/admin/don-hang" element={<><AOrder /> <PageTitle title="Quản lý đơn hàng đã đặt"/></>} />
             <Route path="/admin/don-hoan-tra" element={<><ARefund /> <PageTitle title="Quản lý trả hàng"/></>} />
             <Route path="/admin/giam-gia" element={<><APromotion /> <PageTitle title="Quản lý giảm giá"/></>} />
-            <Route path="/admin/chuong-trinh-giam-gia" element={<><APromotionDetail /> <PageTitle title="Chi tiết chương trình giám giá"/></>} />
+            {/*<Route path="/admin/chuong-trinh-giam-gia" element={<><APromotionDetail /> <PageTitle title="Chi tiết chương trình giám giá"/></>} />*/}
             <Route path="/admin/bai-blog" element={<><ABlogArticle /> <PageTitle title="Quản lý bài blog"/></>} />
             <Route path="/admin/thong-tin-bai-blog" element={<><ABlogArticleDetail /> <PageTitle title="Quản lý thông tin trang blog"/></>} />
             <Route path="/admin/xem-bai-blog" element={<ABlogArticlePreview />} />
 
             <Route path="/admin/*" element={<><FourOFour /> <PageTitle title="404 | Trang không tìm thấy"/></>} />
             {
-            //<Route path="/admin/thong-tin-san-pham" element={<AProductDetail />} />
+            //
 
             /*
             

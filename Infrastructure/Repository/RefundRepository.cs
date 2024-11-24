@@ -34,6 +34,7 @@ public class RefundRepository : BaseRepository<Refund>, IRefundRepository
                 orderby r.Id descending
                 select new RefundReadAdminDTO
                 {
+                    Id = r.Id,
                     OrderId = o.Id,
                     OrderDetailId = od.Id,
                     Sku = od.Sku,
@@ -49,7 +50,7 @@ public class RefundRepository : BaseRepository<Refund>, IRefundRepository
 
     public void UpdateStatus(RefundUpdateAdminDTO r)
     {
-        var refund = GetDbSet().First(od => od.OrderDetailId == r.OrderDetailId);
+        var refund = GetDbSet().First(od => od.Id == r.Id);
         refund.Status = r.Status;
         refund.DateRefund = DateTime.Now;
         refund.CheckAdmin = r.VertifyAdmin;

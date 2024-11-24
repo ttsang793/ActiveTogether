@@ -3,6 +3,7 @@ import { DisplayPrice, DisplayConfig } from "/src/Scripts/Utility.js"
 import { useState, Component } from "react";
 import PleaseWait from "/src/Shared/PleaseWait"
 import "./Order.css"
+import OrderEmpty from "/src/Components/product/OrderEmpty";
 
 function OrderInfo(props) {
   let [fullName, setFullName] = useState(props.user.fullName || "");
@@ -14,16 +15,22 @@ function OrderInfo(props) {
   let [errorPhone, setErrorPhone] = useState("");
   let [errorEmail, setErrorEmail] = useState("");
 
-  const handleFullNameChange = (newFullName) => setFullName(fullName = newFullName);
-  const handleAddressChange = (newAddress) => setAddress(address = newAddress);
-  const handlePhoneChange = (newPhone) => setPhone(phone = newPhone);
-  const handleEmailChange = (newEmail) => setEmail(email = newEmail);
-  const handleFullNameError = (newErrorFullName) => setErrorFullName(errorFullName = newErrorFullName);
-  const handleAddressError = (newErrorAddress) => setErrorAddress(errorAddress = newErrorAddress);
-  const handlePhoneError = (newErrorPhone) => setErrorPhone(errorPhone = newErrorPhone);
-  const handleEmailError = (newErrorEmail) => setErrorEmail(errorEmail = newErrorEmail);
+  const handleFullNameChange = newFullName => setFullName(fullName = newFullName);
+  const handleAddressChange = newAddress => setAddress(address = newAddress);
+  const handlePhoneChange = newPhone => setPhone(phone = newPhone);
+  const handleEmailChange = newEmail => setEmail(email = newEmail);
+  const handleFullNameError = newErrorFullName => setErrorFullName(errorFullName = newErrorFullName);
+  const handleAddressError = newErrorAddress => setErrorAddress(errorAddress = newErrorAddress);
+  const handlePhoneError = newErrorPhone => setErrorPhone(errorPhone = newErrorPhone);
+  const handleEmailError = newErrorEmail => setErrorEmail(errorEmail = newErrorEmail);
   
-  const products = JSON.parse(localStorage.getItem("payItem")).orderProducts;
+  let products;
+  try {
+    products = JSON.parse(localStorage.getItem("payItem")).orderProducts;
+  }
+  catch {
+    products = null;
+  }
 
   function handleAddress(e) {
     handleAddressChange(props.addressList[e.target.selectedIndex].address);
@@ -46,7 +53,7 @@ function OrderInfo(props) {
     }
     else error.push("");
     if (address === "") {
-      error.push("Cần có địa chỉ mặc định");
+      error.push("Cần có địa chỉ nhận hàng");
       errorFlag = true;
     }
     else error.push("");
@@ -102,7 +109,7 @@ function OrderInfo(props) {
     }
   }
 
-  return (
+  return products === null ? <OrderEmpty /> : (
     <main className="user-main">
       <h1 className="text-center fw-bold">THANH TOÁN ĐƠN HÀNG</h1>
       <hr />

@@ -18,7 +18,7 @@ export default function AddToCart(props) {
 
       <div className="text">
         <button className="cart px-3" onClick={() => add(props.product, quantity)}>Thêm vào giỏ hàng</button> 
-        <button className="buy-now px-3" onClick={() => add(props.product, quantity)}>Mua ngay!</button> 
+        {/*<button className="buy-now px-3" onClick={() => buyNow(props.product, quantity)}>Mua ngay!</button> */}
       </div>
     </div>
   )
@@ -44,5 +44,18 @@ async function add(product, quantity) {
     if (response.status === 200) alert("Thêm sản phẩm vào giỏ hàng thành công!");
     else if (response.status === 201) alert("Cập nhật thông tin sản phẩm thành công!");
     else alert("Đã có lỗi xảy ra, thêm sản phẩm vào giỏ hàng thất bại.");
+  }
+}
+
+async function buyNow(product, quantity) {
+  const username = localStorage.getItem("userLogin");
+    if (username !== null) {
+    localStorage.setItem("payItem", JSON.stringify(JSON.stringify({
+      userName: username,
+      sku: product.sku,
+      price: product.price,
+      quantity: quantity
+    })))
+    location.href = "/thanh-toan"
   }
 }

@@ -1,37 +1,39 @@
 
 .nav-buttons {
-  background: linear-gradient(225deg, var(--lighter), var(--light));
+  background: var(--black);
   position: fixed;
   top: 0;
   bottom: 0;
   overflow-y: auto;
+  color: var(--white);
+  width: 250px;
 
   .nav-logo {
     max-width: 150px;
     width: 100%
   }
 
-  ul.nav-list {
-    padding-left: 0;
+  .nav-user {
+    img {
+      height: 60px;
+      border-radius: 50%;
+    }
   }
-  
-  li.nav {
-    cursor: pointer;
-    transition: 0.15s;
-  }
-  
-  li.nav:hover {
-    background-color: var(--mid-dark);
-    color: var(--white);
-    text-decoration: underline solid var(--white);
-  }
-  
-  a.nav-link {
-    color: black;
-  }
-  
-  a.nav-link:hover {
-    text-decoration: underline!important;
-  }  
 }
 
+.admin-main-container main {
+  td {
+    .bi, a .bi {
+      font-size: 20px;
+      transition-duration: 0.15s;
+      cursor: pointer;
+      padding: 0 5px;
+      color: var(--black)!important;
+
+      &:hover {
+        background-color: var(--darkest);
+        color: var(--white)!important;
+      }
+    }
+  }
+}

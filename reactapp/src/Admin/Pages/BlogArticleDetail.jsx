@@ -43,10 +43,10 @@ export default class ABlogArticleDetail extends Component {
         <input type="file" id="upload-thumbnail" onChange={e => this.handleFileUpload(e)} accept="image/*" className="disabled" />
         <input type="button" value="Chọn hình tiêu đề..." onClick={() => document.getElementById('upload-thumbnail').click()} className="small-at-btn mb-2" />
         <div id="image-container" className="image-container mb-2">
-          <button className="btn close" onClick={() => this.handleDeleteImage()}>&times;</button>
-          <img id="small-image" />
+          <button className="small-at-sbtn close" onClick={() => this.handleDeleteImage()}>&times;</button>
+          <img id="small-image" src="/src/images/avatar/default.jpg" style={{height: "300px"}} />
         </div>
-        <textarea onChange={(e) => this.setState({ aContent: e.target.value })} value={this.state.aContent} className="form-control mb-2" placeholder="Nội dung"></textarea>
+        <textarea onChange={(e) => this.setState({ aContent: e.target.value })} value={this.state.aContent} className="form-control mb-2" placeholder="Nội dung" style={{height: "300px"}}></textarea>
 
         <input type="button" value="Lưu" className="small-at-btn me-2" onClick={e => this.saveNewArticle(e)} />
         <input type="button" value="Hủy" className="small-at-btn-secondary" onClick={() => location.href = "/admin/bai-blog"} />

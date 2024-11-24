@@ -1,8 +1,10 @@
-.button-col {
-  width: 185px;
-}
+.admin-main-container {
+  .button-col {
+    width: 185px;
+  }
 
-.product-thumbnail {
-  width: 150px;
-  height: 150px;
+  .product-thumbnail {
+    width: 150px;
+    height: 150px;
+  }
 }

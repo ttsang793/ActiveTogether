@@ -2,6 +2,7 @@ using Core.Interface;
 using Core.Entity;
 using Core.DTO;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository;
 public class OrderRepository : BaseRepository<Order>, IOrderRepository
@@ -48,17 +49,20 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
         return GetDbSet().First(o => o.Id == id);
     }
 
-    public IEnumerable<OrderDetail> GetOrderDetailsById(int id)
+    private OrderDetail GetOrderDetailById(int id)
     {
-        return GetDbContext().OrderDetails.Where(o => o.OrderId == id);
+        return GetDbContext().OrderDetails.First(o => o.Id == id);
+    }
+
+    public async Task<IEnumerable<OrderDetail>> GetOrderDetailsById(int id)
+    {
+        return await GetDbContext().OrderDetails.Where(o => o.OrderId == id).ToListAsync();
     }
 
     public IEnumerable<OrderDetailReadDTO> GetOrderDetailsByUsername(string username)
 	{
         var userId = GetDbContext().Users.First(u => u.Username == username).Id;
         return (from od in GetDbContext().OrderDetails
-                join r in GetDbContext().Refunds on od.Id equals r.OrderDetailId into refundDetails
-                from r in refundDetails.DefaultIfEmpty()
                 join o in GetDbSet() on od.OrderId equals o.Id
                 join pd in GetDbContext().ProductDetails on od.Sku equals pd.Sku
                 join pi in GetDbContext().ProductImages on pd.ProductColorId equals pi.ProductColorId
@@ -77,7 +81,7 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
                     Color = c.Name,
                     Size = pd.Size,
                     Image = pi.Image!,
-                    RefundStatus = r.Status
+                    IsReturn = od.IsReturn
                 }).ToList();
 	}
 
@@ -107,21 +111,25 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
     public int AddOrder(Order o)
 	{
         GetDbSet().Add(o);
-        return GetDbSet().OrderByDescending(o => o.Id).First().Id + 1;
+        return GetDbSet().Any() ? GetDbSet().OrderByDescending(o => o.Id).First().Id + 1 : 1;
 	}
 
     public void AddOrderDetail(OrderDetail od) {
         GetDbContext().OrderDetails.Add(od);
     }
 
-    public void CancelOrder(int id)
+    public async Task<bool> CancelOrder(int id)
 	{		
         var order = GetDbSet().First(o => o.Id == id);
         order.Status = -1;
         order.Total = 0;
         order.DateCanceled = DateTime.Now;
 
-        foreach (var od in GetOrderDetailsById(order.Id)) od.Quantity = 0;
+        var orderDetail = await GetOrderDetailsById(order.Id);
+
+        foreach (var od in orderDetail) od.Quantity = 0;
+
+        return true;
 	}
     
     public void ReceiveOrder(int id)
@@ -141,5 +149,10 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
             order.DateVertified = DateTime.Now;
         }
         GetDbSet().Update(order);
+    }
+
+    public void ChangeRefundStatus(int id, bool status)
+    {
+        GetOrderDetailById(id).IsReturn = status;
     }
 }

@@ -1,4 +1,5 @@
-import { Component } from "react"
+import { Component } from "react";
+import { DisplayPrice } from "/src/Scripts/Utility";
 
 export default class AImportDetail extends Component {
   static displayName = AImportDetail.name;
@@ -6,6 +7,12 @@ export default class AImportDetail extends Component {
   constructor(props) {
     super(props);
     this.state = { products: [{ sku: "", quantity: 0, price: 0 }] }
+  }
+
+  calTotal() {
+    let total = 0;
+    this.state.products.forEach(p => total = total + p.price * p.quantity);
+    return total;
   }
   
   handleProductChange(e, index) {
@@ -28,9 +35,9 @@ export default class AImportDetail extends Component {
 
     return (
       <div>
-        <input type="text" placeholder="SKU" value={this.state.products[i].sku} onChange={e => this.handleProductChange(e, i)} className="form-control sku d-inline mb-3 me-4" style={{ width: "70px" }} />
-        <input type="number" min="0" value={this.state.products[i].quantity} onChange={e => this.handleProductChange(e, i)} className="form-control quantity d-inline mb-3 me-4" style={{ width: "100px" }} />
-        <input type="number" min="0" value={this.state.products[i].price} onChange={e => this.handleProductChange(e, i)} className="form-control price w-50 d-inline mb-3" style={{ width: "200px" }} />
+        <input type="text" placeholder="SKU" value={this.state.products[i].sku} onChange={e => this.handleProductChange(e, i)} className="form-control sku d-inline" />
+        <input type="number" min="0" value={this.state.products[i].quantity} onChange={e => this.handleProductChange(e, i)} className="form-control quantity d-inline" />
+        <input type="number" min="0" value={this.state.products[i].price} onChange={e => this.handleProductChange(e, i)} className="form-control price w-50 d-inline" />
       </div>
     )
   }
@@ -38,11 +45,23 @@ export default class AImportDetail extends Component {
   renderProductInputs() {
     if (this.state.products.length === 0) return this.addProductInput();
     else return this.state.products.map((p, i) =>
-      <div key={p.id}>
-        <input type="text" placeholder="SKU" value={p.sku} onChange={e => this.handleProductChange(e, i)} className="form-control sku d-inline mb-3 me-4" style={{ width: "200px" }} />
-        <input type="number" min="0" value={p.quantity} onChange={e => this.handleProductChange(e, i)} className="form-control quantity d-inline mb-3 me-4" style={{ width: "100px" }} />
-        <input type="number" min="0" value={p.price} onChange={e => this.handleProductChange(e, i)} className="form-control price d-inline mb-3" style={{ width: "200px" }} />
-      </div>
+      <tr key={p.id}>
+        <td className="align-middle">
+          <input type="text" placeholder="SKU" value={p.sku} onChange={e => this.handleProductChange(e, i)} className="form-control sku d-inline" />
+        </td>
+
+        <td className="align-middle">
+          <input type="number" min="0" value={p.quantity} onChange={e => this.handleProductChange(e, i)} className="form-control quantity d-inline" />
+        </td>
+
+        <td className="align-middle">
+          <input type="number" min="0" value={p.price} onChange={e => this.handleProductChange(e, i)} className="form-control price d-inline" />
+        </td>
+
+        <td className="align-middle">
+          {DisplayPrice(p.quantity * p.price)}
+        </td>
+      </tr>
     )
   }
 
@@ -52,18 +71,37 @@ export default class AImportDetail extends Component {
         <h1 className="flex-grow-1 text-center fw-bold">THÔNG TIN PHIẾU NHẬP</h1>
         <hr />
 
-        <div className="text-end fst-italic">
-          Người lập: Trần Tuấn Sang<br />
-          Ngày lập: {new Date().toLocaleDateString("vi-VN")}
-        </div>
+        <button className="at-btn mb-2" onClick={() => this.addProductInput()}><i className="bi bi-plus-circle"></i> Thêm sản phẩm vào phiếu nhập</button>
+        <table className="table table-hover table-striped w-100">
+          <thead>
+            <tr>
+              <th className="w-25 text-center align-middle">SKU</th>
+              <th className="w-25 text-center align-middle">Đơn giá</th>
+              <th className="w-25 text-center align-middle">Số lượng</th>
+              <th className="w-25 text-center align-middle">Tổng tiền</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colSpan={4} className="fst-italic">
+                Người lập: Trần Tuấn Sang<br />
+                Ngày lập: {new Date().toLocaleDateString("en-CA")}
+              </td>
+            </tr>
 
-        <div id="color-input">
-          Danh sách sản phẩm: <button onClick={() => this.addProductInput()}>+</button>
-          { this.renderProductInputs() }
-        </div>
+            { this.renderProductInputs() }
+          </tbody>
 
-        <input type="button" value="Lưu" className="small-at-btn me-2" onClick={e => this.saveNewImport(e)} />
-        <input type="button" value="Hủy" className="small-at-btn-secondary" onClick={() => location.href = "/admin/nhap-kho"} />
+          <tfoot>
+            <tr>
+              <th colSpan={3} className="fst-italic text-end">TỔNG TIỀN:</th>
+              <th>{DisplayPrice(this.calTotal())}</th>
+            </tr>
+          </tfoot>
+        </table>
+
+        <input type="button" value="Lưu" className="at-btn me-2" onClick={e => this.saveNewImport(e)} />
+        <input type="button" value="Hủy" className="at-btn-secondary" onClick={() => location.href = "/admin/nhap-kho"} />
       </main>
     )
   }

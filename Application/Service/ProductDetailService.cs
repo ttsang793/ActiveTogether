@@ -19,9 +19,9 @@ public class ProductDetailService : IProductDetailService
         return _unitOfWork.ProductDetails.GetProductByUrlName(urlName);
     }
 
-    public IEnumerable<ProductImage> GetProductImages(string urlName)
+    public IEnumerable<ProductImage> GetProductImagesByUrlName(string urlName)
     {
-        return _unitOfWork.ProductDetails.GetProductImages(urlName);
+        return _unitOfWork.ProductDetails.GetProductImagesByUrlName(urlName);
     }
 
     public async Task<ProductDetail> GetProductDetailBySku(string sku)
@@ -29,9 +29,31 @@ public class ProductDetailService : IProductDetailService
         return await _unitOfWork.ProductDetails.GetProductDetailBySku(sku);
     }
 
+    public IEnumerable<ProductDetail> GetProductDetailByColorId(int id)
+    {
+        return _unitOfWork.ProductDetails.GetProductDetailByColorId(id);
+    }
+
+    public IEnumerable<ProductImage> GetProductImagesByColorId(int id)
+    {
+        return _unitOfWork.ProductDetails.GetProductImagesByColorId(id);
+    }
+
     public async Task<bool> ChangeQuantity(string sku, int change)
     {
         await _unitOfWork.ProductDetails.ChangeQuantity(sku, change);
+        return await _unitOfWork.SaveChangesAsync();
+    }
+    
+    public async Task<bool> Lock(string sku)
+    {
+        await _unitOfWork.ProductDetails.Lock(sku);
+        return await _unitOfWork.SaveChangesAsync();
+    }
+  
+    public async Task<bool> Unlock(string sku)
+    {
+        await _unitOfWork.ProductDetails.Unlock(sku);
         return await _unitOfWork.SaveChangesAsync();
     }
 }

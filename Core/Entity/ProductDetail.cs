@@ -10,15 +10,9 @@ public partial class ProductDetail : BaseEntity
 
     public decimal? Price { get; set; }
 
-    public decimal? OldPrice { get; set; }
-
     public int? Quantity { get; set; }
 
     public string? Note { get; set; }
-
-    public DateTime? DateStart { get; set; }
-
-    public DateTime? DateEnd { get; set; }
 
     public bool? IsActive { get; set; }
 

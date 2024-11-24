@@ -1,7 +1,7 @@
 import { DisplayPrice, DisplayDate } from "/src/Scripts/Utility"
 import { Component } from "react"
 import "./OrdersHistory.css";
-import OrderRow from "/src/Components/product/OrderRow";
+import OrderRow from "/src/Components/user/OrderRow";
 import PleaseWait from "/src/Shared/PleaseWait";
 
 export default class OrdersHistory extends Component {

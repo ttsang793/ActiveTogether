@@ -40,6 +40,13 @@ public class PromotionController : ControllerBase
         return (await _promotionService.Update(promotion)) ? StatusCode(200) : StatusCode(404);
     }
 
+    [HttpPost("update/detail")]
+    public async Task<StatusCodeResult> UpdateDetail([Bind("Id", "PromotionDetail")] Promotion promotion)
+    {
+        int id = promotion.Id;
+        return (await _promotionService.UpdateDetail(id, promotion.PromotionDetails.ToList())) ? StatusCode(200) : StatusCode(404);
+    }
+
     [HttpPut("lock")]
     public async Task<StatusCodeResult> Lock(int id)
     {

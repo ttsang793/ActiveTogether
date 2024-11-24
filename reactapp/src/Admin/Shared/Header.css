@@ -1,0 +1,14 @@
+.admin-header {
+  background-color: var(--black);
+  color: var(--white);
+  padding-left: calc(250px + 1rem);
+  align-items: center;
+
+  .header-button {
+    transition-duration: 0.15s;
+    
+    &:hover {      
+      background-color: var(--mid-dark);
+    }
+  }
+}

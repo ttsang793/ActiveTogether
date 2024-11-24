@@ -24,12 +24,12 @@ export default class ABlogArticle extends Component {
               <td className="align-middle">{a.writtenAdmin}</td>
               <td className="align-middle">
                 <a href={`/admin/xem-bai-blog?id=${a.id}`}>
-                  <button className="small-at-btn me-1">Xem</button>
+                  <i className="bi bi-eye"></i>
                 </a>
                 <a href={`/admin/thong-tin-bai-blog?id=${a.id}`}>
-                  <button className="small-at-btn me-1">Sửa</button>
+                  <i className="bi bi-gear"></i>
                 </a>
-                <button className="small-at-btn" onClick={() => deleteArticle(a.id, a.isActive)}>{a.isActive ? "Khóa" : "Mở khóa"}</button>
+                <i className={`bi bi-${a.isActive ? "lock" : "unlock"}`} onClick={() => deleteArticle(a.id, a.isActive)}></i>
               </td>
             </tr>
           )
@@ -44,20 +44,25 @@ export default class ABlogArticle extends Component {
         <h1 className="flex-grow-1 text-center fw-bold">BÀI BLOG</h1>
         <hr />
         
-        <div className="text-end">
+        <div className="d-flex c-10">
           <a href="/admin/thong-tin-bai-blog">
-            <button className="at-btn">Thêm</button>
+            <button className="at-btn"><i className="bi bi-plus-circle"></i> Tạo bài blog mới</button>
           </a>
+
+          <div className="d-flex flex-grow-1">
+            <input type="search" className="form-control" placeholder="Nhập tiêu đề bài blog cần tìm..." />
+            <button className="small-at-sbtn"><i className="bi bi-search"></i></button>
+          </div>
         </div>
 
         <table className="table table-striped table-bordered table-hover pointer mt-3">
           <thead>
             <tr>
               <th className="text-center">ID</th>
-              <th className="text-center">Hình minh họa</th>
+              <th className="text-center w-10">Hình minh họa</th>
               <th className="text-center">Tiêu đề</th>
               <th className="text-center">Tác giả</th>
-              <th className="w-10"></th>
+              <th className="w-120px"></th>
             </tr>
           </thead>
 

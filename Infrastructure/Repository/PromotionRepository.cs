@@ -37,6 +37,15 @@ public class PromotionRepository : BaseRepository<Promotion>, IPromotionReposito
         GetDbSet().Update(promotion);
     }
 
+    public void UpdateDetail(int id, List<PromotionDetail> promotionDetails)
+    {
+        GetDbContext().PromotionDetails.RemoveRange(GetDbContext().PromotionDetails.Where(p => p.PromotionId == id));
+        foreach (var pDetail in promotionDetails)
+        {
+            GetDbContext().PromotionDetails.Add(pDetail);
+        }
+    }
+
     public void Lock(int id)
     {
         var promotion = GetById(id);

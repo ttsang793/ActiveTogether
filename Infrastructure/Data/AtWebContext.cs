@@ -493,6 +493,10 @@ public partial class AtWebContext : DbContext
             entity.Property(e => e.Name)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("name");
+            entity.Property(e => e.Price)
+                .HasPrecision(10)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("price");
             entity.Property(e => e.UrlName)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("url_name");
@@ -556,24 +560,12 @@ public partial class AtWebContext : DbContext
             entity.Property(e => e.Sku)
                 .HasMaxLength(50)
                 .HasColumnName("sku");
-            entity.Property(e => e.DateEnd)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnType("date")
-                .HasColumnName("date_end");
-            entity.Property(e => e.DateStart)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnType("date")
-                .HasColumnName("date_start");
             entity.Property(e => e.IsActive)
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("is_active");
             entity.Property(e => e.Note)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("note");
-            entity.Property(e => e.OldPrice)
-                .HasPrecision(10)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnName("old_price");
             entity.Property(e => e.Price)
                 .HasPrecision(10)
                 .HasDefaultValueSql("'NULL'")

@@ -69,7 +69,7 @@ export default class Home extends Component {
             <h2 className="home-title">CÁC MÔN THỂ THAO</h2>
             <div className="home-content-collection">
               {
-                this.state.sport.map(s => <HomeSelection image={s.image} name={s.name} radius={true} />)
+                this.state.sport.map(s => <HomeSelection key={s.name} image={s.image} name={s.name} radius={true} />)
               }
             </div>
           </div>

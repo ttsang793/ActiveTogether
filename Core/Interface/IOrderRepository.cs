@@ -15,7 +15,7 @@ public interface IOrderRepository
 
     IEnumerable<OrderDetailReadDTO> GetOrderDetailsByUsername(string username);
 
-    IEnumerable<OrderDetail> GetOrderDetailsById(int id);
+    Task<IEnumerable<OrderDetail>> GetOrderDetailsById(int id);
 
     int AddRefundOrder(RefundUpdateAdminDTO r, decimal newPrice);
 
@@ -23,9 +23,11 @@ public interface IOrderRepository
 
     void AddOrderDetail(OrderDetail od);
 
-    void CancelOrder(int id);
+    Task<bool> CancelOrder(int id);
     
     void ReceiveOrder(int id);
 
     void ChangeStatus(OrderVertifyDTO o);
+
+    void ChangeRefundStatus(int id, bool status);
 }

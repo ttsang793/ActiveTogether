@@ -1,0 +1,22 @@
+.nav-list {
+  padding-left: 0;
+  margin: 0;
+
+  li {
+    transition-duration: 0.15s;
+
+    .bi {
+      font-size: 20px;
+      margin-right: 5px;
+    }
+
+    a {
+      width: 100%;
+      color: var(--white)!important;
+    }
+
+    &:hover {
+      background-color: var(--mid-dark);
+    }
+  }
+}

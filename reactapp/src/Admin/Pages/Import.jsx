@@ -81,9 +81,9 @@ export default class AImport extends Component {
         <h1 className="flex-grow-1 text-center fw-bold">NHẬP KHO</h1>
         <hr />
 
-        <div className="text-end">
+        <div>
           <a href="/admin/thong-tin-nhap-kho">
-            <button className="at-btn">Lập phiếu nhập kho mới</button>
+            <button className="at-btn"><i className="bi bi-plus-circle"></i> Lập phiếu nhập kho mới</button>
           </a>
         </div>
 

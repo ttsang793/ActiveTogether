@@ -35,14 +35,13 @@ public class ProductDetailRepository : BaseRepository<ProductDetail>, IProductDe
                           Color = c.Name,
                           Size = pd.Size,
                           Price = pd.Price,
-                          OldPrice = pd.OldPrice,
                           Image = GetImageCode(pi.Image),
                           Quantity = pd.Quantity
                       }); ;
         return detail;
     }
 
-    public IEnumerable<ProductImage> GetProductImages(string urlName)
+    public IEnumerable<ProductImage> GetProductImagesByUrlName(string urlName)
     {
         var images = (from p in GetDbContext().Products
                       join c in GetDbContext().ProductColors on p.Id equals c.ProductId
@@ -58,19 +57,42 @@ public class ProductDetailRepository : BaseRepository<ProductDetail>, IProductDe
         return productDetail;
     }
 
+    public IEnumerable<ProductDetail> GetProductDetailByColorId(int id)
+    {
+        var productDetail = GetDbSet().Where(s => s.ProductColorId == id).ToList();
+        return productDetail;
+    }
+
+    public IEnumerable<ProductImage> GetProductImagesByColorId(int id)
+    {
+        var productImage = GetDbContext().ProductImages.Where(s => s.ProductColorId == id).ToList();
+        return productImage;
+    }
+
     public async Task<bool> CheckChangeQuantity(string sku, int change)
     {
         var productDetail = await GetProductDetailBySku(sku);
-        Console.WriteLine("{0} {1}", productDetail.Price, productDetail.Quantity);
-        return true;
-
-        //return productDetail.Quantity + change >= 0;
+        return productDetail.Quantity + change >= 0;
     }
 
     public async Task<bool> ChangeQuantity(string sku, int change)
     {
         var productDetail = await GetProductDetailBySku(sku);
         productDetail.Quantity += change;
+        return true;
+    }
+
+    public async Task<bool> Lock(string sku)
+    {
+        var productDetail = await GetProductDetailBySku(sku);
+        productDetail.IsActive = false;
+        return true;
+    }
+
+    public async Task<bool> Unlock(string sku)
+    {
+        var productDetail = await GetProductDetailBySku(sku);
+        productDetail.IsActive = true;
         return true;
     }
 }

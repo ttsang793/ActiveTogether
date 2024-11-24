@@ -19,6 +19,7 @@ public class RefundService : IRefundService
     public async Task<bool> RequestRefund(RefundRequestDTO refund)
     {
 		_unitOfWork.Refunds.RequestRefund(refund);
+        _unitOfWork.Orders.ChangeRefundStatus(refund.OrderDetailId, true);
 		return await _unitOfWork.SaveChangesAsync();
     }
 
@@ -31,7 +32,8 @@ public class RefundService : IRefundService
     {
         _unitOfWork.Refunds.UpdateStatus(r);
 
-        if (r.Status == 1 && updateQuantity) await _unitOfWork.ProductDetails.ChangeQuantity(r.Sku, (int)r.Quantity);
+        if (r.Status == -1) _unitOfWork.Orders.ChangeRefundStatus(r.OrderDetailId, false);
+        if (r.Status > 0 && updateQuantity) await _unitOfWork.ProductDetails.ChangeQuantity(r.Sku, (int)r.Quantity);
         if (r.Status == 2)
         {
             decimal newPrice = (decimal)((await _unitOfWork.ProductDetails.GetProductDetailBySku(r.Sku)).Price * r.Quantity);

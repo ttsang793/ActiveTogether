@@ -25,6 +25,7 @@ public class ColorController : ControllerBase
     [HttpPost("save")]
     public async Task<StatusCodeResult> Save(Color color)
     {
+        color.Code = "#" + color.Code[3..];
         sbyte result = await _colorService.Save(color);
         return (result == 0) ? StatusCode(200) : ((result == 1) ? StatusCode(201) : StatusCode(404));
     }

@@ -13,6 +13,8 @@ public interface IPromotionService
 
     Task<bool> Update(Promotion brand);
 
+    Task<bool> UpdateDetail(int id, List<PromotionDetail> promotionDetails);
+
     Task<bool> Lock(int id);
 
     Task<bool> Unlock(int id);

@@ -34,7 +34,7 @@ public class OrderDetailReadDTO : CartDetailReadDTO
     
     public int OrderId { get; set; }
 
-    public int? RefundStatus { get; set; } = -1;
+    public bool? IsReturn { get; set; }
 }
 
 public class OrderAdminDTO : BaseDTO

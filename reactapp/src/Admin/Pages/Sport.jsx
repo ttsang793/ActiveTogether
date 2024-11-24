@@ -18,14 +18,15 @@ export default class ASport extends Component {
       <>
         {
           sports.map(s => 
-            <tr key={s.id} onClick={() => this.handleOnClickRow(s)}>
+            <tr key={s.id}>
               <td className="align-middle">
                 <img src={s.image} alt={s.name} className="sport-thumbnail" />
               </td>
               <td className="align-middle">{s.id}</td>
               <td className="align-middle">{s.name}</td>
               <td className="align-middle">
-                <button className="small-at-btn" onClick={() => deleteSport(s.id, s.isActive)}>{s.isActive ? "Khóa" : "Mở khóa"}</button>
+                <i className="bi bi-gear" onClick={() => this.handleOnClickRow(s)}></i>
+                <i className={`bi bi-${s.isActive ? "lock" : "unlock"}`} onClick={() => deleteSport(s.id, s.isActive)}></i>
               </td>
             </tr>
           )
@@ -40,13 +41,11 @@ export default class ASport extends Component {
     var reader = new FileReader();
     reader.onload = e => document.getElementById('small-image').src = e.target.result;
     reader.readAsDataURL(e.target.files[0]);
-    document.getElementById('image-container').classList.remove("disabled");
   }
 
   handleDeleteImage() {
     this.setState({ sImage: null })
-    document.getElementById('small-image').src = "";
-    document.getElementById('image-container').classList.add("disabled");
+    document.getElementById('small-image').src = "/src/images/avatar/default.jpg";
   }
 
   handleOnClickRow(s) {
@@ -60,42 +59,58 @@ export default class ASport extends Component {
         <h1 className="flex-grow-1 text-center fw-bold">CÁC MÔN THỂ THAO</h1>
         <hr />
 
-        <div className="d-flex c-10">
-          <input type="text" value={this.state.sId} className="form-control" readOnly placeholder="Mã môn thể thao" />
-          <input type="text" onChange={(e) => this.setState({sName: e.target.value})} value={this.state.sName} className="form-control" placeholder="Tên môn thể thao" />
-          
-          <div>
-            <input type="file" id="upload-thumbnail" onChange={e => this.handleFileUpload(e)} accept="image/*" className="disabled" />
-            <input type="button" value="Chọn hình tiêu đề" onClick={() => document.getElementById('upload-thumbnail').click()} className="small-at-btn mb-2" />
-            <div id="image-container" className="image-container mb-2">
-              <button className="btn close" onClick={() => this.handleDeleteImage()}>&times;</button>
-              <img id="small-image" />
+        <div className="row">
+          <div className="col-3">
+            <input type="text" value={this.state.sId} className="form-control" readOnly placeholder="Mã môn thể thao" />
+            <input type="text" onChange={(e) => this.setState({sName: e.target.value})} value={this.state.sName} className="form-control mt-3" placeholder="Tên môn thể thao" />
+            
+            <div className="mt-3">
+              <input type="file" id="upload-thumbnail" onChange={e => this.handleFileUpload(e)} accept="image/*" className="disabled" />
+              <input type="button" value="Chọn hình" onClick={() => document.getElementById('upload-thumbnail').click()} className="small-at-btn mb-2" />
+              <div id="image-container" className="image-container mb-2">
+                <button className="close small-at-sbtn" onClick={() => this.handleDeleteImage()}>&times;</button>
+                <img id="small-image" src="/src/images/avatar/default.jpg" style={{maxWidth: "150px", width: "100%"}} />
+              </div>
             </div>
+            
+            <input type="submit" value="Lưu" onClick={e => this.saveNewSport(e)} className="at-btn mt-3 me-2" />
+            <input type="button" value="Hủy" onClick={() => this.cancelSport()} className="at-btn-secondary mt-3" />
           </div>
-          
-          <input type="submit" value="Lưu" onClick={e => this.saveNewSport(e)} className="at-btn" />
+
+          <div className="col-9">
+            <div className="d-flex">
+              <input type="search" className="form-control" placeholder="Nhập môn thể thao cần tìm..." />
+              <button className="small-at-sbtn"><i className="bi bi-search"></i></button>
+            </div>
+
+            <table className="table table-striped table-hover pointer table-bordered mt-3">
+              <thead>
+                <tr>
+                  <th className="w-10"></th>
+                  <th className="w-10 text-center">ID</th>
+                  <th className="text-center">Tên môn thể thao</th>
+                  <th className="w-120px"></th>
+                </tr>
+              </thead>
+
+              <tbody className="table-group-divider">
+                {this.renderTable(this.state.sport)}
+              </tbody>
+            </table>
+          </div>
         </div>
-
-        <table className="table table-striped table-hover pointer table-bordered mt-3">
-          <thead>
-            <tr>
-              <th className="w-10"></th>
-              <th className="w-10 text-center">ID</th>
-              <th className="text-center">Tên môn thể thao</th>
-              <th className="w-10"></th>
-            </tr>
-          </thead>
-
-          <tbody className="table-group-divider">
-            {this.renderTable(this.state.sport)}
-          </tbody>
-        </table>
       </main>
     )
   }
 
   async populateSportData() {
     fetch("/api/sport/get").then(response => response.json()).then(data => this.setState({sport: data}));
+  }
+
+  cancelSport(e) {
+    e.preventDefault();
+    this.handleDeleteImage();
+    this.setState({ sId: "", sName: "", sImage: null });
   }
 
   async saveNewSport(e) {

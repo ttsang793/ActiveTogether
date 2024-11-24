@@ -2,7 +2,6 @@ import "./Cart.css";
 import CartEmpty from "/src/Components/product/CartEmpty"
 import { DisplayPrice, DisplayConfig } from "/src/Scripts/Utility.js"
 import { Component } from "react";
-import { Link, redirect } from "react-router-dom";
 
 export default class Cart extends Component {
   static displayName = Cart.name;
@@ -21,7 +20,7 @@ export default class Cart extends Component {
     for (let i=0; i<document.querySelectorAll(".item-checkbox").length; i++) {
       const c = document.querySelectorAll(".item-checkbox")[i];
       if (!c.checked) checkAll = false;
-      else total += this.state.products[i].price;
+      else total = total + this.state.products[i].price * this.state.products[i].quantity;
     }
 
     document.getElementById("checkall").checked = checkAll;
@@ -31,7 +30,7 @@ export default class Cart extends Component {
   checkAll(checkbox) {
     let total = 0
     document.querySelectorAll(".item-checkbox").forEach((c, i) => {
-      if (checkbox.checked) total += this.state.products[i].price;
+      if (checkbox.checked) total += this.state.products[i].price * this.state.products[i].quantity;
       c.checked = checkbox.checked
     });
     this.setState({total: total});

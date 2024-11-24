@@ -2,6 +2,8 @@
 
 public class RefundReadAdminDTO : BaseDTO
 {
+    public int Id { get; set; }
+
     public int OrderId { get; set; }
 
     public int OrderDetailId { get; set; }
@@ -36,6 +38,8 @@ public class RefundRequestDTO : BaseDTO
 
 public class RefundUpdateAdminDTO : BaseDTO
 {
+    public int Id { get; set; }
+
     public int OrderId { get; set; }
 
     public int OrderDetailId { get; set; }

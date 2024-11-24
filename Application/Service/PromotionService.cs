@@ -36,6 +36,12 @@ public class PromotionService : IPromotionService
         return await _unitOfWork.SaveChangesAsync();
     }
 
+    public async Task<bool> UpdateDetail(int id, List<PromotionDetail> promotionDetails)
+    {
+        _unitOfWork.Promotions.UpdateDetail(id, promotionDetails);
+        return await _unitOfWork.SaveChangesAsync();
+    }
+
     public async Task<bool> Lock(int id)
     {
         _unitOfWork.Promotions.Lock(id);

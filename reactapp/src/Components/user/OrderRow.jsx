@@ -16,12 +16,14 @@ export default function OrderRow(props) {
     return (
       <Modal show={show} onHide={handleHide} animation={false} size="xl" centered>
         <Modal.Header closeButton>
-          <Modal.Title>Đơn đề nghị đổi trả hàng</Modal.Title>
+          <Modal.Title><b>Đơn đề nghị đổi trả hàng</b></Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>
-            <input className="form-control mb-2" type="number" min="1" max={props.orderDetail.quantity} placeholder="Nhập số lượng hàng cần trả" value={quantity} onChange={handleQuantity} required />
-            <textarea className="form-control" value={reason} onChange={handleReason} placeholder="Lý do hủy" required></textarea>
+            <i><b>Số lượng:</b></i>
+            <input className="form-control my-2" type="number" min="1" max={props.orderDetail.quantity} placeholder="Nhập số lượng hàng cần trả" value={quantity} onChange={handleQuantity} required />
+            <i><b>Lý do:</b></i>
+            <textarea className="form-control mt-2" value={reason} onChange={handleReason} style={{height: "40vh"}} placeholder="Bạn hãy cho Active Together biết lý do trả hàng nhé!" required></textarea>
           </div>
         </Modal.Body>
         <Modal.Footer>
@@ -48,7 +50,7 @@ export default function OrderRow(props) {
           </div>
         </td>
         <td>
-          { props.order.status === 4 && props.orderDetail.refundStatus === null && <button className="btn btn-danger" onClick={handleShow}>Hoàn trả</button> }
+          { props.order.status === 4 && !props.orderDetail.isReturn && <button className="btn btn-danger" onClick={handleShow}>Hoàn trả</button> }
         </td>
       </tr>
       

@@ -21,7 +21,6 @@ public class ColorService : IColorService
     public async Task<sbyte> Save(Color color)
     {
         Color c = _unitOfWork.Colors.GetByColorCode(color.Code);
-        Console.WriteLine(c == null);
         if (c == null)
         {
             _unitOfWork.Colors.Insert(color);

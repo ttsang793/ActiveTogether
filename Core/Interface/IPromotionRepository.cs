@@ -7,4 +7,6 @@ public interface IPromotionRepository : IInsert<Promotion>, IUpdate<Promotion>, 
   IEnumerable<Promotion> GetAllPromotions(Expression<Func<Promotion, bool>> expression = null);
 
   IEnumerable<PromotionDetail> GetAllPromotionDetails();
+
+  void UpdateDetail(int id, List<PromotionDetail> promotionDetails);
 }

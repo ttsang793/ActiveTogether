@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import { DisplayConfig } from '/src/Scripts/Utility'
 
 export default class ARefund extends Component {
   static DisplayName = ARefund.name;
@@ -21,10 +22,12 @@ export default class ARefund extends Component {
   renderTable(refunds) {
     return refunds.map((r, i) => 
       <tr key={i}>
+        <td className='align-middle'>{r.id}</td>
         <td className='align-middle'>{r.orderId}</td>
         <td className='align-middle'>{r.sku}</td>
         <td className='align-middle'>
-          {r.name} ({r.color} {r.size})
+          {r.name} <br />
+          {DisplayConfig(r.color, r.size)}
         </td>
         <td className='align-middle'>{r.quantity}</td>
         <td className='align-middle'>{r.reason}</td>
@@ -52,6 +55,7 @@ export default class ARefund extends Component {
         <table className="table table-striped table-bordered table-hover mt-3">
           <thead>
             <tr>
+              <th className="text-center">ID</th>
               <th className="text-center">Mã HĐ</th>
               <th className="text-center">Mã SKU</th>
               <th className="text-center">Thông tin sản phẩm</th>
@@ -82,7 +86,7 @@ export default class ARefund extends Component {
     e.preventDefault();
     if (confirm("Bạn có chắc chắn hoàn thành xử lý trả hàng cho khách?")) {
       let updateQuantity = false;
-      if (refund.status == 1) {
+      if (refund.status > 0) {
         if (confirm("Bạn có muốn cập nhật số lượng sản phẩm?")) updateQuantity = true;
       }
       
@@ -93,6 +97,7 @@ export default class ARefund extends Component {
           "Accept": "application/json"
         },
         body: JSON.stringify({
+          id: refund.id,
           orderId: refund.orderId,
           orderDetailId: refund.orderDetailId,
           sku: refund.sku,

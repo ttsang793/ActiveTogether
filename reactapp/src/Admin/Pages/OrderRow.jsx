@@ -3,9 +3,7 @@ import { DisplayPrice, DisplayDate, DisplayConfig } from "/src/Scripts/Utility";
 import Modal from 'react-bootstrap/Modal';
 
 export default function OrderRow(props) {
-  const [status, setStatus] = useState(props.order.status);
   const [show, setShow] = useState(false);
-  const handleStatusChange = e => setStatus(e.target.value)
   const handleHide = () => setShow(false);
   const handleShow = () => setShow(true)
 
@@ -60,19 +58,12 @@ export default function OrderRow(props) {
         <td className="align-middle">{DisplayDate(props.order.datePurchased)}</td>
         <td className="align-middle">{props.order.dateVertified === null ? "-" : DisplayDate(props.order.dateVertified)}</td>
         <td className="align-middle">{props.order.dateReceived === null ? "-" : DisplayDate(props.order.dateReceived)}</td>
-        <td className="align-middle">
-          <select value={status} onChange={handleStatusChange}>
-            <option value="0" disabled={ props.order.status > 0 || props.order.status === -1 }>Đã đặt hàng</option>
-            <option value="1" disabled={ props.order.status > 1 || props.order.status === -1 }>Đã xác nhận</option>
-            <option value="2" disabled={ props.order.status > 2 || props.order.status === -1 }>Đang vận chuyển</option>
-            <option value="3" disabled={ props.order.status > 3 || props.order.status === -1 }>Đã giao hàng</option>
-            <option value="4" disabled>Đã nhận hàng</option>
-            <option value="-1" disabled>Đã hủy</option>
-          </select>
-        </td>
+        <td className="align-middle">{getStatus(props.order.status)}</td>
         <td className="align-middle">{DisplayPrice(props.order.total)}</td>
         <td>
-          <button className={`small-at-btn me-1 ${ props.order.status < 0 || props.order.status > 2 ? "disabled" : "" }`} onClick={() => updateOrder(props.order.id, status)}>Lưu</button>
+          <button className={`small-at-btn me-1 ${ props.order.status === 0 ? "" : "disabled" }`} onClick={() => updateOrder(props.order.id, 1)}>Xác nhận</button>
+          <button className={`small-at-btn me-1 ${ props.order.status === 1 ? "" : "disabled" }`} onClick={() => updateOrder(props.order.id, 2)}>Vận chuyển</button>
+          <button className={`small-at-btn me-1 ${ props.order.status === 2 ? "" : "disabled" }`} onClick={() => updateOrder(props.order.id, 3)}>Đã giao hàng</button>
           <button className="small-at-btn me-1" onClick={handleShow}>Xem đơn</button>          
         </td>
       </tr>
@@ -81,8 +72,20 @@ export default function OrderRow(props) {
   )
 }
 
+function getStatus(status) {
+  switch (status) {
+    case -1: return "Đã hủy"
+    case 0: return "Chưa xác nhận"
+    case 1: return "Đã xác nhận"
+    case 2: return "Đang vận chuyển"
+    case 3: return "Đã giao hàng"
+    case 4: return "Đã nhận hàng"
+    default: return null;
+  }
+}
+
 async function updateOrder(id, status) {
-  if (confirm(`Bạn có chắc chắn cập nhật tình trạng đơn hàng này?`)) {
+  if (confirm(`Bạn có chắc chắn cập nhật trạng thái "${getStatus(status)}" cho đơn hàng này?`)) {
     const response = await fetch("/api/order/changeStatus", {
       method: "PUT",
       headers: {

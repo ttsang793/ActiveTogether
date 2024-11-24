@@ -20,11 +20,12 @@ export default class ACategory extends Component {
       <>
         {
           categories.map(c => 
-            <tr key={c.id} onClick={() => this.setState({cId: c.id, cName: c.name})} className="pointer">
+            <tr key={c.id} className="pointer">
               <td className="align-middle">{c.id}</td>
               <td className="align-middle">{c.name}</td>
               <td>
-                <button className="small-at-btn" onClick={() => deleteCategory(c.id, c.isActive)}>{c.isActive? "Khóa" : "Mở khóa"}</button>
+                <i className="bi bi-gear" onClick={() => this.setState({cId: c.id, cName: c.name})}></i>
+                <i className={`bi bi-${c.isActive ? "lock" : "unlock"}`} onClick={() => deleteCategory(c.id, c.isActive)}></i>
               </td>
             </tr>
           )
@@ -39,32 +40,46 @@ export default class ACategory extends Component {
         <h1 className="flex-grow-1 text-center fw-bold">LOẠI SẢN PHẨM</h1>
         <hr />
 
-        <div className="d-flex c-10">
-          <input type="text" value={this.state.cId} className="form-control" readOnly placeholder="Mã loại" />
-          <input type="text" onChange={(e) => this.setState({cName: e.target.value})} value={this.state.cName} className="form-control" placeholder="Tên loại" />
-          
-          <input type="submit" value="Lưu" onClick={e => this.saveNewCategory(e)} className="at-btn" />
+        <div className="row">
+          <div className="col-3">
+            <input type="text" value={this.state.cId} className="form-control" readOnly placeholder="Mã loại" />
+            <input type="text" onChange={(e) => this.setState({cName: e.target.value})} value={this.state.cName} className="form-control mt-3" placeholder="Tên loại" />
+            <input type="submit" value="Lưu" onClick={e => this.saveNewCategory(e)} className="at-btn mt-3 me-2" />
+            <input type="button" value="Hủy" onClick={() => this.cancelCategory()} className="at-btn-secondary mt-3" />
+          </div>
+
+          <div className="col-9">
+            <div className="d-flex">
+              <input type="search" className="form-control" placeholder="Nhập tên loại sản phẩm cần tìm..." />
+              <button className="small-at-sbtn"><i className="bi bi-search"></i></button>
+            </div>
+
+            
+            <table className="table table-striped table-bordered table-hover pointer mt-3">
+              <thead>
+                <tr>
+                  <th className="text-center w-10 align-middle">ID</th>
+                  <th className="text-center align-middle">Tên loại</th>
+                  <th className="w-120px"></th>
+                </tr>
+              </thead>
+
+              <tbody className="table-group-divider">
+                {this.renderTable(this.state.category)}
+              </tbody>
+            </table>   
+          </div>
         </div>
-
-        <table className="table table-striped table-bordered table-hover pointer mt-3">
-          <thead>
-            <tr>
-              <th className="text-center">ID</th>
-              <th className="text-center">Tên loại</th>
-              <th className="w-10"></th>
-            </tr>
-          </thead>
-
-          <tbody className="table-group-divider">
-            {this.renderTable(this.state.category)}
-          </tbody>
-        </table>
       </main>
     )
   }
 
   async populateCategoryData() {
     fetch("/api/category/get").then(response => response.json()).then(data => this.setState({category: data}));
+  }
+
+  cancelCategory() {
+    this.setState({cId: "", cName: ""});
   }
 }
 
