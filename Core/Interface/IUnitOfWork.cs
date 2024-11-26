@@ -2,6 +2,7 @@
 
 public interface IUnitOfWork
 {
+    IAdminUserRepository AdminUsers { get; }
     IBlogRepository Blogs { get; }
     IBrandRepository Brands { get; }
     ICartRepository Carts { get; }
@@ -15,6 +16,8 @@ public interface IUnitOfWork
     IProductReviewRepository ProductReviews { get; }
     IPromotionRepository Promotions { get; }
     IRefundRepository Refunds { get; }
+    IRoleRepository Roles { get; }
+    IRolePermissionRepository RolePermissions { get; }
     ISportRepository Sports { get; }
     IUserAddressRepository UserAddresses { get; }
     IUserRepository Users { get; }

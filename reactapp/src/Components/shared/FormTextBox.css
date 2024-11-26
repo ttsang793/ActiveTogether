@@ -48,7 +48,7 @@
   
   .form-placeholder {
     position: absolute;
-    left: 42px;
+    left: 50px;
     font-size: 18px;
     color: var(--darker);
     transition-duration: 0.5s;
@@ -61,8 +61,8 @@
   
   .up-placeholder {
     color: var(--darkest);
-    font-size: 14px;
-    transform: translate(-42px, -40px);
+    font-size: 15px;
+    transform: translate(-50px, -40px);
     font-weight: bold;
   }
   

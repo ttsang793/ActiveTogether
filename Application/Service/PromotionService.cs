@@ -24,15 +24,15 @@ public class PromotionService : IPromotionService
         return _unitOfWork.Promotions.GetAllPromotionDetails();
     }
 
-    public async Task<bool> Insert(Promotion promotion)
+    public async Task<bool> Insert(PromotionAdminDTO promotionDTO)
     {
-        _unitOfWork.Promotions.Insert(promotion);
+        _unitOfWork.Promotions.Insert(promotionDTO);
         return await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<bool> Update(Promotion promotion)
+    public async Task<bool> Update(PromotionAdminDTO promotionDTO)
     {
-        _unitOfWork.Promotions.Update(promotion);
+        _unitOfWork.Promotions.Update(promotionDTO);
         return await _unitOfWork.SaveChangesAsync();
     }
 

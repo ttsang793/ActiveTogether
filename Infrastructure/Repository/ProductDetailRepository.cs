@@ -59,8 +59,8 @@ public class ProductDetailRepository : BaseRepository<ProductDetail>, IProductDe
 
     public IEnumerable<ProductDetail> GetProductDetailByColorId(int id)
     {
-        var productDetail = GetDbSet().Where(s => s.ProductColorId == id).ToList();
-        return productDetail;
+        var detail = GetDbSet().Include(d => d.ProductColor).ThenInclude(c => c.ProductImages).Where(c => c.ProductColor.Id == id).ToList();
+        return detail;
     }
 
     public IEnumerable<ProductImage> GetProductImagesByColorId(int id)

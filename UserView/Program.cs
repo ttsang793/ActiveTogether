@@ -19,14 +19,23 @@ builder.Services.AddScoped<IRefundService, RefundService>();
 builder.Services.AddScoped<ISportService, SportService>();
 builder.Services.AddScoped<IUserAddressService, UserAddressService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+    options.AddPolicy("AllowVNPay", policy =>
+    {
+        policy.WithOrigins("https://localhost:5173").AllowAnyMethod().AllowAnyHeader();
+    }
+));
 
 var app = builder.Build();
+
+app.UseCors("AllowVNPay");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

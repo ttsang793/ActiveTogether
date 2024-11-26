@@ -83,7 +83,6 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         {
             var fileName = username + Path.GetExtension(file.FileName);
             var filePath = Path.Combine(_uploadDirectory, fileName);
-            Console.WriteLine(filePath);
 
             using var stream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(stream);

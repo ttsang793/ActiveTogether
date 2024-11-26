@@ -45,7 +45,7 @@ export default class ABrand extends Component {
           <div className="col-3">
             <input type="text" value={this.state.bId} className="form-control" readOnly placeholder="Mã thương hiệu" />
             <input type="text" onChange={(e) => this.setState({bName: e.target.value})} value={this.state.bName} className="form-control mt-3" placeholder="Tên thương hiệu" />
-            <input type="submit" value="Lưu" onClick={e => this.saveNewBrand(e)} className="at-btn mt-3 mb-2" />
+            <input type="submit" value="Lưu" onClick={e => this.saveNewBrand(e)} className="at-btn mt-3 me-2" />
             <input type="button" value="Hủy" onClick={() => this.cancelBrand()} className="at-btn-secondary mt-3" />
           </div>
 

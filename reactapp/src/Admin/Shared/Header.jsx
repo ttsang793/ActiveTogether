@@ -2,7 +2,7 @@ import "./Header.css"
 
 export default function AHeader() {
   const handleSetting = () => {
-
+    location.href = "/admin/cai-dat-tai-khoan"
   }
 
   const handleLogout = () => {

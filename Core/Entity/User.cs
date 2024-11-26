@@ -1,4 +1,7 @@
-﻿namespace Core.Entity;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Core.Entity;
 
 public partial class User : BaseEntity
 {

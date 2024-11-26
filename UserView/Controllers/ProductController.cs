@@ -24,9 +24,9 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet("get")]
-    public IEnumerable<ProductReadDTO> GetAllProducts(string? search, int sort)
+    public async Task<IEnumerable<Product>> GetAllProducts(string? search, int sort)
     {
-        return _productService.GetAllProducts(search, sort);
+        return await _productService.GetAllProducts(search, sort);
     }
     
     [HttpGet("")]
@@ -36,9 +36,9 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet("img")]
-    public IEnumerable<ProductImage> GetProductImages(string urlName)
+    public IEnumerable<ProductImage> GetProductImagesByUrlName(string urlName)
     {
-        return _productDetailService.GetProductImages(urlName);
+        return _productDetailService.GetProductImagesByUrlName(urlName);
     }
 
     [HttpGet("filter")]

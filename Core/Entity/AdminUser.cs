@@ -1,8 +1,10 @@
-﻿namespace Core.Entity;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Core.Entity;
 
 public partial class AdminUser : BaseEntity
 {
-
     public string? Password { get; set; }
 
     public string? FullName { get; set; }
@@ -16,6 +18,8 @@ public partial class AdminUser : BaseEntity
     public string? Avatar { get; set; }
 
     public bool? IsActive { get; set; }
+
+    public bool? IsVertified { get; set; }
 
     public virtual ICollection<BlogArticle> BlogArticles { get; set; } = new List<BlogArticle>();
 

@@ -1,12 +1,10 @@
 ﻿namespace Core.DTO;
 
-public class ProductReadDTO : BaseDTO
+public class ProductSaveAdminDTO : BaseDTO
 {
     public int Id { get; set; }
 
     public string? Name { get; set; }
-
-    public string? Sku { get; set; }
 
     public string? UrlName { get; set; }
 
@@ -14,19 +12,13 @@ public class ProductReadDTO : BaseDTO
 
     public int? CategoryId { get; set; }
 
+    public string? Description { get; set; }
+
     public short? Gender { get; set; }
 
     public bool? IsChildren { get; set; }
 
-    public string? Image { get; set; }
-
-    public decimal? Price { get; set; }
-
-    public decimal? OldPrice { get; set; }
-
-    public int? Quantity { get; set; }
-
-    public bool? IsActive { get; set; }
+    public int[]? SportId { get; set; }
 }
 
 public class ProductReviewReadDTO : BaseDTO

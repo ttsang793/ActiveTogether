@@ -15,7 +15,7 @@ public interface IProductDetailService
 
     IEnumerable<ProductImage> GetProductImagesByColorId(int id);
 
-    Task<bool> ChangeQuantity(string sku, int change);    
+    Task<bool> ChangeQuantity(string sku, int change);
 
     Task<bool> Lock(string sku);
   

@@ -1,4 +1,4 @@
-using Core.Interface;
+﻿using Core.Interface;
 using Core.Entity;
 using Core.DTO;
 using Infrastructure.Data;
@@ -101,6 +101,8 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
             Point = (int)((oldOrder.UserId > 0) ? newTotal / 10000 : 0)!,
             DatePurchased = DateTime.Now,
             DateVertified = DateTime.Now,
+            PaymentMethod = "Hoàn tiền",
+            IsPaid = true,
             Status = 1,
             VertifyAdmin = r.VertifyAdmin
         });

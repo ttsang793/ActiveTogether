@@ -13,60 +13,64 @@ function showSignupForm(e) {
 }
 
 export default function Login() {
-  let [usernameLG, setUsernameLG] = useState("");
-  let [passwordLG, setPasswordLG] = useState("");
-  let [errorUsernameLG, setErrorUsernameLG] = useState("");
-  let [errorPasswordLG, setErrorPasswordLG] = useState("");
+  let [username, setUsername] = useState("");
+  let [password, setPassword] = useState("");
+  let [errorUsername, setErrorUsername] = useState("");
+  let [errorPassword, setErrorPassword] = useState("");
 
-  const handleUsernameLGChange = (newUsernameLG) => setUsernameLG(usernameLG = newUsernameLG);
-  const handlePasswordLGChange = (newPasswordLG) => setPasswordLG(passwordLG = newPasswordLG);
-  const handleUsernameLGError = (newErrorUsernameLG) => setErrorUsernameLG(newErrorUsernameLG);
-  const handlePasswordLGError = (newErrorPasswordLG) => setErrorPasswordLG(newErrorPasswordLG);
+  const handleUsername = e => {
+    setUsername(username = e.target.value);
+    handleErrorUsername();
+  }
+
+  const handleErrorUsername = () => {
+    let error = "";
+    if (username === "") error = "Vui lòng nhập tên đăng nhập, email hoặc SĐT";
+    setErrorUsername(error);
+  }
+
+  const handlePassword = e => {
+    setPassword(password = e.target.value);
+    handleErrorPassword();
+  }
+
+  const handleErrorPassword = () => {
+    let error = "";
+    if (password === "") error = "Vui lòng nhập mật khẩu";
+    setErrorPassword(error);
+  }
   
 
   async function LoginUser(e) {
     e.preventDefault();
-    const error = [];
-    let errorFlag = false;
-    if (usernameLG === "") {
-      error.push("Vui lòng nhập tên đăng nhập, email hoặc SĐT.");
-      errorFlag = true;
-    }
-    else error.push("");
-    if (passwordLG === "") {
-      error.push("Vui lòng nhập mật khẩu.");
-      errorFlag = true;
-    }
-    else error.push("");
 
-    if (errorFlag) {
-      handleUsernameLGError(error[0]);
-      handlePasswordLGError(error[1]);
-      return;
-    }
+    handleErrorUsername();
+    handleErrorPassword();
 
-    const password = Encode(usernameLG, passwordLG);
+    if (errorUsername !== "" || errorPassword !== "") return;
+
+    password = Encode(username, password);
     const response = await fetch("/user/login", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify({username: usernameLG, password})
+      body: JSON.stringify({username: username, password})
     });
     
     if (response.ok) {
       alert("Đăng nhập thành công");
 
-      fetch(`/user/avatar/get?username=${usernameLG}`).then(response => response.text()).then(data => {
+      fetch(`/user/avatar/get?username=${username}`).then(response => response.text()).then(data => {
         console.log(data);
-        localStorage.setItem("userLogin", usernameLG);
+        localStorage.setItem("userLogin", username);
         localStorage.setItem("userAvatar", data);
         location.href = "/";
       })
     }
-    else if (response.status === 404) handleUsernameLGError("Tài khoản không tồn tại. Vui lòng kiểm tra lại.");
-    else if (response.status === 500) handlePasswordLGError("Sai mật khẩu, vui lòng nhập lại.");
+    else if (response.status === 404) setErrorUsername("Tài khoản không tồn tại. Vui lòng kiểm tra lại.");
+    else if (response.status === 500) setErrorPassword("Sai mật khẩu, vui lòng nhập lại.");
   }
 
   return (    
@@ -75,8 +79,8 @@ export default function Login() {
       <hr />
 
       <form className="login-form" id="login-form">
-        <FormTextBox type="usernameLG" placeholder="Tên người dùng" icon="bi-person-fill" value={usernameLG} onValueChange={handleUsernameLGChange} errorValue={errorUsernameLG} />
-        <FormTextBox type="passwordLG" placeholder="Mật khẩu" icon="bi-lock-fill" onValueChange={handlePasswordLGChange} errorValue={errorPasswordLG} />
+        <FormTextBox type="username" placeholder="Tên người dùng" icon="bi-person-fill" value={username} onValueChange={handleUsername} errorValue={errorUsername} />
+        <FormTextBox type="password" placeholder="Mật khẩu" icon="bi-lock-fill" value={password} onValueChange={handlePassword} errorValue={errorPassword} />
         <div className="text-start">
           <a className="switch-page" href="">Quên mật khẩu?</a>
         </div>

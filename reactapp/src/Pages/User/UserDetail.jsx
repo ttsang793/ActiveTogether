@@ -14,12 +14,38 @@ function UserDetailPartial(props) {
   let [errorPhone, setErrorPhone] = useState("");
   let [errorEmail, setErrorEmail] = useState("");
   
-  const handleFullNameChange = newFullName => setFullName(fullName = newFullName);
-  const handlePhoneChange = newPhone => setPhone(phone = newPhone);
-  const handleEmailChange = newEmail => setEmail(email = newEmail);  
-  const handleFullNameError = newErrorFullName => setErrorFullName(errorFullName = newErrorFullName);
-  const handlePhoneError = newErrorPhone => setErrorPhone(errorPhone = newErrorPhone);
-  const handleEmailError = newErrorEmail => setErrorEmail(errorEmail = newErrorEmail);
+  const handleFullNameChange = e => {
+    setFullName(fullName = e.target.value);
+    handleFullNameError();
+  }
+
+  const handlePhoneChange = e => {
+    setPhone(phone = e.target.value);
+    handlePhoneError();
+  }
+
+  const handleEmailChange = e => {
+    setEmail(email = e.target.value);
+    handleEmailError();
+  }
+
+  const handleFullNameError = () => {
+    let error = "";
+    if (fullName === "") error = "Vui lòng nhập tên đầy đủ của bạn";
+    setErrorFullName(errorFullName = error);
+  }
+  const handlePhoneError = () => {
+    let error = "";
+    if (phone === "") error = "Số điện thoại không được để trống";
+    else if (!phone.match(/^0(([3,5,7,8,9][0-9]{8})|([2][0-9]{9}))$/gm)) error = "Số điện thoại phải đúng định dạng (10 hoặc 11 số)";
+    setErrorPhone(errorPhone = error);
+  }
+  const handleEmailError = () => {
+    let error = "";
+    if (email === "") error = "Email không được để trống";
+    else if (!email.match(/.+@[a-z]+(\.[a-z]*)+/gm)) error = "Email phải đúng định dạng (example@mail.com)";
+    setErrorEmail(errorEmail = error);
+  }
 
   function handleFileUpload(e) {
     setAvatar(e.target.files[0])
@@ -49,39 +75,11 @@ function UserDetailPartial(props) {
   async function updateInfo(e) {
     e.preventDefault();
 
-    const error = [];
-    let errorFlag = false;
-    if (fullName === "") {
-      error.push("Vui lòng nhập tên đầy đủ của bạn.");
-      errorFlag = true;
-    }
-    else error.push("");
-    if (phone === "") {
-      error.push("Số điện thoại không được để trống");
-      errorFlag = true;
-    }
-    else if (!phone.match(/^0(([3,5,7,8,9][0-9]{8})|([2][0-9]{9}))$/gm)) {
-      error.push("Số điện thoại phải đúng định dạng (10 hoặc 11 số)");
-      errorFlag = true;
-    }
-    else error.push("");
-    if (email === "") {
-      error.push("Email không được để trống");
-      errorFlag = true;
-    }
-    else if (!email.match(/.+@[a-z]+(\.[a-z]*)+/gm)) {
-      error.push("Email phải đúng định dạng (example@mail.com)");
-      errorFlag = true;
-    }
-    else error.push("");
-    
+    handleFullNameError();
+    handlePhoneError();
+    handleEmailError();
 
-    if (errorFlag) {
-      handleFullNameError(error[0])
-      handlePhoneError(error[1])
-      handleEmailError(error[2])
-      return;
-    }
+    if (!(errorFullName === "" && errorPhone === "" && errorEmail === "")) return;
     
     if (confirm("Bạn có muốn cập nhật thông tin tài khoản?")) {
       const username = props.user.username;
@@ -123,9 +121,9 @@ function UserDetailPartial(props) {
           </div>
 
           <div className="avatar-container">
-            <img src={avatar} alt="avatar" className="avatar" id="avatar" />
+            <img src={avatar} alt="avatar" className="w-120px avatar" id="avatar" />
             <input type="file" id="upload-thumbnail" accept="image/*" className="disabled" onChange={handleFileUpload} />
-            <input type="button" value="Chọn avatar" onClick={() => document.getElementById('upload-thumbnail').click()} className="small-at-btn mb-2" />
+            <input type="button" value="Chọn avatar" onClick={() => document.getElementById('upload-thumbnail').click()} className="small-at-btn mt-2" />
           </div>
         </div>
 

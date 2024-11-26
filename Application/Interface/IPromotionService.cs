@@ -9,9 +9,9 @@ public interface IPromotionService
 
     IEnumerable<PromotionDetail> GetAllPromotionDetails();
 
-    Task<bool> Insert(Promotion brand);
+    Task<bool> Insert(PromotionAdminDTO promotionDTO);
 
-    Task<bool> Update(Promotion brand);
+    Task<bool> Update(PromotionAdminDTO promotionDTO);
 
     Task<bool> UpdateDetail(int id, List<PromotionDetail> promotionDetails);
 

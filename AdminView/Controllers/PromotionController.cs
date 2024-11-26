@@ -1,5 +1,6 @@
 using Application.Interface;
 using Core.Entity;
+using Core.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdminView.Controllers;
@@ -22,25 +23,25 @@ public class PromotionController : ControllerBase
         return _promotionService.GetAllPromotions();
     }
 
-    [HttpGet("get/detail")]
+    [HttpGet("detail/get")]
     public IEnumerable<PromotionDetail> GetAllPromotionDetails()
     {
         return _promotionService.GetAllPromotionDetails();
     }
     
     [HttpPost("add")]
-    public async Task<StatusCodeResult> Insert(Promotion promotion)
+    public async Task<StatusCodeResult> Insert([Bind("Title", "DateStart", "DateEnd")]PromotionAdminDTO promotionDTO)
     {
-        return (await _promotionService.Insert(promotion)) ? StatusCode(200) : StatusCode(404);
+        return (await _promotionService.Insert(promotionDTO)) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("update")]
-    public async Task<StatusCodeResult> Update(Promotion promotion)
+    public async Task<StatusCodeResult> Update([Bind("Id", "Title", "DateStart", "DateEnd")]PromotionAdminDTO promotionDTO)
     {
-        return (await _promotionService.Update(promotion)) ? StatusCode(200) : StatusCode(404);
+        return (await _promotionService.Update(promotionDTO)) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPost("update/detail")]
+    [HttpPost("detail/save")]
     public async Task<StatusCodeResult> UpdateDetail([Bind("Id", "PromotionDetail")] Promotion promotion)
     {
         int id = promotion.Id;

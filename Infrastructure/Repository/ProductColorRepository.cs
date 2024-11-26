@@ -12,22 +12,29 @@ public class ProductColorRepository : BaseRepository<ProductColor>, IProductColo
     public ProductColorRepository(AtWebContext dbContext) : base(dbContext)
     {
     }
-    
-    private static string GetImageCode(string path)
-    {
-        int length = path.IndexOf('.') - path.IndexOf('-') - 1;
-        return path.Substring(path.IndexOf('-') + 1, length);
-    }
 
     public IEnumerable<ProductColor> GetProductColorByProductId(int productId)
     {
-        var color = GetDbSet().Include(c => c.ColorCode).ToList();
+        var color = GetDbSet().Include(c => c.ColorCodeNavigation).Include(c => c.ProductImages).Where(p => p.ProductId == productId).ToList();
         return color;
     }    
 
     private ProductColor GetById(int id)
     {
         return GetDbSet().First(s => s.Id == id);
+    }
+
+    public void Insert(ProductColor productColor)
+    {
+        productColor.IsActive = true;
+        GetDbSet().Add(productColor);
+    }
+
+    public void Update(ProductColor productColor)
+    {
+        var pc = GetById(productColor.Id);
+        pc.ColorCode = productColor.ColorCode;
+        GetDbSet().Update(pc);
     }
 
     public void Lock(int id)

@@ -1,7 +1,12 @@
-﻿namespace Core.Entity;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Core.Entity;
 
 public partial class Order : BaseEntity
 {
+    public int Id { get; set; }
+
     public int? UserId { get; set; }
 
     public string? FullName { get; set; }
@@ -27,6 +32,10 @@ public partial class Order : BaseEntity
     public short? Status { get; set; }
 
     public int? VertifyAdmin { get; set; }
+
+    public bool? IsPaid { get; set; }
+
+    public string? PaymentMethod { get; set; }
 
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 

@@ -1,19 +1,18 @@
 ﻿using Core.DTO;
 using Core.Entity;
+using System.Linq.Expressions;
 
 namespace Core.Interface;
 
-public interface IProductRepository : ILock, IUnlock
+public interface IProductRepository : IInsert<Product>, IUpdate<Product>, ILock, IUnlock
 {
-    IEnumerable<ProductReadDTO> GetAllProductsDefault(string search);
+    Task<IEnumerable<Product>> GetAllProducts(string search, bool desc = false, Expression<Func<Product, object>> expression = null);
 
-    IEnumerable<ProductReadDTO> GetAllProductsPriceAsc(string search);
+    void Insert(List<ProductSport> productSports);
 
-    IEnumerable<ProductReadDTO> GetAllProductsPriceDesc(string search);
-
-    IEnumerable<ProductReadDTO> GetAllProductsNameAsc(string search);
-    
-    IEnumerable<ProductReadDTO> GetAllProductsNameDesc(string search);
+    void Update(List<ProductSport> productSports, int id);
 
     List<FilterDTO> GetAllFilter();
+
+    IEnumerable<Product> GetAllProducts();
 }

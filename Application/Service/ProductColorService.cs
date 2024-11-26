@@ -19,6 +19,18 @@ public class ProductColorService : IProductColorService
         return _unitOfWork.ProductColors.GetProductColorByProductId(productId);
     }
 
+    public async Task<bool> Insert(ProductColor productColor)
+    {
+        _unitOfWork.ProductColors.Insert(productColor);
+        return await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<bool> Update(ProductColor productColor)
+    {
+        _unitOfWork.ProductColors.Update(productColor);
+        return await _unitOfWork.SaveChangesAsync();
+    }
+
     public async Task<bool> Lock(int id)
     {
         _unitOfWork.ProductColors.Lock(id);

@@ -91,7 +91,7 @@ export default class Products extends Component {
 
     return (
       <div className="product-list">
-        {products.map(p => <ProductGrid key={p.urlName} urlName={p.urlName} image={`${p.image.substring(0, p.image.indexOf(",") > -1 ? p.image.indexOf(",") : p.image.length)}`} name={p.name} price={p.price} oldPrice={p.oldPrice} />)}
+        {products.map(p => <ProductGrid key={p.urlName} urlName={p.urlName} image={p.productColors[0].productImages[0].image} name={p.name} price={p.price} oldPrice={null} />)}
       </div>
     )
   }

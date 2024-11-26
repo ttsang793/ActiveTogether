@@ -18,9 +18,57 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet("get")]
-    public IEnumerable<ProductReadDTO> GetAllProducts()
+    public async Task<IEnumerable<Product>> GetAllProducts()
     {
-        return _productService.GetAllProducts("", 0);
+        return await _productService.GetAllProducts();
+    }
+
+    [HttpPost("add")]
+    public async Task<StatusCodeResult> Insert([Bind("Id", "Name", "UrlName", "BrandId", "CategoryId", "Description", "Gender", "IsChildren", "SportId")]ProductSaveAdminDTO productDTO)
+    {
+        var product = new Product
+        {
+            Id = productDTO.Id,
+            Name = productDTO.Name,
+            UrlName = productDTO.UrlName,
+            BrandId = productDTO.BrandId,
+            CategoryId = productDTO.CategoryId,
+            Description = productDTO.Description,
+            Gender = productDTO.Gender,
+            IsChildren = productDTO.IsChildren
+        };
+
+        var productSports = new List<ProductSport>();
+
+        foreach (var s in productDTO.SportId)
+            productSports.Add(new ProductSport { ProductId = productDTO.Id, SportId = s });
+        product.ProductSports = productSports;
+
+        return (await _productService.Insert(product)) ? StatusCode(200) : StatusCode(404);
+    }
+
+    [HttpPut("update")]
+    public async Task<StatusCodeResult> Update([Bind("Id", "Name", "UrlName", "BrandId", "CategoryId", "Description", "Gender", "IsChildren", "SportId")] ProductSaveAdminDTO productDTO)
+    {
+        var product = new Product
+        {
+            Id = productDTO.Id,
+            Name = productDTO.Name,
+            UrlName = productDTO.UrlName,
+            BrandId = productDTO.BrandId,
+            CategoryId = productDTO.CategoryId,
+            Description = productDTO.Description,
+            Gender = productDTO.Gender,
+            IsChildren = productDTO.IsChildren
+        };
+
+        var productSports = new List<ProductSport>();
+
+        foreach (var s in productDTO.SportId)
+            productSports.Add(new ProductSport { ProductId = productDTO.Id, SportId = s });
+        product.ProductSports = productSports;
+
+        return (await _productService.Update(product)) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("lock")]

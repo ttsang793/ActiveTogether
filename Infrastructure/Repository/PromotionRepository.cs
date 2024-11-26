@@ -27,13 +27,26 @@ public class PromotionRepository : BaseRepository<Promotion>, IPromotionReposito
         return GetDbSet().First(b => b.Id == id);
     }
 
-    public void Insert(Promotion promotion)
+    public void Insert(PromotionAdminDTO promotionDTO)
     {
+        Promotion promotion = new Promotion
+        {
+            Title = promotionDTO.Title,
+            DateStart = DateTime.Parse(promotionDTO.DateStart),
+            DateEnd = DateTime.Parse(promotionDTO.DateEnd),
+            IsActive = true
+        };
+
         GetDbSet().Add(promotion);
     }
 
-    public void Update(Promotion promotion)
+    public void Update(PromotionAdminDTO promotionDTO)
     {
+        Promotion promotion = GetById((int)promotionDTO.Id);
+        promotion.Title = promotionDTO.Title;
+        promotion.DateStart = DateTime.Parse(promotionDTO.DateStart);
+        promotion.DateEnd = DateTime.Parse(promotionDTO.DateEnd);
+
         GetDbSet().Update(promotion);
     }
 

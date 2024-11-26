@@ -905,6 +905,7 @@
         "framework": ".NETCoreApp,Version=v7.0",
         "dependencies": {
           "Core": "1.0.0",
+          "Microsoft.AspNetCore.Http": "2.2.2",
           "Microsoft.EntityFrameworkCore": "7.0.14",
           "MySql.EntityFrameworkCore": "7.0.14"
         },

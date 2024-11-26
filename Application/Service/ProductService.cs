@@ -2,6 +2,7 @@
 using Application.Interface;
 using Core.Interface;
 using Core.Entity;
+using System.Linq.Expressions;
 
 namespace Application.Service;
 
@@ -14,24 +15,41 @@ public class ProductService : IProductService
         _unitOfWork = unitOfWork;
     }
     
-    public IEnumerable<ProductReadDTO> GetAllProducts(string? search, int sort)
+    public async Task<IEnumerable<Product>> GetAllProducts(string search = "", int sort = 0)
     {
         search = (search == null) ? string.Empty : search.ToLower();
+        Expression<Func<Product, object>> priceExpression = p => p.Price!;
+        Expression<Func<Product, object>> nameExpression = p => p.Name!;
 
         return sort switch
         {
-            0 => _unitOfWork.Products.GetAllProductsDefault(search),
-            1 => _unitOfWork.Products.GetAllProductsPriceAsc(search),
-            2 => _unitOfWork.Products.GetAllProductsPriceDesc(search),
-            3 => _unitOfWork.Products.GetAllProductsNameAsc(search),
-            4 => _unitOfWork.Products.GetAllProductsNameDesc(search),
-            _ => new List<ProductReadDTO>(),
+            0 => await _unitOfWork.Products.GetAllProducts(search),
+            1 => await _unitOfWork.Products.GetAllProducts(search, false, priceExpression),
+            2 => await _unitOfWork.Products.GetAllProducts(search, true, priceExpression),
+            3 => await _unitOfWork.Products.GetAllProducts(search, false, nameExpression),
+            4 => await _unitOfWork.Products.GetAllProducts(search, true, nameExpression),
+            _ => new List<Product>(),
         };
     }
     
     public List<FilterDTO> GetAllFilter()
     {
         return _unitOfWork.Products.GetAllFilter();
+    }
+
+    public async Task<bool> Insert(Product product)
+    {
+        _unitOfWork.Products.Insert(product);
+        _unitOfWork.Products.Insert(product.ProductSports.ToList());
+        return await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<bool> Update(Product product)
+    {
+        Console.WriteLine("hello world");
+        _unitOfWork.Products.Update(product);
+        _unitOfWork.Products.Update(product.ProductSports.ToList(), product.Id);
+        return await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<bool> Lock(int id)

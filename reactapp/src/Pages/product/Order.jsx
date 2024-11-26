@@ -10,19 +10,61 @@ function OrderInfo(props) {
   let [address, setAddress] = useState(props.addressList[0].address || "");
   let [phone, setPhone] = useState(props.user.phone ||"");
   let [email, setEmail] = useState(props.user.email ||"");
+  let [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
   let [errorFullName, setErrorFullName] = useState("");
   let [errorAddress, setErrorAddress] = useState("");
   let [errorPhone, setErrorPhone] = useState("");
   let [errorEmail, setErrorEmail] = useState("");
 
-  const handleFullNameChange = newFullName => setFullName(fullName = newFullName);
-  const handleAddressChange = newAddress => setAddress(address = newAddress);
-  const handlePhoneChange = newPhone => setPhone(phone = newPhone);
-  const handleEmailChange = newEmail => setEmail(email = newEmail);
-  const handleFullNameError = newErrorFullName => setErrorFullName(errorFullName = newErrorFullName);
-  const handleAddressError = newErrorAddress => setErrorAddress(errorAddress = newErrorAddress);
-  const handlePhoneError = newErrorPhone => setErrorPhone(errorPhone = newErrorPhone);
-  const handleEmailError = newErrorEmail => setErrorEmail(errorEmail = newErrorEmail);
+  const handleFullNameChange = e => {
+    setFullName(fullName = e.target.value);
+    handleErrorFullName();
+  }
+  const handleAddressChange = e => {
+    setAddress(address = e.target.value);
+    handleErrorAddress();
+  }
+  const handleAddressSelected = newAddress => {
+    setAddress(address = newAddress);
+    handleErrorAddress();
+  }
+  const handlePhoneChange = e => {
+    setPhone(phone = e.target.value);
+    handleErrorPhone();
+  }
+  const handleEmailChange = e => {
+    setEmail(email = e.target.value);
+    handleErrorEmail();
+  }
+  const handlePaymentChange = e => setPaymentMethod(e.target.value);
+  
+  const handleErrorFullName = () => {
+    let error = "";
+
+    if (fullName === "") error = "Vui lòng nhập tên người nhận";
+    setErrorFullName(errorFullName = error);
+  }
+  const handleErrorAddress = () => {
+    let error = "";
+
+    if (address === "") error = "Cần có địa chỉ mặc định";
+    else if (!address.match(/^\d+(\/\d)*\s\X+$/gm)) address = "Vui lòng nhập địa chỉ đúng định dạng (VD: 23 Âu Dương Lân, P3, Q8)";
+    setErrorAddress(errorAddress = error);
+  }
+  const handleErrorPhone = () => {
+    let error = "";
+
+    if (phone === "") error = "Số điện thoại không được để trống";
+    else if (!phone.match(/^0(([3,5,7,8,9][0-9]{8})|([2][0-9]{9}))$/gm)) error = "Số điện thoại phải đúng định dạng (10 hoặc 11 số)";
+    setErrorPhone(errorPhone = error);
+  }
+  const handleErrorEmail = () => {
+    let error = "";
+
+    if (email === "") error = "Email không được để trống";
+    else if (!email.match(/.+@[a-z]+(\.[a-z]*)+/gm)) error = "Email phải đúng định dạng (example@mail.com)";
+    setErrorEmail(errorEmail = error);
+  }
   
   let products;
   try {
@@ -33,7 +75,7 @@ function OrderInfo(props) {
   }
 
   function handleAddress(e) {
-    handleAddressChange(props.addressList[e.target.selectedIndex].address);
+    handleAddressSelected(props.addressList[e.target.selectedIndex].address);
   }
 
   function calTotal() {
@@ -44,49 +86,32 @@ function OrderInfo(props) {
 
   async function addOrder(e) {
     e.preventDefault();
-    const error = [];
-    let errorFlag = false;
 
-    if (fullName === "") {
-      error.push("Cần có tên người nhận");
-      errorFlag = true;
-    }
-    else error.push("");
-    if (address === "") {
-      error.push("Cần có địa chỉ nhận hàng");
-      errorFlag = true;
-    }
-    else error.push("");
-    if (phone === "") {
-      error.push("Số điện thoại không được để trống");
-      errorFlag = true;
-    }
-    else if (!phone.match(/^0(([3,5,7,8,9][0-9]{8})|([2][0-9]{9}))$/gm)) {
-      error.push("Số điện thoại phải đúng định dạng (10 hoặc 11 số)");
-      errorFlag = true;
-    }
-    else error.push("");
-    if (email === "") {
-      error.push("Email không được để trống");
-      errorFlag = true;
-    }
-    else if (!email.match(/.+@[a-z]+(\.[a-z]*)+/gm)) {
-      error.push("Email phải đúng định dạng (example@mail.com)");
-      errorFlag = true;
-    }
-    else error.push("");
+    handleErrorFullName();
+    handleErrorAddress();
+    handleErrorEmail();
+    handleErrorPhone();
 
-    if (errorFlag) {
-      handleFullNameError(error[0])
-      handleAddressError(error[1])
-      handlePhoneError(error[2])
-      handleEmailError(error[3])
-      return;
-    }
+    if (!(errorFullName === "" && errorAddress === "" && errorPhone === "" && errorEmail === "")) return;
     
     const username = localStorage.getItem("userLogin") || "";
 
     if (confirm("Bạn có chắc chắn thanh toán cho các sản phẩm bạn đã chọn?")) {
+      if (paymentMethod === "VNPay") {
+        const response = await fetch("/order/vnpay/payment", {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ username, fullName, total: calTotal() })
+        })
+        const url = await response.json();
+        location.href = url;
+      }
+
+      /*
       const response = await fetch("/order/add", {
         method: 'POST',
         headers: {
@@ -94,7 +119,7 @@ function OrderInfo(props) {
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          username, fullName, address, phone, email,
+          username, fullName, address, phone, email, paymentMethod,
           total: calTotal(),
           orderDetails: products
         })
@@ -105,7 +130,7 @@ function OrderInfo(props) {
         alert("Đặt hàng thành công! Cảm ơn bạn đã lựa chọn Active Together!");
         location.href = "/nguoi-dung/lich-su-don-hang";
       }
-      else alert("Đã có lỗi xảy ra, đặt hàng thất bại.");
+      else alert("Đã có lỗi xảy ra, đặt hàng thất bại.");*/
     }
   }
 
@@ -116,19 +141,29 @@ function OrderInfo(props) {
 
       <div className="d-flex mb-3 order-container">
         <div>
-          <div className="fs-4 fw-bold mb-4">THÔNG TIN NHẬN HÀNG</div>
+          <div className="fs-4 fw-bold fst-italic">THÔNG TIN NHẬN HÀNG</div>
+          <hr className="mt-0 mb-4" />
           {
             (localStorage.getItem("userLogin") !== null) ? (
-            <select onChange={handleAddress}>
-              {
-                props.addressList.map((a, i) => <option key={i} value={i}>{a.type}</option>)
-              }
-            </select>) : <></>
+            <>
+              <div className="form-detail-title">Địa chỉ đã lưu</div>
+              <select onChange={handleAddress}>
+                {
+                  props.addressList.map((a, i) => <option key={i} value={i}>{a.type}</option>)
+                }
+              </select>
+            </>) : <></>
           }
           <FormTextBox type="fullName" placeholder="Tên người nhận" icon="bi-person-fill" value={fullName} onValueChange={handleFullNameChange} errorValue={errorFullName} />
           <FormTextBox type="address" placeholder="Địa chỉ" icon="bi-house-door-fill" value={address} onValueChange={handleAddressChange} errorValue={errorAddress} />
           <FormTextBox type="phone" placeholder="Số điện thoại" icon="bi-telephone-fill" value={phone} onValueChange={handlePhoneChange} errorValue={errorPhone} />
           <FormTextBox type="email" placeholder="Email" icon="bi-envelope-fill" value={email} onValueChange={handleEmailChange} errorValue={errorEmail} />
+
+          <div className="form-detail-title">Hình thức thanh toán</div>
+          <select onChange={handlePaymentChange} defaultValue={paymentMethod}>
+            <option value="Tiền mặt">Tiền mặt</option>
+            <option value="VNPay">VNPay</option>
+          </select>
         </div>
 
         <div className="item-list">

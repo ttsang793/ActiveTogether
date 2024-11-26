@@ -1,6 +1,7 @@
 using Application.Interface;
 using Core.Entity;
 using Microsoft.AspNetCore.Mvc;
+using System.Drawing;
 
 namespace AdminView.Controllers;
 
@@ -22,19 +23,17 @@ public class ProductColorController : ControllerBase
         return _productColorService.GetProductColorByProductId(id);
     }
 
-    /*
     [HttpPost("add")]
-    public async Task<StatusCodeResult> Insert(ProductColor productColor)
+    public async Task<StatusCodeResult> Insert([Bind("ProductId", "ColorCode")]ProductColor productColor)
     {
         return (await _productColorService.Insert(productColor)) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("update")]
-    public async Task<StatusCodeResult> Update(ProductColor productColor)
+    public async Task<StatusCodeResult> Update([Bind("Id", "ColorCode")] ProductColor productColor)
     {
         return (await _productColorService.Update(productColor)) ? StatusCode(200) : StatusCode(404);
     }
-    */
 
     [HttpPut("lock")]
     public async Task<StatusCodeResult> Lock(int id)

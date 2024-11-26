@@ -2,8 +2,8 @@ import "./Product.css"
 import { Component } from "react";
 import PleaseWait from "/src/Shared/PleaseWait"
 
-export default class AProduct extends Component {
-  static displayName = AProduct.name;
+export default class AProductDetail extends Component {
+  static displayName = AProductDetail.name;
 
   constructor(props) {
     super(props);
@@ -11,7 +11,8 @@ export default class AProduct extends Component {
   }
 
   componentDidMount = () => {
-    this.populateProductDetailData();
+    const id = Number(location.pathname.substring(location.pathname.lastIndexOf("/") + 1));
+    this.populateProductDetailData(id);
   }
 
   renderTable(products) {
@@ -20,9 +21,6 @@ export default class AProduct extends Component {
         {
           products.map(p =>
             <tr key={p.sku}>
-              <td className="align-middle">
-                <img src={p.image} alt={p.sku} className="product-thumbnail" />
-              </td>
               <td className="align-middle">{p.sku}</td>
               <td className="align-middle">{p.size}</td>
               <td className="align-middle">{p.price}</td>
@@ -55,15 +53,9 @@ export default class AProduct extends Component {
           </div>
 
           <div className="col-9">
-            <div className="d-flex">
-              <input type="search" className="form-control" placeholder="Nhập tên sản phẩm cần tìm..." />
-              <button className="small-at-sbtn"><i className="bi bi-search"></i></button>
-            </div>
-
-            <table className="table table-striped table-bordered table-hover mt-3">
+            <table className="table table-striped table-bordered table-hover">
               <thead>
                 <tr>
-                  <th className="text-center w-10"></th>
                   <th className="text-center">SKU</th>
                   <th className="text-center">Kích thước</th>
                   <th className="text-center">Đơn giá</th>
@@ -72,7 +64,7 @@ export default class AProduct extends Component {
               </thead>
 
               <tbody className="table-group-divider">
-                {this.renderTable(this.state.product)}
+                {this.renderTable(this.state.detail)}
               </tbody>
             </table>
           </div>
@@ -81,8 +73,8 @@ export default class AProduct extends Component {
     )
   }
 
-  async populateProductDetailData() {
-    fetch("/api/productdetail/get").then(response => response.json()).then(data => this.setState({ loading: false, product: data }));
+  async populateProductDetailData(id) {
+    fetch(`/api/productdetail/get?id=${id}`).then(response => response.json()).then(data => this.setState({ detail: data, loading: false }, () => console.log(data)));
   }
 
   cancelProductDetail() {

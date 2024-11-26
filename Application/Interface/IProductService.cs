@@ -5,9 +5,13 @@ namespace Application.Interface;
 
 public interface IProductService
 {
-    IEnumerable<ProductReadDTO> GetAllProducts(string? search, int sort);
+    Task<IEnumerable<Product>> GetAllProducts(string search = "", int sort = 0);
 
     List<FilterDTO> GetAllFilter();
+
+    Task<bool> Insert(Product product);
+
+    Task<bool> Update(Product product);
 
     Task<bool> Lock(int id);
 

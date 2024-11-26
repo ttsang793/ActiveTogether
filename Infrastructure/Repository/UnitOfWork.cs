@@ -5,6 +5,7 @@ namespace Infrastructure.Repository;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly AtWebContext _dbContext;
+    private IAdminUserRepository? _adminUserRepository;
     private IBlogRepository? _blogRepository;
     private IBrandRepository? _brandRepository;
     private ICartRepository? _cartRepository;
@@ -18,6 +19,8 @@ public class UnitOfWork : IUnitOfWork
     private IProductReviewRepository? _productReviewRepository;
     private IPromotionRepository? _promotionRepository;
     private IRefundRepository? _refundRepository;
+    private IRoleRepository? _roleRepository;
+    private IRolePermissionRepository? _rolePermissionRepository;
     private ISportRepository? _sportRepository;
     private IUserAddressRepository? _userAddressRepository;
     private IUserRepository? _userRepository;
@@ -27,6 +30,7 @@ public class UnitOfWork : IUnitOfWork
         _dbContext = dbContext;
     }
 
+    public IAdminUserRepository AdminUsers => _adminUserRepository ??= new AdminUserRepository(_dbContext);
     public IBrandRepository Brands => _brandRepository ??= new BrandRepository(_dbContext);
     public IBlogRepository Blogs => _blogRepository ??= new BlogRepository(_dbContext);    
     public ICartRepository Carts => _cartRepository ??= new CartRepository(_dbContext);
@@ -40,6 +44,8 @@ public class UnitOfWork : IUnitOfWork
     public IProductReviewRepository ProductReviews => _productReviewRepository ??= new ProductReviewRepository(_dbContext);
     public IPromotionRepository Promotions => _promotionRepository ??= new PromotionRepository(_dbContext);
     public IRefundRepository Refunds => _refundRepository ??= new RefundRepository(_dbContext);
+    public IRoleRepository Roles => _roleRepository ??= new RoleRepository(_dbContext);
+    public IRolePermissionRepository RolePermissions => _rolePermissionRepository ??= new RolePermissionRepository(_dbContext);
     public ISportRepository Sports => _sportRepository ??= new SportRepository(_dbContext);
     public IUserAddressRepository UserAddresses => _userAddressRepository ??= new UserAddressRepository(_dbContext);
     public IUserRepository Users => _userRepository ??= new UserRepository(_dbContext);

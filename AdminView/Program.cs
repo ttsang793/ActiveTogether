@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.RegisterDb(builder.Configuration);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IAdminUserService, AdminUserService>();
 builder.Services.AddScoped<IBlogService, BlogService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICartService, CartService>();
@@ -16,6 +17,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<IImportService, ImportService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductColorService, ProductColorService>(); 
 builder.Services.AddScoped<IProductDetailService, ProductDetailService>();

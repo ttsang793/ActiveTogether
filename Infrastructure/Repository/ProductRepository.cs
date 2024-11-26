@@ -2,6 +2,8 @@
 using Core.Entity;
 using Core.Interface;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Infrastructure.Repository;
 
@@ -11,142 +13,18 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
     }
 
-    public IEnumerable<ProductReadDTO> GetAllProductsDefault(string search)
+    public async Task<IEnumerable<Product>> GetAllProducts(string search, bool desc = false, Expression<Func<Product, object>> expression = null)
     {
-        var productList = (from p in GetDbContext().Products
-                           join c in GetDbContext().ProductColors on p.Id equals c.ProductId
-                           join i in GetDbContext().ProductImages on c.Id equals i.ProductColorId
-                           join d in GetDbContext().ProductDetails on c.Id equals d.ProductColorId
-                           where i.Image!.Contains("-1.") && p.Name.ToLower().Contains(search)
-                           group new { p, c, i, d } by p.Id into g
-                           select new ProductReadDTO
-                           {
-                               Id = g.Key,
-                               Name = g.Select(x => x.p.Name).First(),
-                               UrlName = g.Select(x => x.p.UrlName).First(),
-                               BrandId = g.Select(x => x.p.BrandId).First(),
-                               CategoryId = g.Select(x => x.p.CategoryId).First(),
-                               Gender = g.Select(x => x.p.Gender).First(),
-                               IsChildren = g.Select(x => x.p.IsChildren).First(),
-                               Image = g.Select(x => x.i.Image).First(),
-                               Price = g.Select(x => x.p.Price).First(),
-                               Quantity = g.Sum(x => x.d.Quantity),
-                               IsActive = g.Select(x => x.p.IsActive).First()
-                           });
+        IQueryable<Product> productQuery;
 
-        return productList;
-    }
+        if (search == "")
+            productQuery = GetDbSet().Include(p => p.ProductColors).ThenInclude(p => p.ProductImages).Include(p => p.ProductSports);
+        else
+            productQuery = GetDbSet().Include(p => p.ProductColors).ThenInclude(p => p.ProductImages).Include(p => p.ProductSports).Where(p => p.Name.Contains(search));
 
-    public IEnumerable<ProductReadDTO> GetAllProductsPriceAsc(string search)
-    {
-
-        var productList = (from p in GetDbContext().Products
-                           join c in GetDbContext().ProductColors on p.Id equals c.ProductId
-                           join i in GetDbContext().ProductImages on c.Id equals i.ProductColorId
-                           join d in GetDbContext().ProductDetails on c.Id equals d.ProductColorId
-                           where i.Image!.Contains("-1.") && (p.Name.ToLower().Contains(search))
-                           group new { p, c, i, d } by p.Id into g
-                           orderby g.Select(x => x.p.Price).FirstOrDefault()
-                           select new ProductReadDTO
-                           {
-                               Id = g.Key,
-                               Name = g.Select(x => x.p.Name).First(),
-                               UrlName = g.Select(x => x.p.UrlName).First(),
-                               BrandId = g.Select(x => x.p.BrandId).First(),
-                               CategoryId = g.Select(x => x.p.CategoryId).First(),
-                               Gender = g.Select(x => x.p.Gender).First(),
-                               IsChildren = g.Select(x => x.p.IsChildren).First(),
-                               Image = g.Select(x => x.i.Image).First(),
-                               Price = g.Select(x => x.p.Price).First(),
-                               Quantity = g.Sum(x => x.d.Quantity),
-                               IsActive = g.Select(x => x.p.IsActive).First()
-                           });
-
-        return productList;
-    }
-
-    public IEnumerable<ProductReadDTO> GetAllProductsPriceDesc(string search)
-    {
-
-        var productList = (from p in GetDbContext().Products
-                           join c in GetDbContext().ProductColors on p.Id equals c.ProductId
-                           join i in GetDbContext().ProductImages on c.Id equals i.ProductColorId
-                           join d in GetDbContext().ProductDetails on c.Id equals d.ProductColorId
-                           where i.Image!.Contains("-1.") && (p.Name.ToLower().Contains(search))
-                           group new { p, c, i, d } by p.Id into g
-                           orderby g.Select(x => x.p.Price).FirstOrDefault() descending
-                           select new ProductReadDTO
-                           {
-                               Id = g.Key,
-                               Name = g.Select(x => x.p.Name).First(),
-                               UrlName = g.Select(x => x.p.UrlName).First(),
-                               BrandId = g.Select(x => x.p.BrandId).First(),
-                               CategoryId = g.Select(x => x.p.CategoryId).First(),
-                               Gender = g.Select(x => x.p.Gender).First(),
-                               IsChildren = g.Select(x => x.p.IsChildren).First(),
-                               Image = g.Select(x => x.i.Image).First(),
-                               Price = g.Select(x => x.p.Price).First(),
-                               Quantity = g.Sum(x => x.d.Quantity),
-                               IsActive = g.Select(x => x.p.IsActive).First()
-                           });
-
-        return productList;
-    }
-
-    public IEnumerable<ProductReadDTO> GetAllProductsNameAsc(string search)
-    {
-
-        var productList = (from p in GetDbContext().Products
-                           join c in GetDbContext().ProductColors on p.Id equals c.ProductId
-                           join i in GetDbContext().ProductImages on c.Id equals i.ProductColorId
-                           join d in GetDbContext().ProductDetails on c.Id equals d.ProductColorId
-                           where i.Image!.Contains("-1.") && (p.Name.ToLower().Contains(search))
-                           group new { p, c, i, d } by p.Id into g
-                           orderby g.Select(x => x.p.Name).FirstOrDefault()
-                           select new ProductReadDTO
-                           {
-                               Id = g.Key,
-                               Name = g.Select(x => x.p.Name).First(),
-                               UrlName = g.Select(x => x.p.UrlName).First(),
-                               BrandId = g.Select(x => x.p.BrandId).First(),
-                               CategoryId = g.Select(x => x.p.CategoryId).First(),
-                               Gender = g.Select(x => x.p.Gender).First(),
-                               IsChildren = g.Select(x => x.p.IsChildren).First(),
-                               Image = g.Select(x => x.i.Image).First(),
-                               Price = g.Select(x => x.p.Price).First(),
-                               Quantity = g.Sum(x => x.d.Quantity),
-                               IsActive = g.Select(x => x.p.IsActive).First()
-                           });
-
-        return productList;
-    }
-
-    public IEnumerable<ProductReadDTO> GetAllProductsNameDesc(string search)
-    {
-
-        var productList = (from p in GetDbContext().Products
-                           join c in GetDbContext().ProductColors on p.Id equals c.ProductId
-                           join i in GetDbContext().ProductImages on c.Id equals i.ProductColorId
-                           join d in GetDbContext().ProductDetails on c.Id equals d.ProductColorId
-                           where i.Image!.Contains("-1.") && (p.Name.ToLower().Contains(search))
-                           group new { p, c, i, d } by p.Id into g
-                           orderby g.Select(x => x.p.Name).FirstOrDefault() descending
-                           select new ProductReadDTO
-                           {
-                               Id = g.Key,
-                               Name = g.Select(x => x.p.Name).First(),
-                               UrlName = g.Select(x => x.p.UrlName).First(),
-                               BrandId = g.Select(x => x.p.BrandId).First(),
-                               CategoryId = g.Select(x => x.p.CategoryId).First(),
-                               Gender = g.Select(x => x.p.Gender).First(),
-                               IsChildren = g.Select(x => x.p.IsChildren).First(),
-                               Image = g.Select(x => x.i.Image).First(),
-                               Price = g.Select(x => x.p.Price).First(),
-                               Quantity = g.Sum(x => x.d.Quantity),
-                               IsActive = g.Select(x => x.p.IsActive).First()
-                           });
-
-        return productList;
+        if (expression == null) return await productQuery.ToListAsync();
+        if (desc) return await productQuery.OrderByDescending(expression).ToListAsync();
+        return await productQuery.OrderBy(expression).ToListAsync();
     }
 
     public List<FilterDTO> GetAllFilter()
@@ -159,16 +37,16 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
         filters.Add(new FilterDTO { Title = "Thể thao", Details = sport });
 
         var clothesSize = (from p in GetDbSet()
-                       join pc in GetDbContext().ProductColors on p.Id equals pc.ProductId
-                       join d in GetDbContext().ProductDetails on pc.Id equals d.ProductColorId
-                       where p.CategoryId < 4
-                       select d.Size).Distinct().ToArray();
+                           join pc in GetDbContext().ProductColors on p.Id equals pc.ProductId
+                           join d in GetDbContext().ProductDetails on pc.Id equals d.ProductColorId
+                           where p.CategoryId < 4
+                           select d.Size).Distinct().ToArray();
         filters.Add(new FilterDTO { Title = "Size quần áo", Details = clothesSize });
 
         var shoeSize = (from p in GetDbContext().Products
-                       join c in GetDbContext().ProductColors on p.Id equals c.ProductId
-                       join d in GetDbContext().ProductDetails on c.Id equals d.ProductColorId
-                       where p.CategoryId == 4
+                        join c in GetDbContext().ProductColors on p.Id equals c.ProductId
+                        join d in GetDbContext().ProductDetails on c.Id equals d.ProductColorId
+                        where p.CategoryId == 4
                         orderby d.Size
                         select d.Size).Distinct().ToArray();
         filters.Add(new FilterDTO { Title = "Size giày", Details = shoeSize });
@@ -182,6 +60,46 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
     private Product GetById(int id)
     {
         return GetDbSet().First(p => p.Id == id);
+    }
+
+    public IEnumerable<Product> GetAllProducts()
+    {
+        return GetDbSet().Include(p => p.ProductColors).ThenInclude(p => p.ProductImages)
+                         .Include(p => p.ProductSports).ToList();
+    }
+
+    public void Insert(Product product)
+    {
+        GetDbSet().Add(product);
+    }
+
+    public void Update(Product product)
+    {
+        var productUpdate = GetById(product.Id);
+
+        productUpdate.Name = product.Name;
+        productUpdate.UrlName = product.UrlName;
+        productUpdate.BrandId = product.BrandId;
+        productUpdate.CategoryId = product.CategoryId;
+        productUpdate.Description = product.Description;
+        productUpdate.Gender = product.Gender;
+        productUpdate.IsChildren = product.IsChildren;
+
+        GetDbSet().Update(productUpdate);
+    }
+
+    public void Insert(List<ProductSport> productSports)
+    {
+        GetDbContext().ProductSports.AddRange(productSports);
+    }
+
+    public void Update(List<ProductSport> productSports, int id)
+    {
+        Console.WriteLine("hello productsport");
+        var oldSport = GetDbContext().ProductSports.Where(ps => ps.ProductId == id).ToList();
+        if (oldSport.Any()) GetDbContext().ProductSports.RemoveRange(oldSport);
+
+        GetDbContext().ProductSports.AddRange(productSports);
     }
 
     public void Lock(int id)

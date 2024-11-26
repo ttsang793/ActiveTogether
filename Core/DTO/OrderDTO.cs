@@ -14,6 +14,8 @@ public class OrderDTO : BaseDTO
 
     public string? Phone { get; set; }
 
+    public string? PaymentMethod { get; set; }
+
     public decimal? Total { get; set; }
 
     public virtual ICollection<OrderDetailDTO> OrderDetails { get; set; } = new List<OrderDetailDTO>();

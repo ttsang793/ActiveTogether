@@ -1,4 +1,4 @@
-using Application.Interface;
+﻿using Application.Interface;
 using Core.DTO;
 using Core.Entity;
 using Core.Interface;
@@ -45,6 +45,8 @@ public class OrderService : IOrderService
             Phone = o.Phone,
             Total = o.Total,
             DatePurchased = DateTime.Now,
+            PaymentMethod = o.PaymentMethod,
+            IsPaid = (o.PaymentMethod != "Tiền mặt"),
             Status = 0
         };
         

@@ -4,7 +4,6 @@
   align-items: center;
 
   .avatar {
-    width: 10dvh;
     border-radius: 50%;
   }
 }

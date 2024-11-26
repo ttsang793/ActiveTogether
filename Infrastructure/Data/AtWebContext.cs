@@ -56,6 +56,8 @@ public partial class AtWebContext : DbContext
 
     public virtual DbSet<Role> Roles { get; set; }
 
+    public virtual DbSet<RolePermission> RolePermissions { get; set; }
+
     public virtual DbSet<Sport> Sports { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -88,6 +90,9 @@ public partial class AtWebContext : DbContext
             entity.Property(e => e.IsActive)
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("is_active");
+            entity.Property(e => e.IsVertified)
+                .HasDefaultValueSql("'0'")
+                .HasColumnName("is_vertified");
             entity.Property(e => e.Password)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("password");
@@ -202,6 +207,7 @@ public partial class AtWebContext : DbContext
                 .HasColumnName("user_id");
 
             entity.HasOne(d => d.SkuNavigation).WithMany(p => p.CartDetails)
+                .HasPrincipalKey(p => p.Sku)
                 .HasForeignKey(d => d.Sku)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_CartDetail_ProductDetail");
@@ -247,8 +253,6 @@ public partial class AtWebContext : DbContext
                 .HasMaxLength(20)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("name");
-
-            entity.Ignore(e => e.Id);
         });
 
         modelBuilder.Entity<Import>(entity =>
@@ -317,6 +321,7 @@ public partial class AtWebContext : DbContext
                 .HasConstraintName("FK_ImportDetail_Import");
 
             entity.HasOne(d => d.SkuNavigation).WithMany(p => p.ImportDetails)
+                .HasPrincipalKey(p => p.Sku)
                 .HasForeignKey(d => d.Sku)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_ImportDetail_ProductDetail");
@@ -355,12 +360,20 @@ public partial class AtWebContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("date_vertified");
             entity.Property(e => e.Email)
-                .HasDefaultValueSql("'0'")
+                .HasMaxLength(150)
+                .HasDefaultValueSql("'NULL'")
                 .HasColumnName("email");
             entity.Property(e => e.FullName)
                 .HasMaxLength(200)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("full_name");
+            entity.Property(e => e.IsPaid)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("is_paid");
+            entity.Property(e => e.PaymentMethod)
+                .HasMaxLength(30)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("payment_method");
             entity.Property(e => e.Phone)
                 .HasMaxLength(15)
                 .HasDefaultValueSql("'NULL'")
@@ -436,6 +449,7 @@ public partial class AtWebContext : DbContext
                 .HasConstraintName("FK_OrderDetail_Order");
 
             entity.HasOne(d => d.SkuNavigation).WithMany(p => p.OrderDetails)
+                .HasPrincipalKey(p => p.Sku)
                 .HasForeignKey(d => d.Sku)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_OrderDetail_ProductDetail");
@@ -497,6 +511,10 @@ public partial class AtWebContext : DbContext
                 .HasPrecision(10)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("price");
+            entity.Property(e => e.Quantity)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("int(11)")
+                .HasColumnName("quantity");
             entity.Property(e => e.UrlName)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("url_name");
@@ -551,15 +569,17 @@ public partial class AtWebContext : DbContext
 
         modelBuilder.Entity<ProductDetail>(entity =>
         {
-            entity.HasKey(e => e.Sku).HasName("PRIMARY");
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
 
             entity.ToTable("product_detail");
 
             entity.HasIndex(e => e.ProductColorId, "FK_ProductDetail_ProductColor");
 
-            entity.Property(e => e.Sku)
-                .HasMaxLength(50)
-                .HasColumnName("sku");
+            entity.HasIndex(e => e.Sku, "sku").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasColumnType("int(11)")
+                .HasColumnName("id");
             entity.Property(e => e.IsActive)
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("is_active");
@@ -582,6 +602,10 @@ public partial class AtWebContext : DbContext
                 .HasMaxLength(5)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("size");
+            entity.Property(e => e.Sku)
+                .HasMaxLength(50)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("sku");
 
             entity.HasOne(d => d.ProductColor).WithMany(p => p.ProductDetails)
                 .HasForeignKey(d => d.ProductColorId)
@@ -630,8 +654,9 @@ public partial class AtWebContext : DbContext
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
             entity.Property(e => e.DatePublish)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnType("date")
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValueSql("'current_timestamp()'")
+                .HasColumnType("timestamp")
                 .HasColumnName("date_publish");
             entity.Property(e => e.ProductId)
                 .HasDefaultValueSql("'NULL'")
@@ -659,6 +684,7 @@ public partial class AtWebContext : DbContext
                 .HasConstraintName("FK_ProductReview_Product");
 
             entity.HasOne(d => d.SkuNavigation).WithMany(p => p.ProductReviews)
+                .HasPrincipalKey(p => p.Sku)
                 .HasForeignKey(d => d.Sku)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_ProductReview_ProductDetail");
@@ -829,30 +855,37 @@ public partial class AtWebContext : DbContext
                 .HasMaxLength(100)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("name");
+        });
 
-            entity.HasMany(d => d.Permissions).WithMany(p => p.Roles)
-                .UsingEntity<Dictionary<string, object>>(
-                    "RolePermission",
-                    r => r.HasOne<Permission>().WithMany()
-                        .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("FK_RolePermission_Permission"),
-                    l => l.HasOne<Role>().WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("FK_RolePermission_Role"),
-                    j =>
-                    {
-                        j.HasKey("RoleId", "PermissionId").HasName("PRIMARY");
-                        j.ToTable("role_permission");
-                        j.HasIndex(new[] { "PermissionId" }, "FK_RolePermission_Permission");
-                        j.IndexerProperty<int>("RoleId")
-                            .HasColumnType("int(11)")
-                            .HasColumnName("role_id");
-                        j.IndexerProperty<int>("PermissionId")
-                            .HasColumnType("int(11)")
-                            .HasColumnName("permission_id");
-                    });
+        modelBuilder.Entity<RolePermission>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("role_permission");
+
+            entity.HasIndex(e => e.PermissionId, "FK_RolePermission_Permission");
+
+            entity.HasIndex(e => e.RoleId, "FK_RolePermission_Role");
+
+            entity.Property(e => e.Id)
+                .HasColumnType("int(11)")
+                .HasColumnName("id");
+            entity.Property(e => e.PermissionId)
+                .HasColumnType("int(11)")
+                .HasColumnName("permission_id");
+            entity.Property(e => e.RoleId)
+                .HasColumnType("int(11)")
+                .HasColumnName("role_id");
+
+            entity.HasOne(d => d.Permission).WithMany(p => p.RolePermissions)
+                .HasForeignKey(d => d.PermissionId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_RolePermission_Permission");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.RolePermissions)
+                .HasForeignKey(d => d.RoleId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_RolePermission_Role");
         });
 
         modelBuilder.Entity<Sport>(entity =>
