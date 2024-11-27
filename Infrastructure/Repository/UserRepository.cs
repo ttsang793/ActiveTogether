@@ -18,6 +18,7 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         {
             Username = user.Username,
             Password = user.Password,
+            FullName = user.FullName,
             DateCreated = DateTime.Now,
             Phone = user.Phone,
             Email = user.Email,
@@ -28,10 +29,11 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         return GetDbSet().OrderByDescending(o => o.Id).First().Id;
     }
 
-    public async Task<bool> Login(UserLoginDTO user)
+    public async Task<User> Login(UserLoginDTO user)
     {
         var p = GetDbSet().FirstOrDefault(u => u.Username == user.Username);
-        return (p != null && user.Password == p.Password);
+        if (p != null && user.Password == p.Password) return new User { FullName = p.FullName, Username = p.Username, Avatar = p.Avatar };
+        return null;
     }
 
     public int GetUserIdByUsername(string username)

@@ -25,6 +25,20 @@ export default function FormTextBox(props) {
     }
   }
 
+  function togglePassword(e, id) {
+    e.preventDefault();
+    if (document.getElementById(id).type === "password") {
+      document.getElementById(id).type = "text";
+      e.target.classList.add('bi-eye-slash-fill');
+      e.target.classList.remove("bi-eye-fill");
+    }
+    else {
+      document.getElementById(id).type = "password";
+      e.target.classList.add("bi-eye-fill");
+      e.target.classList.remove('bi-eye-slash-fill');
+    }
+  }
+
   if (props.type.toLowerCase().includes("password"))
     return (
       <div className="form-input-container">

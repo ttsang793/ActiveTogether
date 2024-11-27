@@ -1,5 +1,5 @@
 import FormTextBox from "/src/Components/shared/FormTextBox"
-import { DisplayPrice, DisplayConfig } from "/src/Scripts/Utility.js"
+import { DisplayPrice, DisplayConfig, BoDauTiengViet } from "/src/Scripts/Utility.js"
 import { useState, Component } from "react";
 import PleaseWait from "/src/Shared/PleaseWait"
 import "./Order.css"
@@ -93,8 +93,6 @@ function OrderInfo(props) {
     handleErrorPhone();
 
     if (!(errorFullName === "" && errorAddress === "" && errorPhone === "" && errorEmail === "")) return;
-    
-    const username = localStorage.getItem("userLogin") || "";
 
     if (confirm("Bạn có chắc chắn thanh toán cho các sản phẩm bạn đã chọn?")) {
       if (paymentMethod === "VNPay") {
@@ -105,11 +103,12 @@ function OrderInfo(props) {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
-          body: JSON.stringify({ username, fullName, total: calTotal() })
+          body: JSON.stringify({ username: this.props.username, fullname: BoDauTiengViet(fullName), total: calTotal() })
         })
         const url = await response.json();
         location.href = url;
       }
+      else location.href = "/thanh-toan/hoan-tat";
 
       /*
       const response = await fetch("/order/add", {
@@ -144,7 +143,7 @@ function OrderInfo(props) {
           <div className="fs-4 fw-bold fst-italic">THÔNG TIN NHẬN HÀNG</div>
           <hr className="mt-0 mb-4" />
           {
-            (localStorage.getItem("userLogin") !== null) ? (
+            (this.props.username !== null) ? (
             <>
               <div className="form-detail-title">Địa chỉ đã lưu</div>
               <select onChange={handleAddress}>
@@ -222,7 +221,7 @@ export default class Order extends Component {
   }
 
   async populateAddress() {
-    const username = localStorage.getItem("userLogin");
+    const username = this.props.username;
     const userResponse = await fetch(`/user?username=${username}`);
     if (!userResponse.ok) throw new Error('Network response was not ok');
     const userData = await userResponse.json();

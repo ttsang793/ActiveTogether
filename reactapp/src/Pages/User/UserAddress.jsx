@@ -15,8 +15,7 @@ export default class UserAddress extends Component {
   }
 
   async populateAddress() {
-    const username = localStorage.getItem("userLogin");
-    fetch(`/user/get/address?username=${username}`).then(response => response.json()).then(data => {
+    fetch(`/user/get/address?username=${this.props.username}`).then(response => response.json()).then(data => {
       this.setState({ loading: false, address: data });
     })
   }
@@ -107,7 +106,7 @@ export default class UserAddress extends Component {
   async updateAddress(e) {
     e.preventDefault();
     if (confirm("Bạn có muốn lưu danh sách địa chỉ hiện tại của bạn?")) {
-      const response = await fetch(`/user/update/address?username=${localStorage.getItem("userLogin")}`, {
+      const response = await fetch(`/user/update/address?username=${this.props.username}`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',

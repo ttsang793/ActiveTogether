@@ -29,9 +29,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
     options.AddPolicy("AllowVNPay", policy =>
     {
-        policy.WithOrigins("https://localhost:5173").AllowAnyMethod().AllowAnyHeader();
+        policy.WithOrigins("https://sandbox.vnpayment.vn").AllowAnyHeader().AllowAnyMethod();
     }
 ));
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -49,5 +56,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseSession();
 
 app.Run();

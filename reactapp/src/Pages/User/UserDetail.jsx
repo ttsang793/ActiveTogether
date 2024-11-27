@@ -100,7 +100,6 @@ function UserDetailPartial(props) {
   
       if ((typeof(avatar) === "string" || uploadImage()) && response.ok) {
         alert("Tài khoản đã được cập nhật thành công");
-        localStorage.setItem("userAvatar", image);
         location.reload()
       }
       else alert("Đã có lỗi xảy ra, cập nhật tài khoản thất bại.");
@@ -159,8 +158,7 @@ export default class UserDetail extends Component {
   }
 
   async populateUserDetail() {
-    const username = localStorage.getItem("userLogin");
-    fetch(`/user?username=${username}`).then(response => response.json()).then(data => {
+    fetch(`/user?username=${this.props.username}`).then(response => response.json()).then(data => {
       this.setState({ loading: false, user: data });
     })
   }

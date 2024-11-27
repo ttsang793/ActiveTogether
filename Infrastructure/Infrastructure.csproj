@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
-    <Folder Include="LIbrary\" />
+    <Folder Include="Library\" />
   </ItemGroup>
 
   <ItemGroup>

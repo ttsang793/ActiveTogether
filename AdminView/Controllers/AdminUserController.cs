@@ -1,9 +1,7 @@
 using Application.Interface;
-using Application.Service;
 using Core.DTO;
 using Core.Entity;
 using Microsoft.AspNetCore.Mvc;
-using System.Drawing;
 
 namespace AdminView.Controllers;
 
@@ -20,10 +18,26 @@ public class AdminUserController : ControllerBase
         _adminUserService = adminUserService;
     }
 
-    [HttpGet("get")]
-    public AdminUser GetUserById(int id)
+    [HttpPost("login")]
+    public async Task<StatusCodeResult> Login([Bind("Username", "Password")] UserLoginDTO user)
     {
-        return _adminUserService.GetUserById(id);
+        if (_adminUserService.GetUserById(int.Parse(user.Username)) == null) return StatusCode(404);
+
+        AdminUser result = _adminUserService.Login(user);
+        if (result == null) return StatusCode(500);
+
+        HttpContext.Session.SetString("name", result.FullName);
+        HttpContext.Session.SetString("username", result.Id.ToString());
+        HttpContext.Session.SetString("avatar", result.Avatar);
+        HttpContext.Session.SetInt32("role", 0);
+
+        return StatusCode(200);
+    }
+
+    [HttpGet("get")]
+    public async Task<AdminUser> GetUserById(int id)
+    {
+        return await _adminUserService.GetUserById(id);
     }
 
     [HttpPut("updateInfo")]

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Encode } from "/src/Scripts/Utility";
 import FormTextBox from "/src/Components/shared/FormTextBox";
 
-export default function ChangePassword() {
+export default function ChangePassword(props) {
   let [oldPass, setOldPass] = useState("");
   let [newPass, setNewPass] = useState("");
   let [conPass, setConPass] = useState("");
@@ -67,17 +67,16 @@ export default function ChangePassword() {
     if (!(oldPassError === "" && newPassError === "" && conPassError === "")) return;
 
     if (confirm("Bạn có muốn cập nhật mật khẩu?")) {
-      const username = localStorage.getItem("userLogin");
-      const response = await fetch(`/user/update?username=${username}`, {
-        method: "POST",
+      const response = await fetch(`/user/update?username=${props.username}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
-        body: JSON.stringify({ old: Encode(username, oldPass), new: Encode(username, newPass) })
+        body: JSON.stringify({ old: Encode(props.username, oldPass), new: Encode(props.username, newPass) })
       })
   
-      if (response.ok) { alert("Cập nhật mật khẩu thành công. Vui lòng đăng nhập lại"); localStorage.removeItem("userLogin"); location.reload() }
+      if (response.ok) { alert("Cập nhật mật khẩu thành công. Vui lòng đăng nhập lại"); fetch("/user/logout", { method: "POST" }).then(() => location.reload()); }
       else alert("Đã có lỗi xảy ra, cập nhật mật khẩu thất bại.");
     }
   }

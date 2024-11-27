@@ -2,6 +2,7 @@ using Application.Interface;
 using Core.DTO;
 using Core.Entity;
 using Microsoft.AspNetCore.Mvc;
+using MySqlX.XDevAPI.Common;
 
 namespace UserView.Controllers;
 
@@ -31,19 +32,41 @@ public class UserController : ControllerBase
     public async Task<StatusCodeResult> Login([Bind("Username", "Password")] UserLoginDTO user)
     {
         if (_userService.GetUserIdByUsername(user.Username) == -1) return StatusCode(404);
-        return (await _userService.Login(user)) ? StatusCode(200) : StatusCode(500);
+
+        User result = await _userService.Login(user);
+        if (result == null) return StatusCode(500);
+
+        HttpContext.Session.SetString("name", result.FullName);
+        HttpContext.Session.SetString("username",  result.Username);
+        HttpContext.Session.SetString("avatar", result.Avatar);
+        HttpContext.Session.SetInt32("role", 0);
+
+        return StatusCode(200);
+    }
+
+    [HttpGet("cookie")]
+    public IActionResult GetSession()
+    {
+        var name = HttpContext.Session.GetString("name");
+        var username = HttpContext.Session.GetString("username");
+        var avatar = HttpContext.Session.GetString("avatar");
+        var role = HttpContext.Session.GetInt32("role");
+        return Ok(new { Name = name, Username = username, Avatar = avatar, Role = role });
+    }
+
+    [HttpPost("logout")]
+    public void Logout()
+    {
+        HttpContext.Session.Remove("name");
+        HttpContext.Session.Remove("username");
+        HttpContext.Session.Remove("avatar");
+        HttpContext.Session.Remove("role");
     }
 
     [HttpPost("avatar/upload")]
     public async Task<StatusCodeResult> UploadImage(IFormFile file)
     {
         return (await _userService.UploadImage(file, userChange)) ? StatusCode(200) : StatusCode(404);
-    }
-
-    [HttpGet("avatar/get")]
-    public string GetAvatarByUsername(string username)
-    {
-        return GetUserByUsername(username).Avatar;
     }
 
     [HttpGet("")]
@@ -56,6 +79,8 @@ public class UserController : ControllerBase
     public async Task<StatusCodeResult> UpdateInfo([Bind("Fullname", "Phone", "Email", "Avatar")] UserUpdateInfoDTO user, string username)
     {
         userChange = username;
+        HttpContext.Session.SetString("name", user.FullName);
+        HttpContext.Session.SetString("avatar", user.Avatar);
         return (await _userService.UpdateInfo(user, username)) ? StatusCode(200) : StatusCode(404);
     }
 

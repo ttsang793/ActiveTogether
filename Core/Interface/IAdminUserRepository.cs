@@ -3,17 +3,21 @@ using Core.DTO;
 using Microsoft.AspNetCore.Http;
 
 namespace Core.Interface;
-public interface IAdminUserRepository : IInsert<AdminUser>, ILock
+public interface IAdminUserRepository : IInsert<AdminUser>
 {
     Task<IEnumerable<AdminUser>> GetAllAdminUsers();
 
-    AdminUser GetUserById(int id);
+    AdminUser Login(UserLoginDTO user);
 
-    void Update(int id, int roleId);
+    Task<AdminUser> GetUserById(int id);
 
-    void UpdateInfo(UserUpdateInfoDTO user, int id);
+    Task<bool> Update(int id, int roleId);
 
-    void UpdatePassword(UserUpdateDTO user, int id);
+    Task<bool> UpdateInfo(UserUpdateInfoDTO user, int id);
+
+    Task<bool> UpdatePassword(UserUpdateDTO user, int id);
 
     Task<bool> UploadImage(IFormFile file, int id);
+
+    Task<bool> Lock(int id);
 }

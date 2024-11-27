@@ -24,29 +24,39 @@ public class AdminUserRepository : BaseRepository<AdminUser>, IAdminUserReposito
         return await GetDbSet().Where(u => !u.FullName.Contains("Admin")).ToListAsync();
     }
 
-    public AdminUser GetUserById(int id)
+    public AdminUser Login(UserLoginDTO user)
     {
-        var user = GetDbSet().Where(u => u.Id == id).First();
+        var p = GetDbSet().FirstOrDefault(u => u.Id == int.Parse(user.Username));
+        if (p != null && user.Password == p.Password) return new AdminUser { FullName = p.FullName, Id = p.Id, Avatar = p.Avatar };
+        return null;
+    }
+
+    public async Task<AdminUser> GetUserById(int id)
+    {
+        var user = await GetDbSet().Where(u => u.Id == id).FirstAsync();
+        if (user == null) return null;
         user.Password = "";
         return user;
     }
 
-    public void UpdateInfo(UserUpdateInfoDTO user, int id)
+    public async Task<bool> UpdateInfo(UserUpdateInfoDTO user, int id)
     {
-        var u = GetUserById(id);
+        var u = await GetUserById(id);
         if (u != null)
         {
             u.Phone = user.Phone;
             u.Email = user.Email;
             u.Avatar = user.Avatar;
+            GetDbSet().Update(u);
         }
-        GetDbSet().Update(u);
+        return true;
     }
 
-    public void UpdatePassword(UserUpdateDTO user, int id)
+    public async Task<bool> UpdatePassword(UserUpdateDTO user, int id)
     {
-        var u = GetDbSet().First(u => u.Id == id && u.Password == user.Old);
+        var u = await GetDbSet().FirstAsync(u => u.Id == id && u.Password == user.Old);
         if (u != null) u.Password = user.New!;
+        return true;
     }
 
     public async Task<bool> UploadImage(IFormFile file, int id)
@@ -74,16 +84,18 @@ public class AdminUserRepository : BaseRepository<AdminUser>, IAdminUserReposito
         GetDbSet().Add(adminUser);
     }
 
-    public void Update(int id, int roleId)
+    public async Task<bool> Update(int id, int roleId)
     {
-        var adminUser = GetUserById(id);
+        var adminUser = await GetUserById(id);
         adminUser.RoleId = roleId;
         GetDbSet().Update(adminUser);
+        return true;
     }
 
-    public void Lock(int id)
+    public async Task<bool> Lock(int id)
     {
-        AdminUser user = GetUserById(id);
+        AdminUser user = await GetUserById(id);
         user.IsActive = false;
+        return true;
     }
 }

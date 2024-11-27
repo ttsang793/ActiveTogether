@@ -2,7 +2,7 @@ export function DisplayPrice(price) {
   return `${price.toLocaleString("vi-VN")} đ`
 }
 
-function BoDauTiengViet(word) {  
+export function BoDauTiengViet(word) {  
   word = word.replace(/[áàảãạăắằẳẵặâấầẩẫậ]/g, "a");
   word = word.replace(/[đ]/g, "d");
   word = word.replace(/[éèẻẽẹêếềểễệ]/g, "e");

@@ -1,0 +1,25 @@
+.payment-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  h2 {
+    font-weight: bold;
+    font-style: italic;
+    padding: 20px 40px;
+    padding-top: 0px;
+  }
+
+  & > * {
+    margin: 0.5rem 0;
+  }
+
+  .detail {
+    font-size: 20px;
+  }
+
+  img {
+    width: 30%;
+  }
+}

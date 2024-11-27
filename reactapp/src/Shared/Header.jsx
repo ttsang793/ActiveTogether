@@ -1,7 +1,7 @@
 import "./Header.css"
 import { useState } from "react";
 
-export default function Header() {
+export default function Header(props) {
   const [search, setSearch] = useState("");
   const handleSearch = e => setSearch(e.target.value);
 
@@ -26,9 +26,8 @@ export default function Header() {
     document.body.style.overflow = "initial";
   }
 
-  function Logout() {
-    localStorage.removeItem("userLogin");
-    location.href = "/";
+  async function Logout() {
+    fetch("/user/logout", { method: "POST" }).then(() => location.href = "/");
   }
 
   function RedirectToSearch() {
@@ -40,8 +39,7 @@ export default function Header() {
   }
 
   function renderLoginBtn() {
-    const username = localStorage.getItem("userLogin");
-    return (username === null) ? (
+    return (props.name === null) ? (
       <a href="/dang-nhap">
         <button id="loginBtn" className="login-btn">
           <i className="bi bi-box-arrow-in-right"></i>
@@ -51,10 +49,10 @@ export default function Header() {
     ) : (
       <div>
         <button type="button" className="btn account-btn" data-bs-toggle="dropdown">
-          <img src={localStorage.getItem("userAvatar")} alt="username" className="dropdown-avatar" />
-          <span>&nbsp;{username}</span>
+          <img src={props.avatar} alt="username" className="dropdown-avatar" />
+          <span>&nbsp;{props.name}</span>
         </button>
-        <ul className="dropdown-menu">
+        <ul className="dropdown-menu dropdown-menu-end">
           <li className="pointer">
             <a href="/nguoi-dung/lich-su-don-hang">
               <i className="bi bi-clock"></i>

@@ -15,9 +15,14 @@ public class AdminUserService : IAdminUserService
         _unitOfWork = unitOfWork;
     }
 
-    public AdminUser GetUserById(int id)
+    public AdminUser Login(UserLoginDTO user)
     {
-        return _unitOfWork.AdminUsers.GetUserById(id);
+        return _unitOfWork.AdminUsers.Login(user);
+    }
+
+    public async Task<AdminUser> GetUserById(int id)
+    {
+        return await _unitOfWork.AdminUsers.GetUserById(id);
     }
 
 	public async Task<bool> UpdateInfo(UserUpdateInfoDTO user, int id)

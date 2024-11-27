@@ -24,6 +24,7 @@ builder.Services.AddScoped<IProductDetailService, ProductDetailService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IRefundService, RefundService>();
 builder.Services.AddScoped<ISportService, SportService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 

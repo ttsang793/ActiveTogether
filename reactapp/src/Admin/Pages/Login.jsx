@@ -1,6 +1,6 @@
 import FormTextBox from "/src/Components/shared/FormTextBox"
 import { useState } from 'react'
-import { Encode } from "/src/Scripts/Utility";
+import { Encode2 } from "/src/Scripts/Utility";
 import "./Login.css"
 
 export default function ALogin() {  
@@ -9,36 +9,39 @@ export default function ALogin() {
   let [errorUsername, setErrorUsername] = useState("");
   let [errorPassword, setErrorPassword] = useState("");
 
-  const handleUsernameChange = (newUsername) => setUsername(username = newUsername);
-  const handlePasswordChange = (newPassword) => setPassword(password = newPassword);
-  const handleUsernameError = (newErrorUsername) => setErrorUsername(errorUsername = newErrorUsername);
-  const handlePasswordError = (newErrorPassword) => setErrorPassword(errorPassword = newErrorPassword);
+  const handleUsernameChange = e => {
+    setUsername(username = e.target.value);
+    handleUsernameError();
+  }
+
+  const handlePasswordChange = e => {
+    setPassword(password = e.target.value);
+    handlePasswordError();
+  }
+
+  const handleUsernameError = () => {
+    let error = "";
+    if (username === "" || isNaN(Number(username))) error = "Vui lòng nhập mã nhân viên"
+    setErrorUsername(errorUsername = error);
+  }
+
+  const handlePasswordError = () => {
+    let error = "";
+    if (password === "") error = "Vui lòng nhập mật khẩu"
+    setErrorPassword(errorPassword = error);
+  }
 
   async function LoginUser(e) {
     e.preventDefault();
-    const error = [];
-    let errorFlag = false;
-    if (username === "") {
-      error.push("Vui lòng nhập mã nhân viên");
-      errorFlag = true;
-    }
-    else error.push("");
-    if (password === "") {
-      error.push("Vui lòng nhập mật khẩu.");
-      errorFlag = true;
-    }
-    else error.push("");
+
+    handleUsernameError();
+    handlePasswordError();
   
-    if (errorFlag) {
-      handleUsernameError(error[0]);
-      handlePasswordError(error[1]);
-      return;
-    }
+    if (errorUsername !== "" || errorPassword !== "") return;
   
-    let passwordLG = Encode(username, password);
-    console.log(passwordLG);
-    /*
-    const response = await fetch("/user/login", {
+    password = Encode2(username, password);
+    
+    const response = await fetch("/api/adminuser/login", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -49,10 +52,10 @@ export default function ALogin() {
     
     if (response.ok) {
       alert("Đăng nhập thành công");
-      localStorage.setItem("userLogin", username);
-      location.href = "/";
+      location.href = "/admin/home";
     }
-    else alert("Sai mật khẩu, đăng nhập thất bại");*/
+    else if (response.status === 404) setErrorUsername("Tài khoản không tồn tại. Vui lòng kiểm tra lại.");
+    else if (response.status === 500) setErrorPassword("Sai mật khẩu, vui lòng nhập lại.");
   }
 
   return (
@@ -63,7 +66,7 @@ export default function ALogin() {
 
       <form className="login-form" id="login-form">
         <FormTextBox type="username" placeholder="Mã nhân viên" icon="bi-person-fill" value={username} onValueChange={handleUsernameChange} errorValue={errorUsername} />
-        <FormTextBox type="password" placeholder="Mật khẩu" icon="bi-lock-fill" onValueChange={handlePasswordChange} errorValue={errorPassword} />
+        <FormTextBox type="password" placeholder="Mật khẩu" icon="bi-lock-fill" value={password} onValueChange={handlePasswordChange} errorValue={errorPassword} />
         
         <input type="submit" className="at-btn m-at-btn" value="Đăng nhập" onClick={e => LoginUser(e)} />
       </form>

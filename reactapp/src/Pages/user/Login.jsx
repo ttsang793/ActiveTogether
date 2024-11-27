@@ -61,13 +61,7 @@ export default function Login() {
     
     if (response.ok) {
       alert("Đăng nhập thành công");
-
-      fetch(`/user/avatar/get?username=${username}`).then(response => response.text()).then(data => {
-        console.log(data);
-        localStorage.setItem("userLogin", username);
-        localStorage.setItem("userAvatar", data);
-        location.href = "/";
-      })
+      location.href = "/";
     }
     else if (response.status === 404) setErrorUsername("Tài khoản không tồn tại. Vui lòng kiểm tra lại.");
     else if (response.status === 500) setErrorPassword("Sai mật khẩu, vui lòng nhập lại.");

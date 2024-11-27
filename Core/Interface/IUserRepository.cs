@@ -7,7 +7,7 @@ public interface IUserRepository : IUploadImage
 {
     int Register(UserRegisterDTO user);
 
-    Task<bool> Login(UserLoginDTO user);
+    Task<User> Login(UserLoginDTO user);
 
     int GetUserIdByUsername(string username);
 

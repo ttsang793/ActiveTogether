@@ -17,8 +17,4 @@ public static class ConfigurationService
     {
         using var scope = service.CreateScope();
     }
-
-    public static void AllowCors(this IServiceProvider service)
-    {
-    }
 }

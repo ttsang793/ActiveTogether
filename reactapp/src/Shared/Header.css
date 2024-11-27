@@ -69,7 +69,6 @@
     border-radius: 0px;
     background-color: var(--lighter);
     padding: 0px;
-    transform: translate(0px, 38px)!important;
 
     li {
       padding: 0.5rem 1rem;

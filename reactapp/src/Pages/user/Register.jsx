@@ -14,12 +14,14 @@ function showLoginForm(e) {
 export default function Register() {
   let [username, setUsername] = useState("");
   let [password, setPassword] = useState("");
+  let [fullName, setFullName] = useState("");
   let [confirmPassword, setConfirmPassword] = useState("");
   let [phone, setPhone] = useState("");
   let [email, setEmail] = useState("");
   let [address, setAddress] = useState("");
   let [errorUsername, setErrorUsername] = useState("");
   let [errorPassword, setErrorPassword] = useState("");
+  let [errorFullName, setErrorFullName] = useState("");
   let [errorConfirmPassword, setErrorConfirmPassword] = useState("");
   let [errorPhone, setErrorPhone] = useState("");
   let [errorEmail, setErrorEmail] = useState("");
@@ -53,6 +55,17 @@ export default function Register() {
 
     setErrorPassword(errorPassword = pError);
     setErrorConfirmPassword(errorConfirmPassword = cError);
+  }
+
+  const handleFullName = e => {
+    setFullName(fullName = e.target.value);
+    handleErrorFullName();
+  }
+
+  const handleErrorFullName = () => {
+    let error = "";
+    if (fullName === "") error = "Họ tên không được để trống";
+    setErrorFullName(errorFullName = error);
   }
 
   const handleConfirmPassword = e => {
@@ -127,7 +140,7 @@ export default function Register() {
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
-        body: JSON.stringify({username, password, phone, email, address})
+        body: JSON.stringify({fullName, username, password, phone, email, address})
       })
 
       if (response.ok) { alert("Tài khoản đã được đăng ký. Vui lòng đăng nhập"); location.reload() }
@@ -137,9 +150,10 @@ export default function Register() {
 
   return (
     <form className="login-form disabled" id="sign-up-form">
-      <FormTextBox type="usernameSU" placeholder="Tên người dùng" icon="bi-person-fill" value={username} onValueChange={handleUsername} errorValue={errorUsername} />
+      <FormTextBox type="usernameSU" placeholder="Username" icon="bi-person-fill" value={username} onValueChange={handleUsername} errorValue={errorUsername} />
       <FormTextBox type="passwordSU" placeholder="Mật khẩu" icon="bi-lock-fill" value={password} onValueChange={handlePassword} errorValue={errorPassword} />
       <FormTextBox type="confirmpasswordSU" placeholder="Xác nhận mật khẩu" icon="bi-lock-fill" value={confirmPassword} onValueChange={handleConfirmPassword} errorValue={errorConfirmPassword} />
+      <FormTextBox type="fullNameSU" placeholder="Họ tên người dùng" icon="bi-person-fill" value={fullName} onValueChange={handleFullName} errorValue={errorFullName} />
       <FormTextBox type="phoneSU" placeholder="Số điện thoại" icon="bi-telephone-fill" value={phone} onValueChange={handlePhone} errorValue={errorPhone} />
       <FormTextBox type="emailSU" placeholder="Địa chỉ email" icon="bi-envelope-at-fill" value={email} onValueChange={handleEmail} errorValue={errorEmail} />
       <FormTextBox type="addressSU" placeholder="Địa chỉ nhà" icon="bi-house-door-fill" value={address} onValueChange={handleAddress} errorValue={errorAddress} />

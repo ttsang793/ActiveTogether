@@ -22,7 +22,7 @@ public class UserService : IUserService
         return await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<bool> Login(UserLoginDTO user)
+    public async Task<User> Login(UserLoginDTO user)
     {
         return await _unitOfWork.Users.Login(user);
     }

@@ -6,7 +6,9 @@ namespace Application.Interface;
 
 public interface IAdminUserService
 {
-	AdminUser GetUserById(int id);
+    AdminUser Login(UserLoginDTO user);
+
+	Task<AdminUser> GetUserById(int id);
 
 	Task<bool> UpdateInfo(UserUpdateInfoDTO user, int id);
 

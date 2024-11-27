@@ -1,6 +1,6 @@
 import "./Header.css"
 
-export default function AHeader() {
+export default function AHeader(props) {
   const handleSetting = () => {
     location.href = "/admin/cai-dat-tai-khoan"
   }
@@ -12,7 +12,7 @@ export default function AHeader() {
 
   return (
     <header className="d-flex admin-header">
-      <div className="flex-grow-1 fst-italic fw-semibold">240523 &minus; Trần Tuấn Sang</div>
+      <div className="flex-grow-1 fst-italic fw-semibold">{props.username} &minus; {props.name}</div>
       <div className="pointer header-button py-2 px-3" onClick={handleSetting}>
         <i className="bi bi-gear"></i>&nbsp;
         <span>Cài đặt</span>

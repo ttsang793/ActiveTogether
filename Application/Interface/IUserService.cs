@@ -8,7 +8,7 @@ public interface IUserService
 {
     Task<bool> Register(UserRegisterDTO user);
 
-    Task<bool> Login(UserLoginDTO user);
+    Task<User> Login(UserLoginDTO user);
 
     User GetUserByUsername(string username);
 
