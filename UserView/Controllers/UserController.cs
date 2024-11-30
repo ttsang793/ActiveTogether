@@ -2,7 +2,6 @@ using Application.Interface;
 using Core.DTO;
 using Core.Entity;
 using Microsoft.AspNetCore.Mvc;
-using MySqlX.XDevAPI.Common;
 
 namespace UserView.Controllers;
 
@@ -13,54 +12,55 @@ public class UserController : ControllerBase
     private readonly ILogger<UserController> _logger;
     private readonly IUserService _userService;
     private readonly IUserAddressService _userAddressService;
+    private readonly IFirebaseAuthService _firebaseAuthService;
     private static string userChange = "";
 
-    public UserController(ILogger<UserController> logger, IUserService userService, IUserAddressService userAddressService)
+    public UserController(ILogger<UserController> logger, IUserService userService, IUserAddressService userAddressService, IFirebaseAuthService firebaseAuthService)
     {
         _logger = logger;
         _userService = userService;
-		_userAddressService = userAddressService;
+        _userAddressService = userAddressService;
+        _firebaseAuthService = firebaseAuthService;
     }
 
     [HttpPost("register")]
-    public async Task<StatusCodeResult> Register([Bind("Username", "Password", "Phone", "Email", "Address")] UserRegisterDTO user)
+    public async Task<StatusCodeResult> Register([Bind("FirebaseUid", "Username", "Password", "Phone", "Email", "Address")] UserRegisterDTO user)
     {
         return (await _userService.Register(user)) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPost("login")]
-    public async Task<StatusCodeResult> Login([Bind("Username", "Password")] UserLoginDTO user)
+    [HttpGet("get/email")]
+    public async Task<string> GetEmailByUsername(string username)
     {
-        if (_userService.GetUserIdByUsername(user.Username) == -1) return StatusCode(404);
+        return (await _userService.GetEmailByUsername(username));
+    }
 
-        User result = await _userService.Login(user);
-        if (result == null) return StatusCode(500);
-
-        HttpContext.Session.SetString("name", result.FullName);
-        HttpContext.Session.SetString("username",  result.Username);
-        HttpContext.Session.SetString("avatar", result.Avatar);
-        HttpContext.Session.SetInt32("role", 0);
-
+    [HttpPost("login")]
+    public StatusCodeResult Login(string token)
+    {
+        HttpContext.Session.SetString("token", token);
         return StatusCode(200);
     }
 
     [HttpGet("cookie")]
-    public IActionResult GetSession()
+    public async Task<IActionResult> GetSession()
     {
-        var name = HttpContext.Session.GetString("name");
-        var username = HttpContext.Session.GetString("username");
-        var avatar = HttpContext.Session.GetString("avatar");
-        var role = HttpContext.Session.GetInt32("role");
-        return Ok(new { Name = name, Username = username, Avatar = avatar, Role = role });
+        try
+        {
+            var firebaseId = (await _firebaseAuthService.VerifyIdToken(HttpContext.Session.GetString("token"))).Uid;
+            User user = await _userService.GetUserByFirebaseUid(firebaseId);
+            return Ok(new { Name = user.FullName, Username = user.Username, Avatar = user.Avatar });
+        }
+        catch
+        {
+            return Ok();
+        }
     }
 
     [HttpPost("logout")]
     public void Logout()
     {
-        HttpContext.Session.Remove("name");
-        HttpContext.Session.Remove("username");
-        HttpContext.Session.Remove("avatar");
-        HttpContext.Session.Remove("role");
+        HttpContext.Session.Remove("token");
     }
 
     [HttpPost("avatar/upload")]
@@ -69,25 +69,18 @@ public class UserController : ControllerBase
         return (await _userService.UploadImage(file, userChange)) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpGet("")]
-    public User GetUserByUsername(string username)
+    [HttpGet("get/detail")]
+    public async Task<User> GetUserByFirebaseUid()
     {
-        return _userService.GetUserByUsername(username);
+        var firebaseId = (await _firebaseAuthService.VerifyIdToken(HttpContext.Session.GetString("token"))).Uid;
+        return await _userService.GetUserByFirebaseUid(firebaseId);
     }
 
     [HttpPut("updateInfo")]
     public async Task<StatusCodeResult> UpdateInfo([Bind("Fullname", "Phone", "Email", "Avatar")] UserUpdateInfoDTO user, string username)
     {
         userChange = username;
-        HttpContext.Session.SetString("name", user.FullName);
-        HttpContext.Session.SetString("avatar", user.Avatar);
         return (await _userService.UpdateInfo(user, username)) ? StatusCode(200) : StatusCode(404);
-    }
-
-    [HttpPut("update")]
-    public async Task<StatusCodeResult> UpdatePassword([Bind("Old", "New")] UserUpdateDTO user, string username)
-    {
-        return (await _userService.UpdatePassword(user, username)) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpGet("get/address")]

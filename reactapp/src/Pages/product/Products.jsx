@@ -2,112 +2,136 @@ import ProductGrid from "/src/Components/product/ProductGrid"
 import FilterList from "/src/Components/product/FilterList"
 import PleaseWait from "/src/Shared/PleaseWait"
 import "./Products.css"
-import React, { Component } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import ProductEmpty from "/src/Components/product/ProductEmpty";
 
-export default class Products extends Component {
-  static displayName = Products.name;
+export default function Products() {
+  let [products, setProducts] = useState([]);
+  let [fillArr, setFillArr] = useState([
+    {
+      params: "price",
+      title: "Mức giá", 
+      details: [
+        {id: 1, name: "Dưới 500.000đ"},
+        {id: 2, name: "Từ 500.000đ - 1.000.000đ"},
+        {id: 3, name: "Trên 1.000.000đ"}
+      ]
+    }
+  ]);
+  let [fillParams, setFillParams] = useState([{param: 'price', content: []}]);
+  let [loading, setLoading] = useState(true);
+  const hasRun = useRef(false);
+  
+  const params = new URLSearchParams(location.search);
+  const search = params.get("search") === null ? "" : params.get("search");
+  const page = params.get("page") === null ? 1 : Number(params.get("page"));
+  let [numPerPage, setNumPerPage] = useState(params.get("num") === null ? 10 : Number(params.get("num")));
+  const sort = params.get("sort") === null ? 0 : Number(params.get("sort"));
+  const avail = params.get("avail") == 1;
 
-  constructor(props) {
-    super(props);
-
-    const params = new URLSearchParams(location.search);
-    const search = params.get("search") === null ? "" : params.get("search");
-    const page = params.get("page") === null ? 1 : Number(params.get("page"));
-    const numPerPage = params.get("num") === null ? 10 : Number(params.get("num"));
-    const sort = params.get("sort") === null ? 0 : Number(params.get("sort"));
-    const avail = params.get("avail") == 1;
-    const fillArr = [
-      { title: "Mức giá", details: ["Dưới 500.000đ", "Từ 500.000đ - 1.000.000đ", "Trên 1.000.000đ"] }
-    ]
-
-    this.state = { products: [], sort, search, page, numPerPage, avail, loading: true, fillArr }
+  function handleFilterClick(params, filter) {
+    let i = fillParams.findIndex(f => f.param === params);
+    if (i >= 0) {
+      let content = fillParams[i].content;
+  
+      let j = content.findIndex(c => c === filter)
+      if (j === -1) content.push(filter); else content = [...content.slice(0,j), ...content.slice(j+1)];
+  
+      setFillParams(fillParams = [...fillParams.slice(0, i), {param: params, content}, ...fillParams.slice(i+1)]);
+    }
   }
 
-  reloadPage(e, page, sort = this.state.sort) {
-    const search = { search: this.state.search, page: this.state.page, numPerPage: (this.state.numPerPage > 50) ? "All" : this.state.numPerPage, sort: sort }
-    if (e.target.id === "numPerPage")
-      search.numPerPage = (e.target.value === "Tất cả") ? "All": e.target.value;
-    search.page = page;
-
+  function reloadPage(e, ePage, eSort = sort) {
+    e.preventDefault();
+    const searchParams = { search, page: ePage, numPerPage: (numPerPage > 50) ? "All" : numPerPage, sort: eSort };
     const url = new URL(location.origin + location.pathname);
-    let params = new URLSearchParams(url.search);
-    if (search.search !== "") params.set("search", search.search)
-    if (search.page > 1) params.set("page", search.page);
-    if (isNaN(search.numPerPage) || search.numPerPage > 10) params.set("num", search.numPerPage);
 
-    if (sort > 0) params.set("sort", search.sort);
-    if (document.getElementById("avail").checked) params.set("avail", 1)
+    if (e.target.id === "numPerPage")
+      searchParams.numPerPage = (e.target.value === "Tất cả") ? "All": e.target.value;
+
+    let urlParams = new URLSearchParams(url.search);
+    fillParams.forEach(f => {
+      if (f.content.length > 0) urlParams.set(f.param, f.content.join("_"))
+    });
+
+    if (searchParams.search !== "") urlParams.set("search", searchParams.search.toLowerCase())
+    if (searchParams.page > 1) urlParams.set("page", searchParams.page);
+    if (isNaN(searchParams.numPerPage) || searchParams.numPerPage > 10) urlParams.set("num", searchParams.numPerPage);
+
+    if (sort > 0) urlParams.set("sort", searchParams.sort);
+    if (document.getElementById("avail").checked) urlParams.set("avail", 1);
     
-    location.href = url + (params.size > 0 ? "?" : "") + params.toString();
+    location.href = url + (urlParams.size > 0 ? "?" : "") + urlParams.toString();
   }
 
-  componentDidMount() {
-    this.populateProductData();
-    this.populateFilterData();
-  }
+  useEffect(() => {
+    if (hasRun.current) return;
+    
+    populateProductData();
 
-  renderBottom() {
-    const numPage = this.state.page;
-    const totalPage = Math.ceil(this.state.products.length / this.state.numPerPage);
+    hasRun.current = true;
+  }, []);
+
+  function renderBottom() {
+    const totalPage = Math.ceil(products.length / numPerPage);
     
     if (location.search.includes("num=All") || totalPage === 1) return <></>
 
-    const firstButton = (numPage > 1) ? <button className="at-sbtn-secondary mx-1" onClick={e => this.reloadPage(e, 1)}>&lt;</button> : "";
-    const lastButton = (numPage < totalPage) ? <button className="at-sbtn-secondary mx-1" onClick={e => this.reloadPage(e, totalPage)}>&gt;</button> : "";
+    const firstButton = (page > 1) ? <button className="at-sbtn-secondary mx-1" onClick={e => reloadPage(e, 1)}>&lt;</button> : "";
+    const lastButton = (page < totalPage) ? <button className="at-sbtn-secondary mx-1" onClick={e => reloadPage(e, totalPage)}>&gt;</button> : "";
 
-    let pageList = [numPage];
+    let pageList = [page];
     switch (true) {
-      case (numPage === 1): {
-        let i = numPage + 1;
-        while (i <= totalPage && i <= numPage + 2) pageList.push(i++);
+      case (page === 1): {
+        let i = page + 1;
+        while (i <= totalPage && i <= page + 2) pageList.push(i++);
         break;
       }
-      case (numPage === totalPage): {
-        let i = numPage - 1;
-        while (i >= 1 && i >= numPage - 2) pageList.unshift(i--);
+      case (page === totalPage): {
+        let i = page - 1;
+        while (i >= 1 && i >= page - 2) pageList.unshift(i--);
         break;
       }
       default: {
-        pageList.unshift(numPage - 1);
-        pageList.push(numPage + 1);
+        pageList.unshift(page - 1);
+        pageList.push(page + 1);
       }
     }
 
     return (
       <div id="page" className="d-flex justify-content-center mt-2">
         {firstButton}
-          <button className={`at-sbtn${pageList[0] === numPage ? "" : "-secondary"} mx-1`} onClick={e => this.reloadPage(e, pageList[0])}>{pageList[0]}</button>
-          <button className={`at-sbtn${pageList[1] === numPage ? "" : "-secondary"} mx-1`} onClick={e => this.reloadPage(e, pageList[1])}>{pageList[1]}</button>
-          { pageList[2] !== undefined && <button className={`at-sbtn${pageList[2] === numPage ? "" : "-secondary"} mx-1`} onClick={e => this.reloadPage(e, pageList[2])}>{pageList[2]}</button> }
+          <button className={`at-sbtn${pageList[0] === page ? "" : "-secondary"} mx-1`} onClick={e => reloadPage(e, pageList[0])}>{pageList[0]}</button>
+          <button className={`at-sbtn${pageList[1] === page ? "" : "-secondary"} mx-1`} onClick={e => reloadPage(e, pageList[1])}>{pageList[1]}</button>
+          { pageList[2] !== undefined && <button className={`at-sbtn${pageList[2] === page ? "" : "-secondary"} mx-1`} onClick={e => reloadPage(e, pageList[2])}>{pageList[2]}</button> }
         {lastButton}
       </div>
     )
   }
 
-  renderProductList() {
-    const last = Math.min(this.state.numPerPage * this.state.page, this.state.products.length);
-    const products = this.state.products.slice(this.state.numPerPage * (this.state.page - 1), last);
+  function renderProductList() {
+    const last = Math.min(numPerPage * page, products.length);
+    const pageProducts = products.slice(numPerPage * (page - 1), last);
 
     return (
       <div className="product-list">
-        {products.map(p => <ProductGrid key={p.urlName} urlName={p.urlName} image={p.productColors[0].productImages[0].image} name={p.name} price={p.price} oldPrice={null} />)}
+        {pageProducts.map(p => <ProductGrid key={p.urlName} urlName={p.urlName} image={p.productColors[0].productImages[0].image} name={p.name} price={p.price} oldPrice={null} />)}
       </div>
     )
   }
 
-  renderProductPage() {
+  function renderProductPage() {
     return (
       <>
         <div className="my-4">
           {
-            <FilterList filters={this.state.fillArr} />
+            <FilterList filters={fillArr} onClick={(params, filter) => handleFilterClick(params, filter)} reloadPage={e => reloadPage(e, 1)} />
           }
 
           <div className="order-tab mt-3">
             <div>
               <label htmlFor="sort">Số sản phẩm:&nbsp;</label>
-              <select id="numPerPage" defaultValue={`${location.href.includes("num=All") ? "All" : this.state.numPerPage}`} onChange={e => this.reloadPage(e, 1)}>
+              <select id="numPerPage" defaultValue={`${location.href.includes("num=All") ? "All" : numPerPage}`} onChange={e => reloadPage(e, 1)}>
                 <option value="10">10</option>
                 <option value="25">25</option>
                 <option value="50">50</option>
@@ -117,7 +141,7 @@ export default class Products extends Component {
 
             <div>
               <label htmlFor="sort">Sắp xếp:&nbsp;</label>
-              <select id="sort" defaultValue={`${this.state.sort}`} onChange={e => this.reloadPage(e, this.state.page, e.target.value)}>
+              <select id="sort" defaultValue={`${sort}`} onChange={e => reloadPage(e, page, e.target.value)}>
                 <option value="0">Mặc định</option>
                 <option value="1">Giá thấp đến cao</option>
                 <option value="2">Giá cao đến thấp</option>
@@ -127,49 +151,64 @@ export default class Products extends Component {
             </div>
 
             <div>
-              <input type="checkbox" id="avail" checked={this.state.avail} onChange={e => this.reloadPage(e, 1)} /> Chỉ xem các sản phẩm có hàng
+              <input type="checkbox" id="avail" checked={avail} onChange={e => reloadPage(e, 1)} /> Chỉ xem các sản phẩm có hàng
             </div>
           </div>
         </div>
 
-        { this.renderProductList() }
+        { renderProductList() }
 
-        { this.renderBottom() }
+        { renderBottom() }
       </>
     )
   }
 
-  render() {
-    return (this.state.loading) ? <PleaseWait /> : (
-      this.state.products.length === 0 ? <ProductEmpty /> : (
-        <main className="user-main">
-          <h1 className="flex-grow-1 text-center fw-bold">SẢN PHẨM</h1>
-          <hr />
+  async function populateProductData() {
+    const response = await fetch(`/product/filter`);
+    const filterData = await response.json();    
+    const newFillArr = fillArr;
+    const newFillParams = fillParams;
+
+    filterData.forEach(d => {
+      if (newFillArr.findIndex(f => f.title === d.title) === -1) {
+        newFillArr.push(d);
+        newFillParams.push({param: d.params, content: []})
+    }});
+
+    setFillArr(fillArr = newFillArr);
+    setFillParams(fillParams = newFillParams);
+
+    let searchList = [];
+    for (const [key, value] of params.entries()) searchList.push({param: key, detailString: value})
+    console.log(searchList);
+
+    searchList.forEach(s => handleFilterClick(s.param, s.detailString));
+    console.log(fillParams);
+
+    if (searchList.length === 0) searchList = null;
+
+    fetch(`/product/get?sort=${sort}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(searchList)
+    }).then(response => response.json()).then(data => {
+      if (avail) data = data.filter(d => d.quantity > 0);
+      setProducts(products = data);
+      setLoading(loading = false);
+      setNumPerPage(numPerPage = isNaN(numPerPage) ? data.length : numPerPage);
+    });
+  }
   
-          {this.renderProductPage()}
-        </main>
-      )
+  return (loading) ? <PleaseWait /> : (
+    products.length === 0 ? <ProductEmpty /> : (
+      <main className="user-main">
+        <h1 className="flex-grow-1 text-center fw-bold">SẢN PHẨM</h1>
+        <hr />
+
+        {renderProductPage()}
+      </main>
     )
-  }
-
-  async populateProductData() {
-    let url = ""
-    if (this.state.search === "") url = `/product/get?sort=${this.state.sort}`;
-    else url = `/product/get?search=${this.state.search}&sort=${this.state.sort}`;
-
-    fetch(url).then(response => response.json()).then(data => {
-      if (this.state.avail) data = data.filter(d => d.quantity > 0);
-      this.setState({ products: data, loading: false, numPerPage: (isNaN(this.state.numPerPage) ? data.length : this.state.numPerPage) });
-    });
-  }
-
-  async populateFilterData() {
-    fetch(`/product/filter`).then(response => response.json()).then(data => {
-      const newFillArr = this.state.fillArr;
-      data.forEach(d => {
-        if (newFillArr.findIndex(f => f.title === d.title) === -1) newFillArr.push(d)
-      });
-      this.setState({ fillArr: newFillArr });
-    });
-  }
+  )
 }

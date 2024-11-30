@@ -8,6 +8,16 @@
       display: none;
     }
   }
+
+  .save-btn {
+    background-color: var(--lighter);
+    transition-duration: 0.3s;
+
+    &:hover {
+      background-color: var(--darker);
+      color: var(--white);
+    }
+  }
 }
 
 /*

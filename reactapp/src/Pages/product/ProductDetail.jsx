@@ -137,7 +137,7 @@ export default class ProductDetail extends Component {
             {(sizeList.length > 1) && this.renderSize(sizeList)}
             {(colorList.length > 1) && this.renderColor(colorList, idList)}
 
-            {<AddToCart type="text" product={product.find(p => p.sku === this.state.sku)} />}
+            {<AddToCart type="text" product={product.find(p => p.sku === this.state.sku)} username={this.props.username} />}
           </div>
         </div>
 

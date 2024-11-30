@@ -16,6 +16,32 @@
     text-decoration: underline!important;
   }
 
+  abbr {
+    .redirect-icon {
+      height: 30px;
+      border-radius: 50%;
+      transition-duration: 0.3s;
+    }
+
+    &:hover {
+      ~:not(:hover) {
+        .redirect-icon {
+          border-radius: 50%;
+          filter: brightness(50%) grayscale(100%);
+          scale: 0.6;
+        }
+      }
+    }
+
+    &:has(~:hover) {
+      .redirect-icon {
+        border-radius: 50%;
+        filter: brightness(50%) grayscale(100%);
+        scale: 0.6;
+      }
+    }
+  }
+
   @media (max-width: 499px) {
     & {
       box-shadow: none;

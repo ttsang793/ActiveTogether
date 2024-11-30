@@ -15,11 +15,6 @@ public class AdminUserService : IAdminUserService
         _unitOfWork = unitOfWork;
     }
 
-    public AdminUser Login(UserLoginDTO user)
-    {
-        return _unitOfWork.AdminUsers.Login(user);
-    }
-
     public async Task<AdminUser> GetUserById(int id)
     {
         return await _unitOfWork.AdminUsers.GetUserById(id);
@@ -27,7 +22,7 @@ public class AdminUserService : IAdminUserService
 
 	public async Task<bool> UpdateInfo(UserUpdateInfoDTO user, int id)
     {
-        _unitOfWork.AdminUsers.UpdateInfo(user, id);
+        await _unitOfWork.AdminUsers.UpdateInfo(user, id);
         return await _unitOfWork.SaveChangesAsync();
     }
 
@@ -38,7 +33,7 @@ public class AdminUserService : IAdminUserService
 
     public async Task<bool> UpdatePassword(UserUpdateDTO user, int id)
     {
-        _unitOfWork.AdminUsers.UpdatePassword(user, id);
+        await _unitOfWork.AdminUsers.UpdatePassword(user, id);
         return await _unitOfWork.SaveChangesAsync();
     }
 }

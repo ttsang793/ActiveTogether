@@ -10,7 +10,9 @@ public class BlogReadDTO : BaseDTO
 
     public string? Thumbnail { get; set; }
 
-    public string? WrittenAdmin { get; set; }
+    public string? Author { get; set; }
+
+    public string? Avatar { get; set; }
 
     public DateTime? DatePublish { get; set; }
 }
@@ -21,7 +23,9 @@ public class BlogDetailReadDTO : BaseDTO
 
     public string? Brief { get; set; }
 
-    public string? WrittenAdmin { get; set; }
+    public string? Author { get; set; }
+
+    public string? Avatar { get; set; }
 
     public string? Content { get; set; }
 

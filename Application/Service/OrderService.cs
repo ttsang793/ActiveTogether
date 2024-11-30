@@ -52,7 +52,9 @@ public class OrderService : IOrderService
         
         order.Point = (int)(order.UserId > 0 ? o.Total / 10000 : 0);
 
+        Console.WriteLine("Hello world");
         int id = _unitOfWork.Orders.AddOrder(order);
+        Console.WriteLine("finished");
 
         foreach (var odDTO in o.OrderDetails)
         {

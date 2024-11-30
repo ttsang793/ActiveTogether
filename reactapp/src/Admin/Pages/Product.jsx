@@ -122,8 +122,8 @@ export default class AProduct extends Component {
             <div className="mt-3">
               <select className="form-control" value={this.state.pGender} onChange={e => this.handleGenderChange(e)}>
                 <option value="" disabled selected hidden>Giới tính</option>
-                <option value="0">Nữ</option>
-                <option value="1">Nam</option>
+                <option value="0">Nam</option>
+                <option value="1">Nữ</option>
                 <option value="2">Unisex</option>
               </select>
             </div>

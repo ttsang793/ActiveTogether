@@ -23,10 +23,10 @@ public class ProductController : ControllerBase
         _productReviewService = productReviewService;
     }
 
-    [HttpGet("get")]
-    public async Task<IEnumerable<Product>> GetAllProducts(string? search, int sort)
+    [HttpPost("get")]
+    public async Task<IEnumerable<Product>> GetAllProducts([FromBody] List<SearchListDTO>? searchDTO, int sort)
     {
-        return await _productService.GetAllProducts(search, sort);
+        return await _productService.GetAllProducts(searchDTO, sort);
     }
     
     [HttpGet("")]
@@ -42,7 +42,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet("filter")]
-    public List<FilterDTO> GetAllFilter()
+    public List<FilterListDTO> GetAllFilter()
     {
         return _productService.GetAllFilter();
     }

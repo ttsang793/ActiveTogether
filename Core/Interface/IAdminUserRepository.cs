@@ -7,8 +7,6 @@ public interface IAdminUserRepository : IInsert<AdminUser>
 {
     Task<IEnumerable<AdminUser>> GetAllAdminUsers();
 
-    AdminUser Login(UserLoginDTO user);
-
     Task<AdminUser> GetUserById(int id);
 
     Task<bool> Update(int id, int roleId);

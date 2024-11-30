@@ -17,15 +17,21 @@ export default function AddToCart(props) {
       </div>
 
       <div className="text">
-        <button className="cart px-3" onClick={() => add(props.product, quantity)}>Thêm vào giỏ hàng</button> 
+        <button className="cart px-3" onClick={() => add(props.product, quantity, props.username)}>Thêm vào giỏ hàng</button> 
         {/*<button className="buy-now px-3" onClick={() => buyNow(props.product, quantity)}>Mua ngay!</button> */}
       </div>
     </div>
   )
 }
 
-async function add(product, quantity) {
-  const username = localStorage.getItem("userLogin");
+async function add(product, quantity, username) {
+  console.log({
+    username,
+    sku: product.sku,
+    price: product.price,
+    quantity: quantity
+  })
+
   if (username !== null) {
     const response = await fetch('/cart/add', {
       method: 'POST',
@@ -34,7 +40,7 @@ async function add(product, quantity) {
         'Accept': 'application/json'
       },
       body: JSON.stringify({
-        userName: username,
+        username,
         sku: product.sku,
         price: product.price,
         quantity: quantity

@@ -6,13 +6,15 @@ export default function AHeader(props) {
   }
 
   const handleLogout = () => {
-    if (confirm("Bạn có muốn đăng xuất ra khỏi hệ thống admin?"))
-    location.href = "/admin";
+    if (confirm("Bạn có muốn đăng xuất ra khỏi hệ thống admin?")) {
+      fetch("/api/adminuser/logout", { method: 'POST'} ).then(() => location.href = "/admin");
+    }
   }
 
   return (
     <header className="d-flex admin-header">
-      <div className="flex-grow-1 fst-italic fw-semibold">{props.username} &minus; {props.name}</div>
+      <img src={props.avatar} alt={props.name} />
+      <div className="flex-grow-1 ms-2 fst-italic fw-semibold">{props.username} &minus; {props.name}</div>
       <div className="pointer header-button py-2 px-3" onClick={handleSetting}>
         <i className="bi bi-gear"></i>&nbsp;
         <span>Cài đặt</span>

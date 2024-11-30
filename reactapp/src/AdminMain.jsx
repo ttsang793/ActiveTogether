@@ -2,6 +2,7 @@ import FourOThree from './Admin/Shared/FourOThree';
 import FourOFour from './Pages/FourOFour';
 import BackToTop from "./Shared/BackToTop";
 import PageTitle from "./Shared/PageTitle";
+import PleaseWait from "./Shared/PleaseWait";
 
 import ALogin from "./Admin/Pages/Login"
 
@@ -49,12 +50,12 @@ export default function AdminMain() {
   let [avatar, setAvatar] = useState(null);
   let [role, setRole] = useState(0);
 
-  /*useEffect(() => {
-    fetch('/user/cookie', { method: 'GET', headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include'})
+  useEffect(() => {
+    fetch('/api/adminuser/cookie', { method: 'GET', headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include'})
     .then(response => response.json())
     .then(data => { setLoading(false); setName(name = data.name); setUsername(username = data.username); setAvatar(avatar = data.avatar); setRole(role = data.role || 0) })
     .catch(err => { setLoading(false); console.log(err) });
-  }, []);*/
+  }, []);
   
   if (location.pathname === "/admin" || location.pathname === "/admin/")
     return (
@@ -66,7 +67,7 @@ export default function AdminMain() {
     )
   
 
-  else if (role === 0) return <FourOThree />
+  else if (role === 0) return loading ? <PleaseWait /> : <FourOThree />
 
   else return loading ? <PleaseWait /> : (
     <Router>

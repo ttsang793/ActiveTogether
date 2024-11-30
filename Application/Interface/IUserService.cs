@@ -8,11 +8,9 @@ public interface IUserService
 {
     Task<bool> Register(UserRegisterDTO user);
 
-    Task<User> Login(UserLoginDTO user);
+    Task<string> GetEmailByUsername(string username);
 
-    User GetUserByUsername(string username);
-
-    int GetUserIdByUsername(string username);
+    Task<User> GetUserByFirebaseUid(string uid);
 
     Task<bool> UploadImage(IFormFile file, string username);
 

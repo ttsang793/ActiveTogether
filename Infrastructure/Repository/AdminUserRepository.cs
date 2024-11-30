@@ -13,30 +13,22 @@ public class AdminUserRepository : BaseRepository<AdminUser>, IAdminUserReposito
     {
     }
 
-    public async Task<bool> Login(AdminLoginDTO admin)
-    {
-        var p = GetDbSet().FirstOrDefault(a => a.Id == admin.Id);
-        return (p != null && admin.Password == p.Password);
-    }
-
     public async Task<IEnumerable<AdminUser>> GetAllAdminUsers()
     {
         return await GetDbSet().Where(u => !u.FullName.Contains("Admin")).ToListAsync();
     }
 
-    public AdminUser Login(UserLoginDTO user)
-    {
-        var p = GetDbSet().FirstOrDefault(u => u.Id == int.Parse(user.Username));
-        if (p != null && user.Password == p.Password) return new AdminUser { FullName = p.FullName, Id = p.Id, Avatar = p.Avatar };
-        return null;
-    }
-
     public async Task<AdminUser> GetUserById(int id)
     {
-        var user = await GetDbSet().Where(u => u.Id == id).FirstAsync();
-        if (user == null) return null;
-        user.Password = "";
-        return user;
+        try
+        {
+            var user = await GetDbSet().Where(u => u.Id == id).FirstAsync();
+            return user;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public async Task<bool> UpdateInfo(UserUpdateInfoDTO user, int id)
@@ -54,8 +46,9 @@ public class AdminUserRepository : BaseRepository<AdminUser>, IAdminUserReposito
 
     public async Task<bool> UpdatePassword(UserUpdateDTO user, int id)
     {
+        /*
         var u = await GetDbSet().FirstAsync(u => u.Id == id && u.Password == user.Old);
-        if (u != null) u.Password = user.New!;
+        if (u != null) u.Password = user.New!;*/
         return true;
     }
 
@@ -95,7 +88,7 @@ public class AdminUserRepository : BaseRepository<AdminUser>, IAdminUserReposito
     public async Task<bool> Lock(int id)
     {
         AdminUser user = await GetUserById(id);
-        user.IsActive = false;
+        //user.IsActive = false;
         return true;
     }
 }

@@ -69,7 +69,7 @@ export default class Home extends Component {
             <h2 className="home-title">CÁC MÔN THỂ THAO</h2>
             <div className="home-content-collection">
               {
-                this.state.sport.map(s => <HomeSelection key={s.name} image={s.image} name={s.name} radius={true} />)
+                this.state.sport.map((s, i) => <HomeSelection params="sport" id={i+1} key={s.name} image={s.image} name={s.name} radius={true} />)
               }
             </div>
           </div>
@@ -83,9 +83,8 @@ export default class Home extends Component {
           <div className="home-content-detail">
             <h2 className="home-title">SẢN PHẨM THEO GIỚI TÍNH</h2>
             <div className="home-content-collection">
-              <HomeSelection image="/src/images/sport/man.png" name="Nam" width={100/3} radius={false} />
-              <HomeSelection image="/src/images/sport/woman.png" name="Nữ" width={100/3} radius={false} />
-              <HomeSelection image="/src/images/sport/children.png" name="Trẻ em" width={100/3} radius={false} />
+              <HomeSelection params="gender" id={0} image="/src/images/sport/woman.png" name="Nữ" width={25} radius={false} />
+              <HomeSelection params="gender" id={1} image="/src/images/sport/man.png" name="Nam" width={25} radius={false} />
             </div>
           </div>
         </div>
@@ -109,7 +108,7 @@ export default class Home extends Component {
             <h2 className="home-title">BÀI VIẾT MỚI NHẤT</h2>
             {
               this.state.article.map(a =>
-                <BlogBlock key={a.title} img={a.thumbnail} title={a.title} smallDesc={a.brief} author={a.writtenAdmin} date={DisplayDate(a.datePublish)} urlName={a.urlName} />
+                <BlogBlock key={a.title} img={a.thumbnail} title={a.title} smallDesc={a.brief} author={a.author} avatar={a.avatar} date={DisplayDate(a.datePublish)} urlName={a.urlName} />
               )
             }
 

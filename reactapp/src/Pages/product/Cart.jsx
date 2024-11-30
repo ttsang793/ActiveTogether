@@ -136,15 +136,11 @@ export default class Cart extends Component {
   }
 
   async populateCartList() {
-    const username = localStorage.getItem("userLogin")
-    if (username !== null)
-    fetch(`/cart/get?username=${username}`).then(response => response.json()).then(data => this.setState({ products: data }));
+    fetch(`/cart/get?username=${this.props.username}`).then(response => response.json()).then(data => this.setState({ products: data }));
   }
 
   async updateCart(product) {
-    const username = localStorage.getItem("userLogin");
-
-    if (username !== null) {
+    if (this.props.username !== null) {
       fetch(`/cart/update`, {
         method: 'PUT',
         headers: {
@@ -152,7 +148,7 @@ export default class Cart extends Component {
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          username: username,
+          username: this.props.username,
           sku: product.sku,
           price: product.price,
           quantity: product.quantity
@@ -164,9 +160,9 @@ export default class Cart extends Component {
   async deleteCart(i, sku) {
     const username = localStorage.getItem("userLogin");
 
-    if (username !== null) {
+    if (this.props.username !== null) {
       if (confirm("Bạn có muốn đưa sản phẩm này ra khỏi giỏ hàng?")) {
-        const response = await fetch(`/cart/delete?username=${username}&sku=${sku}`, {
+        const response = await fetch(`/cart/delete?username=${this.props.username}&sku=${sku}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -188,11 +184,9 @@ export default class Cart extends Component {
   }
 
   async deleteAll() {
-    const username = localStorage.getItem("userLogin");
-
-    if (username !== null) {
+    if (this.props.username !== null) {
       if (confirm("Bạn có muốn xóa TOÀN BỘ sản phẩm trong giỏ hàng?")) {
-        const response = await fetch(`/cart/deleteAll?username=${username}`, {
+        const response = await fetch(`/cart/deleteAll?username=${this.props.username}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

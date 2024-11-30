@@ -2,6 +2,7 @@ import { Component } from "react";
 import "./BlogDetail.css"
 import BlogBlock from "/src/Components/blog/BlogBlock";
 import { DisplayDate } from "/src/Scripts/Utility.js";
+import PleaseWait from "/src/Shared/PleaseWait";
 
 export default class BlogDetail extends Component {
   static DisplayName = BlogDetail.name;
@@ -17,9 +18,9 @@ export default class BlogDetail extends Component {
   }
   
   render() {
-    document.title = this.state.article.title;
+    if (!this.state.loading) document.title = this.state.article.title;
 
-    const content = this.state.loading ? <p>Please wait...</p> : (
+    const content = this.state.loading ? <PleaseWait /> : (
       <main className="user-main blog-article">
         <h1 className="flex-grow-1 text-center fw-bold">{this.state.article.title.toUpperCase()}</h1>
         <hr />
@@ -58,7 +59,6 @@ export default class BlogDetail extends Component {
   }
 
   renderHTMLContent(htmlString) {
-    // Convert the HTML string to React components
     return (
       <div
         dangerouslySetInnerHTML={{

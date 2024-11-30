@@ -19,19 +19,40 @@ public class AdminUserController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<StatusCodeResult> Login([Bind("Username", "Password")] UserLoginDTO user)
+    public async Task<StatusCodeResult> Login([Bind("Id")] AdminLoginDTO user)
     {
-        if (_adminUserService.GetUserById(int.Parse(user.Username)) == null) return StatusCode(404);
+        AdminUser result = await _adminUserService.Login(user);
 
-        AdminUser result = _adminUserService.Login(user);
-        if (result == null) return StatusCode(500);
+        /*
+        if (result == null) return StatusCode(404);
+        else if (result.RoleId == null) return StatusCode(500);
+        else if (!(bool)result.IsActive) return StatusCode(403);
 
-        HttpContext.Session.SetString("name", result.FullName);
-        HttpContext.Session.SetString("username", result.Id.ToString());
-        HttpContext.Session.SetString("avatar", result.Avatar);
-        HttpContext.Session.SetInt32("role", 0);
+        HttpContext.Session.SetString("name", result.FullName!);
+        HttpContext.Session.SetInt32("username", result.Id);
+        HttpContext.Session.SetString("avatar", result.Avatar!);
+        HttpContext.Session.SetInt32("role", (int)result.RoleId!);*/
 
         return StatusCode(200);
+    }
+
+    [HttpGet("cookie")]
+    public IActionResult GetSession()
+    {
+        var name = HttpContext.Session.GetString("name");
+        var username = HttpContext.Session.GetInt32("username");
+        var avatar = HttpContext.Session.GetString("avatar");
+        var role = HttpContext.Session.GetInt32("role");
+        return Ok(new { Name = name, Username = username, Avatar = avatar, Role = role });
+    }
+
+    [HttpPost("logout")]
+    public void Logout()
+    {
+        HttpContext.Session.Remove("name");
+        HttpContext.Session.Remove("username");
+        HttpContext.Session.Remove("avatar");
+        HttpContext.Session.Remove("role");
     }
 
     [HttpGet("get")]
@@ -44,6 +65,7 @@ public class AdminUserController : ControllerBase
     public async Task<StatusCodeResult> UpdateInfo(UserUpdateInfoDTO user, int id)
     {
         userId = id;
+        HttpContext.Session.SetString("avatar", user.Avatar);
         return (await _adminUserService.UpdateInfo(user, id)) ? Ok() : BadRequest();
     }
 

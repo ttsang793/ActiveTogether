@@ -42,7 +42,7 @@ public class VnPayService : IVnPayService
         return paymentUrl;
     }
 
-    public PaymentResponseModel PaymentExecute(IQueryCollection collections)
+    public VnPayPaymentResponseModel PaymentExecute(IQueryCollection collections)
     {
         VnPayLibrary pay = new();
         var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);

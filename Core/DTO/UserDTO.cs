@@ -3,15 +3,13 @@
 public class UserLoginDTO : BaseDTO
 {
     public string Username { get; set; } = null!;
-
-    public string Password { get; set; } = null!;
 }
 
 public class UserRegisterDTO : BaseDTO
 {
-    public string Username { get; set; } = null!;
+    public string FirebaseUid { get; set; } = null!;
 
-    public string Password { get; set; } = null!;
+    public string Username { get; set; } = null!;
 
     public string FullName { get; set; } = null!;
 

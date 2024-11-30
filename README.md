@@ -4,11 +4,11 @@
 
 ## Giới thiệu Active Together
 <p align="center">
-  <img src="https://lh3.googleusercontent.com/pw/AP1GczOgK12ZRYv7CoU9YyNe78BAvQncd8qAjkCWIW8xpNLmo9loGYKGm_x9XF6UnixLdMCymwwvkNxxt8lrOwBCSqwS7g21nxqONZfPiLpyykusqjEPFYc=w621-h585-no" alt="Logo Active Together." width="200px" />
+  <img src="https://lh3.googleusercontent.com/pw/AP1GczOgK12ZRYv7CoU9YyNe78BAvQncd8qAjkCWIW8xpNLmo9loGYKGm_x9XF6UnixLdMCymwwvkNxxt8lrOwBCSqwS7g21nxqONZfPiLpyykusqjEPFYc=w621-h585-no" alt="Logo Active Together" width="200px" />
 </p>
 
 <p align="justify">
-Với phương châm <q><i>Together, we'll build an Active community</i></q>, Active Together tập trung vào các sản phẩm liên quan đến các môn thể thao đồng đội như bóng đá, bóng rổ, cầu lông...
+Với phương châm <q><i>Together, we'll build an Active community</i></q>, Active Together tập trung vào các sản phẩm liên quan đến các môn thể thao đồng đội như bóng đá, bóng rổ, cầu lông... hướng đến xã hội năng động và phát triển cùng nhau.
 </p>
 
 ### _Mục tiêu của Active Togeher:_
@@ -30,8 +30,7 @@ Với phương châm <q><i>Together, we'll build an Active community</i></q>, Ac
     ```
     https://localhost/phpmyadmin
     ```
-  * Bước 4.2: Copy các câu lệnh trong file _Database/empty_db.sql_ vào trình soạn thảo SQL vửa mở, rồi sau đó thực thi.
-  * _Chú ý: Bạn có thể chạy CSDL với dữ liệu mẫu (chỉ khuyến khích dùng cho mục đích kiểm thử hoặc học tập)._
+  * Bước 4.2: Copy các câu lệnh trong file _src/db/empty_db.sql_ vào trình soạn thảo SQL vửa mở, rồi sau đó thực thi.
 
-# Thành viên thực hiện
+## Thành viên thực hiện
 * [3121560077 - Trần Tuấn Sang](https://ttsang793.github.io)

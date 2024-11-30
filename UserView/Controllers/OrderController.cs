@@ -1,10 +1,8 @@
 ﻿using Application.Interface;
 using Core.DTO;
 using Core.Entity;
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http.Extensions;
 
 namespace UserView.Controllers;
 
@@ -15,12 +13,14 @@ public class OrderController : ControllerBase
     private readonly ILogger<OrderController> _logger;
     private readonly IOrderService _orderService;
     private readonly IVnPayService _vnPayService;
+    private readonly IMomoService _momoService;
 
-    public OrderController(ILogger<OrderController> logger, IOrderService orderService, IVnPayService vnPayService)
+    public OrderController(ILogger<OrderController> logger, IOrderService orderService, IVnPayService vnPayService, IMomoService momoService)
     {
         _logger = logger;
         _orderService = orderService;
         _vnPayService = vnPayService;
+        _momoService = momoService;
     }
 
     [HttpGet("get")]
@@ -37,7 +37,7 @@ public class OrderController : ControllerBase
 
     [HttpPost("vnpay/payment")]
     [EnableCors("AllowVNPay")]
-    public string CreateVNPayPayment([Bind("Username", "FullName", "Total")]OrderDTO o)
+    public string CreateVnPayPayment([Bind("Username", "FullName", "Total")] OrderDTO o)
     {
         string url = _vnPayService.CreatePaymentUrl(o, HttpContext);
         return url;
@@ -45,10 +45,26 @@ public class OrderController : ControllerBase
 
     [HttpGet("vnpay/result")]
     [EnableCors("AllowVNPay")]
-    public bool GetResult()
+    public IActionResult GetVnPayResult()
     {
         var response = _vnPayService.PaymentExecute(Request.Query);
-        return response.Success;
+
+        return Redirect($"https://locahost:5173/thanh-toan/hoan-tat?VNPayOId={response.OrderId}");
+    }
+
+    [HttpPost("momo/payment")]
+    public async Task<string> CreateMomoPayment([Bind("Username", "FullName", "Total")] OrderDTO o)
+    {
+        var response = await _momoService.CreatePaymentAsync(o);
+        return response.PayUrl;
+    }
+
+    [HttpGet("momo/result")]
+    public MomoPaymentResponseModel GetMomoResult()
+    {
+        var response = _momoService.PaymentExecuteAsync(Request.Query);
+
+        return response;
     }
 
     [HttpPost("add")]

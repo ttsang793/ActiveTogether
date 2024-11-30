@@ -26,25 +26,28 @@ public class BlogRepository : BaseRepository<BlogArticle>, IBlogRepository
             Brief = b.Brief,
             UrlName = b.UrlName,
             Thumbnail = b.Thumbnail,
-            WrittenAdmin = b.WrittenAdminNavigation!.FullName,
+            Author = b.WrittenAdminNavigation!.FullName,
+            Avatar = b.WrittenAdminNavigation!.Avatar,
             DatePublish = b.DatePublish
         });
     }
 
     public async Task<IEnumerable<BlogReadDTO>> GetTop3Blogs()
     {
-        return (await GetAllReadBlogs()).Take(2);
+        return (await GetAllReadBlogs()).Take(3);
     }
 
     public async Task<BlogDetailReadDTO> GetByUrlAsync(string url)
     {
-        var blog = (await GetAllAsync(b => b.UrlName == url)).First();
+        var blog = (await GetDbSet().Include(b => b.WrittenAdminNavigation).Where(u => u.UrlName == url).ToListAsync())[0];
+        Console.WriteLine(blog.Title);
 
         return new BlogDetailReadDTO
         {
             Title = blog.Title,
             Brief = blog.Brief,
-            WrittenAdmin = blog.WrittenAdminNavigation!.FullName,
+            Author = blog.WrittenAdminNavigation!.FullName,
+            Avatar = blog.WrittenAdminNavigation!.Avatar,
             Content = blog.Content,
             DatePublish = blog.DatePublish
         };

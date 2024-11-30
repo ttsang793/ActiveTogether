@@ -38,7 +38,7 @@ export default function ALogin() {
     handlePasswordError();
   
     if (errorUsername !== "" || errorPassword !== "") return;
-  
+
     password = Encode2(username, password);
     
     const response = await fetch("/api/adminuser/login", {
@@ -55,6 +55,7 @@ export default function ALogin() {
       location.href = "/admin/home";
     }
     else if (response.status === 404) setErrorUsername("Tài khoản không tồn tại. Vui lòng kiểm tra lại.");
+    else if (response.status === 403) setErrorUsername("Nhân viên đã nghỉ việc.");
     else if (response.status === 500) setErrorPassword("Sai mật khẩu, vui lòng nhập lại.");
   }
 

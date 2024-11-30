@@ -74,6 +74,8 @@ public partial class AtWebContext : DbContext
 
             entity.HasIndex(e => e.RoleId, "FK_Admin_Role");
 
+            entity.HasIndex(e => e.FirebaseUid, "firebase_uid").IsUnique();
+
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
@@ -83,19 +85,13 @@ public partial class AtWebContext : DbContext
             entity.Property(e => e.Email)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("email");
+            entity.Property(e => e.FirebaseUid)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("firebase_uid");
             entity.Property(e => e.FullName)
                 .HasMaxLength(200)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("full_name");
-            entity.Property(e => e.IsActive)
-                .HasDefaultValueSql("'1'")
-                .HasColumnName("is_active");
-            entity.Property(e => e.IsVertified)
-                .HasDefaultValueSql("'0'")
-                .HasColumnName("is_vertified");
-            entity.Property(e => e.Password)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnName("password");
             entity.Property(e => e.Phone)
                 .HasMaxLength(15)
                 .HasDefaultValueSql("'NULL'")
@@ -916,6 +912,10 @@ public partial class AtWebContext : DbContext
 
             entity.ToTable("user");
 
+            entity.HasIndex(e => e.FirebaseUid, "firebase_uid").IsUnique();
+
+            entity.HasIndex(e => e.Username, "username").IsUnique();
+
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
@@ -930,16 +930,13 @@ public partial class AtWebContext : DbContext
                 .HasMaxLength(150)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("email");
+            entity.Property(e => e.FirebaseUid)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("firebase_uid");
             entity.Property(e => e.FullName)
                 .HasMaxLength(200)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("full_name");
-            entity.Property(e => e.IsActive)
-                .HasDefaultValueSql("'0'")
-                .HasColumnName("is_active");
-            entity.Property(e => e.Password)
-                .HasDefaultValueSql("'NULL'")
-                .HasColumnName("password");
             entity.Property(e => e.Phone)
                 .HasMaxLength(15)
                 .HasDefaultValueSql("'NULL'")
@@ -950,7 +947,6 @@ public partial class AtWebContext : DbContext
                 .HasColumnName("point");
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
-                .HasDefaultValueSql("'NULL'")
                 .HasColumnName("username");
         });
 

@@ -12,7 +12,6 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 function RenderMain() {
-
   if (!location.pathname.includes("/admin")) return <UserMain />
   else return <AdminMain />
 }

@@ -6,13 +6,13 @@ namespace Core.Interface;
 
 public interface IProductRepository : IInsert<Product>, IUpdate<Product>, ILock, IUnlock
 {
-    Task<IEnumerable<Product>> GetAllProducts(string search, bool desc = false, Expression<Func<Product, object>> expression = null);
+    Task<IEnumerable<Product>> GetAllProducts(List<SearchListDTO>? searchDTO = null, bool desc = false, Expression<Func<Product, object>> expression = null);
 
     void Insert(List<ProductSport> productSports);
 
     void Update(List<ProductSport> productSports, int id);
 
-    List<FilterDTO> GetAllFilter();
+    List<FilterListDTO> GetAllFilter();
 
     IEnumerable<Product> GetAllProducts();
 }

@@ -8,5 +8,5 @@ public interface IVnPayService
 {
     string CreatePaymentUrl(OrderDTO order, HttpContext context);
 
-    PaymentResponseModel PaymentExecute(IQueryCollection collections);
+    VnPayPaymentResponseModel PaymentExecute(IQueryCollection collections);
 }

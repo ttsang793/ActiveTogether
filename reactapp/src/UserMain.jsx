@@ -62,7 +62,7 @@ export default function UserMain() {
           <Routes>
             <Route path="/gioi-thieu" element={<><Introduction /> <PageTitle title="Giới thiệu Active Together" /></>} />
             <Route path="/san-pham" element={<><Products /> <PageTitle title="Danh sách sản phẩm" /></>} />
-            <Route path="/gio-hang" element={<><Cart /> <PageTitle title="Giỏ hàng của bạn" /></>} />
+            <Route path="/gio-hang" element={<><Cart username={username} /> <PageTitle title="Giỏ hàng của bạn" /></>} />
             <Route path="/thanh-toan" element={<><Order username={username} /> <PageTitle title="Thanh toán đơn hàng" /></>} />
             <Route path="/thanh-toan/hoan-tat" element={<><OrderFinished /> <PageTitle title="Thanh toán thành công" /></>} />
             <Route path="/tin-tuc" element={<><Blog /> <PageTitle title="Tin tức, blog" /></>} />
@@ -75,7 +75,7 @@ export default function UserMain() {
             {
               // Trang con của Sản phẩm
             }
-            <Route path="/san-pham/*" element={<ProductDetail />} />
+            <Route path="/san-pham/*" element={<ProductDetail username={username} />} />
 
             {
               //Trang con của Tin tức, blog

@@ -3,6 +3,7 @@ using Core.Entity;
 using Core.DTO;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository;
 public class UserRepository : BaseRepository<User>, IUserRepository
@@ -12,12 +13,17 @@ public class UserRepository : BaseRepository<User>, IUserRepository
     {
     }
 
+    public async Task<string> GetEmailByUsername(string username)
+    {
+        return (await GetDbSet().Where(u => u.Username == username).FirstOrDefaultAsync()).Email;
+    }
+
     public int Register(UserRegisterDTO user)
     {
         GetDbSet().Add(new User
         {
+            FirebaseUid = user.FirebaseUid,
             Username = user.Username,
-            Password = user.Password,
             FullName = user.FullName,
             DateCreated = DateTime.Now,
             Phone = user.Phone,
@@ -27,13 +33,6 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         });
 
         return GetDbSet().OrderByDescending(o => o.Id).First().Id;
-    }
-
-    public async Task<User> Login(UserLoginDTO user)
-    {
-        var p = GetDbSet().FirstOrDefault(u => u.Username == user.Username);
-        if (p != null && user.Password == p.Password) return new User { FullName = p.FullName, Username = p.Username, Avatar = p.Avatar };
-        return null;
     }
 
     public int GetUserIdByUsername(string username)
@@ -46,12 +45,17 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         }
     }
 
-    public User GetUserByUsername(string username)
+    public async Task<User> GetUserByFirebaseUid(string uid)
     {
-        var user = GetDbSet().Where(u => u.Username == username).First();
-        user.Password = "";
-        user.Id = 0;
-        return user;
+        try
+        {
+            var user = await GetDbSet().Where(u => u.FirebaseUid == uid).FirstAsync();
+            return user;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public void UpdateInfo(UserUpdateInfoDTO user, string username)
@@ -69,8 +73,8 @@ public class UserRepository : BaseRepository<User>, IUserRepository
 
     public void UpdatePassword(UserUpdateDTO user, string username)
     {
-        var u = GetDbSet().First(u => u.Username == username && u.Password == user.Old);
-        if (u != null) u.Password = user.New!;
+        //var u = GetDbSet().First(u => u.Username == username && u.Password == user.Old);
+        //if (u != null) u.Password = user.New!;
     }
 
     public void GainPoint(int? userId, int? point)

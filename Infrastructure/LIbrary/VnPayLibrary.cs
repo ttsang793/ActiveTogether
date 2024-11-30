@@ -16,7 +16,7 @@ public class VnPayLibrary
     private readonly SortedList<string, string> _requestData = new SortedList<string, string>(new VnPayCompare());
     private readonly SortedList<string, string> _responseData = new SortedList<string, string>(new VnPayCompare());
 
-    public PaymentResponseModel GetFullResponseData(IQueryCollection collection, string hashSecret)
+    public VnPayPaymentResponseModel GetFullResponseData(IQueryCollection collection, string hashSecret)
     {
         var vnPay = new VnPayLibrary();
 
@@ -39,12 +39,12 @@ public class VnPayLibrary
             vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
 
         if (!checkSignature)
-            return new PaymentResponseModel()
+            return new VnPayPaymentResponseModel()
             {
                 Success = false
             };
 
-        return new PaymentResponseModel()
+        return new VnPayPaymentResponseModel()
         {
             Success = vnpResponseCode.Equals("00"),
             PaymentMethod = "VnPay",

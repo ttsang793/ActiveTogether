@@ -31,18 +31,18 @@ export default class Blog extends Component {
         
         {
           this.state.article.map((a, i) =>
-            <BlogBlock key={i} img={a.thumbnail} title={a.title} brief={a.brief} author={a.writtenAdmin} date={DisplayDate(a.datePublish)} urlName={a.urlName} />
+            <BlogBlock key={i} img={a.thumbnail} title={a.title} brief={a.brief} author={a.author} avatar={a.avatar} date={DisplayDate(a.datePublish)} urlName={a.urlName} />
           )
         }
-        <SimplePage page={this.state.page} total={this.state.total} numPerPage={10} handlePageChange={this.reload} />
+        <SimplePage page={this.state.page} total={this.state.total} numPerPage={6} handlePageChange={this.reload} />
       </main>
     )
   }
 
   async populateArticleData() {
     fetch('/blog/get').then(response => response.json()).then(data => this.setState({
-      loading: false, total: data.length * 10,
-      article: [...data,...data,...data,...data,...data,...data,...data,...data,...data,...data].splice(10 * (this.state.page - 1), 10 * this.state.page)
+      loading: false, total: data.length,
+      article: data.slice(0).splice(6 * (this.state.page - 1), 6 * this.state.page)
     }))
   }
 }

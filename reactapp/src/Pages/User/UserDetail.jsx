@@ -126,13 +126,17 @@ function UserDetailPartial(props) {
           </div>
         </div>
 
-        <div>
+        <div className="text-center">
           <a href="/nguoi-dung/doi-mat-khau" className="me-2">
             <input type="button" value="Thay đổi mật khẩu" className="small-at-btn-secondary m-at-btn" />
           </a>
           
           <a href="/nguoi-dung/dia-chi" className="me-2">
-            <input type="button" value="Thêm địa chỉ" className="small-at-btn-secondary m-at-btn" />
+            <input type="button" value="Danh sách địa chỉ" className="small-at-btn-secondary m-at-btn" />
+          </a>
+          
+          <a href="" className="me-2">
+            <input type="button" value="Khóa tài khoản" className="small-at-btn-secondary m-at-btn" />
           </a>
 
           <a href="/nguoi-dung/lich-su-don-hang">
@@ -158,9 +162,9 @@ export default class UserDetail extends Component {
   }
 
   async populateUserDetail() {
-    fetch(`/user?username=${this.props.username}`).then(response => response.json()).then(data => {
-      this.setState({ loading: false, user: data });
-    })
+    fetch(`/user/get/detail`).then(response => response.json()).then(data => {
+      this.setState({ loading: false, user: data })
+    }).catch(() => this.setState({ loading: false }));
   }
 
   handleFullNameChange = newFullName => this.setState({fullName: newFullName});

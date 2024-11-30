@@ -33,7 +33,7 @@ export default function Introduction() {
           </div>
 
           <div className="col-3">
-            <img src="/src/images/sport/football.avif" alt="Giới thiệu" className="intro-img" />
+            <img src="/logo.png" alt="Giới thiệu" className="intro-img" />
           </div>
         </div>
       </div>
@@ -41,7 +41,7 @@ export default function Introduction() {
       <div className="paragraph intro-paragraph">
         <div className="row">        
           <div className="col-3">
-            <img src="/src/images/blog/thumbnail_3.jpg" alt="Sứ mệnh" className="intro-img" />
+            <img src="/unified.webp" alt="Sứ mệnh" className="intro-img" />
           </div>
 
           <div className="col">

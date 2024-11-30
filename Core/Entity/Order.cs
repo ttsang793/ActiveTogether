@@ -5,8 +5,6 @@ namespace Core.Entity;
 
 public partial class Order : BaseEntity
 {
-    public int Id { get; set; }
-
     public int? UserId { get; set; }
 
     public string? FullName { get; set; }

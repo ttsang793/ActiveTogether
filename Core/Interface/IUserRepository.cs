@@ -7,11 +7,11 @@ public interface IUserRepository : IUploadImage
 {
     int Register(UserRegisterDTO user);
 
-    Task<User> Login(UserLoginDTO user);
+    Task<string> GetEmailByUsername(string username);
 
     int GetUserIdByUsername(string username);
 
-    User GetUserByUsername(string username);
+    Task<User> GetUserByFirebaseUid(string uid);
 
     void UpdateInfo(UserUpdateInfoDTO user, string username);
 

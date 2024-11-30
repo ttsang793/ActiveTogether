@@ -1,8 +1,9 @@
 import "./Login.css"
 import FormTextBox from "/src/Components/shared/FormTextBox"
 import { useState } from 'react'
-import { Encode } from "/src/Scripts/Utility";
 import Register from "/src/Pages/user/Register";
+import { auth, provider } from "/firebase";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
 function showSignupForm(e) {
   e.preventDefault();
@@ -25,7 +26,7 @@ export default function Login() {
 
   const handleErrorUsername = () => {
     let error = "";
-    if (username === "") error = "Vui lòng nhập tên đăng nhập, email hoặc SĐT";
+    if (username === "") error = "Vui lòng nhập tên đăng nhập hoặc email đã đăng ký";
     setErrorUsername(error);
   }
 
@@ -39,7 +40,6 @@ export default function Login() {
     if (password === "") error = "Vui lòng nhập mật khẩu";
     setErrorPassword(error);
   }
-  
 
   async function LoginUser(e) {
     e.preventDefault();
@@ -49,22 +49,49 @@ export default function Login() {
 
     if (errorUsername !== "" || errorPassword !== "") return;
 
-    password = Encode(username, password);
-    const response = await fetch("/user/login", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({username: username, password})
-    });
+    let email = username;
+    if (!email.match(/.+@[a-z]+(\.[a-z]*)+/gm)) {
+      try {
+        const response = await fetch(`/user/get/email?username=${username}`);
+        email = await response.text();
+
+        try {
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const idToken = await userCredential.user.getIdToken();
     
-    if (response.ok) {
-      alert("Đăng nhập thành công");
-      location.href = "/";
-    }
-    else if (response.status === 404) setErrorUsername("Tài khoản không tồn tại. Vui lòng kiểm tra lại.");
-    else if (response.status === 500) setErrorPassword("Sai mật khẩu, vui lòng nhập lại.");
+          fetch(`/user/login?token=${idToken}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          }).then(() => { alert("Đăng nhập thành công!"); location.href = "/" })
+        }
+        catch (err) {
+          if (err.message.includes("auth/user-disabled")) setErrorUsername("Tài khoản đã bị khóa. Vui lòng kiểm tra lại.");
+          else if (err.message.includes("auth/invalid-credential")) setErrorPassword("Sai mật khẩu, vui lòng nhập lại.");
+        }
+      }
+      catch {
+        setErrorUsername("Tài khoản không tồn tại. Vui lòng kiểm tra lại.");        
+      }
+    }    
+  }
+
+  async function GoogleLogin() {
+    auth.languageCode = 'vi';
+    provider.setCustomParameters({ 'hl': 'vi' });
+
+    signInWithPopup(auth, provider).then(result => {
+      const idToken = result._tokenResponse.idToken;
+      fetch(`/user/login?token=${idToken}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      }).then(() => { alert("Đăng nhập thành công!"); location.href = "/" })
+    }).catch(err => console.log(err.message));
   }
 
   return (    
@@ -80,6 +107,12 @@ export default function Login() {
         </div>
         
         <input type="submit" className="at-btn m-at-btn" value="Đăng nhập" onClick={e => LoginUser(e)} />
+        <div className="switch-question mt-3">
+          Hoặc có thể đăng nhập bằng:
+          <abbr title="Google" className="pointer">
+            <img src="google.webp" alt="Google" onClick={GoogleLogin} className="redirect-icon mx-2" />
+          </abbr>
+        </div>
         <div className="switch-question">Bạn chưa có tài khoản? <a className="switch-page" onClick={e => showSignupForm(e)}>Đăng ký ngay!</a></div>
       </form>
 

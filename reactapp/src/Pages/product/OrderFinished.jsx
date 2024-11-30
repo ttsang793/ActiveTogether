@@ -1,35 +1,52 @@
 import React, { useEffect, useState } from 'react';
+import PleaseWait from "/src/Shared/PleaseWait";
 import "./OrderFinished.css"
 
 export default function OrderFinished() {
-  const [success, setSuccess] = useState(true);
+  return (
+    <main className='user-main payment-container'>
+      <h1 className="text-center fw-bold">THANH TOÁN THÀNH CÔNG</h1>
+      <hr />
+    </main>
+  );
+  /*
+  const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (localStorage.getItem("orderItem") === null) {
+      location.href = "/gio-hang";
+    }
     if (location.search.length > 0) {
       fetch("https://localhost:5173/order/vnpay/result" + location.search)
         .then(response => response.json())
-        .then(data => { setSuccess(data); setLoading(false); })
-        .catch(() => { setSuccess(false); setLoading(false); });
+        .then(data => setSuccess(data))
+        .catch(() => setSuccess(false));
     }
-
-    /*
-    if (success) {
-      fetch("/order/add", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          username, fullName, address, phone, email, paymentMethod,
-          total: calTotal(),
-          orderDetails: products
-        }).then(() => { setLoading(false); })
-      })
-    }
-    else setLoading(false);*/
+    else setSuccess(true); //thanh toán bằng tiền mặt
   }, []);
+
+  useEffect(() => {
+    if (success !== null) {
+      if (success) {
+        fetch("/order/add", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: localStorage.getItem("orderItem")
+        })
+          .then(() => localStorage.removeItem("payItem"))
+          .catch(err => console.error(err))
+          .finally(() => { localStorage.removeItem("orderItem"); setLoading(false); })
+      }
+      else {
+        localStorage.removeItem("orderItem");
+        setLoading(false);
+      }
+    }
+  }, [success])
 
   const renderBody = () => {
     if (success) return (
@@ -86,12 +103,12 @@ export default function OrderFinished() {
   }
 
   // Render the payment result
-  return (
+  return loading ? <PleaseWait /> : (
     <main className='user-main payment-container'>
       <h1 className="text-center fw-bold">THANH TOÁN {success ? "THÀNH CÔNG" : "THẤT BẠI"}</h1>
       <hr />
 
       { renderBody() }
     </main>
-  );
+  );*/
 }

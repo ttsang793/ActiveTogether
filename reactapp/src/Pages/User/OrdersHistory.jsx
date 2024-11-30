@@ -2,6 +2,7 @@ import { DisplayPrice, DisplayDate } from "/src/Scripts/Utility"
 import { Component } from "react"
 import "./OrdersHistory.css";
 import OrderRow from "/src/Components/user/OrderRow";
+import OrderHistoryEmpty from "/src/Components/user/OrderHistoryEmpty"
 import PleaseWait from "/src/Shared/PleaseWait";
 
 export default class OrdersHistory extends Component {
@@ -43,29 +44,32 @@ export default class OrdersHistory extends Component {
         <h1 className="text-center fw-bold">ĐƠN HÀNG CỦA BẠN</h1>
         <hr />
 
-        <table className="table table-bordered cart-table table-hover">
-          <tbody>
-            {
-              this.state.orders.map(or => {
-                return (
-                  <React.Fragment key={or.id}>
-                    <tr className="header-order pointer" onClick={e => this.handleTidy(e, or.id)}>
-                      <td>ĐƠN HÀNG {or.id} - {DisplayDate(or.datePurchased)} (Trạng thái: {this.displayStatus(or.status)})</td>
-                      <td className="text-center">{DisplayPrice(or.total)}</td>
-                      <td className="return-btn-group">
-                        { (or.status === 0 || or.status === 1) && <button className="btn btn-danger" onClick={() => this.cancelOrder(or.id)}>Hủy đơn</button> }
-                        { or.status === 3 && <button className="btn btn-success" onClick={() => this.receiveOrder(or.id)}>Nhận hàng</button> }
-                      </td>
-                    </tr>
-                    {
-                      this.state.orderDetails.filter(od => od.orderId === or.id).map((od, i) => <OrderRow order={or} orderDetail={od} key={i} />)
-                    }
-                  </React.Fragment>
-                )
-              })
-            }
-          </tbody>
-        </table>
+        {
+          this.state.orders.length === 0 ? <OrderHistoryEmpty /> :
+          <table className="table table-bordered cart-table table-hover">
+            <tbody>
+              {
+                this.state.orders.map(or => {
+                  return (
+                    <React.Fragment key={or.id}>
+                      <tr className="header-order pointer" onClick={e => this.handleTidy(e, or.id)}>
+                        <td>ĐƠN HÀNG {or.id} - {DisplayDate(or.datePurchased)} (Trạng thái: {this.displayStatus(or.status)})</td>
+                        <td className="text-center">{DisplayPrice(or.total)}</td>
+                        <td className="return-btn-group">
+                          { (or.status === 0 || or.status === 1) && <button className="btn btn-danger" onClick={() => this.cancelOrder(or.id)}>Hủy đơn</button> }
+                          { or.status === 3 && <button className="btn btn-success" onClick={() => this.receiveOrder(or.id)}>Nhận hàng</button> }
+                        </td>
+                      </tr>
+                      {
+                        this.state.orderDetails.filter(od => od.orderId === or.id).map((od, i) => <OrderRow order={or} orderDetail={od} key={i} />)
+                      }
+                    </React.Fragment>
+                  )
+                })
+              }
+            </tbody>
+          </table>
+        }
       </main>
     )
   }
@@ -75,7 +79,7 @@ export default class OrdersHistory extends Component {
   }
 
   async fetchOrderDetails() {
-    const username = localStorage.getItem("userLogin");
+    const username = this.props.username;
     fetch(`/order/get?username=${username}`).then(response => response.json()).then(data => {
       this.setState({ orders: data });
     })

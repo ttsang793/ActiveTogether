@@ -2,6 +2,8 @@ import "./Login.css"
 import FormTextBox from "/src/Components/shared/FormTextBox"
 import { useState } from 'react'
 import { Encode } from "/src/Scripts/Utility";
+import { auth } from "/firebase";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 
 function showLoginForm(e) {
   e.preventDefault();
@@ -116,7 +118,7 @@ export default function Register() {
     let error = "";
 
     if (address === "") error = "Cần có địa chỉ mặc định";
-    else if (!address.match(/^\d+(\/\d)*\s\X+$/gm)) address = "Vui lòng nhập địa chỉ đúng định dạng (VD: 23 Âu Dương Lân, P3, Q8)";
+    else if (!address.match(/^\d+(\/\d)*.+$/gm)) address = "Vui lòng nhập địa chỉ đúng định dạng (VD: 23 Âu Dương Lân, P3, Q8)";
     setErrorAddress(errorAddress = error);
   }
 
@@ -134,16 +136,22 @@ export default function Register() {
     
     if (confirm("Bạn có muốn đăng ký tài khoản?")) {
       password = Encode(username, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
       const response = await fetch("/user/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
-        body: JSON.stringify({fullName, username, password, phone, email, address})
+        body: JSON.stringify({firebaseUid: userCredential.user.uid, fullName, username, password, phone, email, address})
       })
 
-      if (response.ok) { alert("Tài khoản đã được đăng ký. Vui lòng đăng nhập"); location.reload() }
+      if (response.ok) {
+        alert("Tài khoản đã được đăng ký. Vui lòng đăng nhập");
+        await sendEmailVerification(userCredential.user);
+        location.reload();
+      }
       else alert("Đã có lỗi xảy ra, đăng ký tài khoản thất bại.");
     }
   }

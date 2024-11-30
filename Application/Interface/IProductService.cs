@@ -5,9 +5,9 @@ namespace Application.Interface;
 
 public interface IProductService
 {
-    Task<IEnumerable<Product>> GetAllProducts(string search = "", int sort = 0);
+    Task<IEnumerable<Product>> GetAllProducts(List<SearchListDTO>? search = null, int sort = 0);
 
-    List<FilterDTO> GetAllFilter();
+    List<FilterListDTO> GetAllFilter();
 
     Task<bool> Insert(Product product);
 

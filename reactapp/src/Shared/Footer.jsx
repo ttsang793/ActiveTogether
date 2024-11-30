@@ -7,9 +7,8 @@ function Footer() {
         <div className="col px-1 left">
           <h1>HỖ TRỢ</h1>
           <ul>
-            <li><a href="">Chính sách vận chuyển</a></li>
-            <li><a href="">Chính sách trả hàng</a></li>
-            <li><a href="">Tư vấn kích thước</a></li>
+            <li><a href="/tin-tuc/chinh-sach-giao-hang">Chính sách giao hàng</a></li>
+            <li><a href="/tin-tuc/chinh-sach-tra-hang">Chính sách trả hàng</a></li>
             <li><a href="">Báo cáo</a></li>
           </ul>
         </div>

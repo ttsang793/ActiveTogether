@@ -7,7 +7,7 @@ import OrderEmpty from "/src/Components/product/OrderEmpty";
 
 function OrderInfo(props) {
   let [fullName, setFullName] = useState(props.user.fullName || "");
-  let [address, setAddress] = useState(props.addressList[0].address || "");
+  let [address, setAddress] = useState(handleDefaultAddress());
   let [phone, setPhone] = useState(props.user.phone ||"");
   let [email, setEmail] = useState(props.user.email ||"");
   let [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
@@ -23,6 +23,10 @@ function OrderInfo(props) {
   const handleAddressChange = e => {
     setAddress(address = e.target.value);
     handleErrorAddress();
+  }
+  function handleDefaultAddress() {
+    try { return props.addressList[0].address; }
+    catch { return ''; }
   }
   const handleAddressSelected = newAddress => {
     setAddress(address = newAddress);
@@ -48,7 +52,7 @@ function OrderInfo(props) {
     let error = "";
 
     if (address === "") error = "Cần có địa chỉ mặc định";
-    else if (!address.match(/^\d+(\/\d)*\s\X+$/gm)) address = "Vui lòng nhập địa chỉ đúng định dạng (VD: 23 Âu Dương Lân, P3, Q8)";
+    else if (!address.match(/^\d+(\/\d)*.+$/gm)) error = "Vui lòng nhập địa chỉ đúng định dạng (VD: 23 Âu Dương Lân, P3, Q8)";
     setErrorAddress(errorAddress = error);
   }
   const handleErrorPhone = () => {
@@ -95,6 +99,13 @@ function OrderInfo(props) {
     if (!(errorFullName === "" && errorAddress === "" && errorPhone === "" && errorEmail === "")) return;
 
     if (confirm("Bạn có chắc chắn thanh toán cho các sản phẩm bạn đã chọn?")) {
+      const orderDetails = [];
+      products.forEach(p => orderDetails.push({ sku: p.sku, price: p.price, quantity: p.quantity }))
+      
+      localStorage.setItem("orderItem", JSON.stringify({
+        username: props.user.username, fullName, address, phone, email, paymentMethod, total: calTotal(), orderDetails
+      }));
+
       if (paymentMethod === "VNPay") {
         const response = await fetch("/order/vnpay/payment", {
           method: 'POST',
@@ -103,33 +114,27 @@ function OrderInfo(props) {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
-          body: JSON.stringify({ username: this.props.username, fullname: BoDauTiengViet(fullName), total: calTotal() })
+          body: JSON.stringify({ username: props.user.username, fullname: BoDauTiengViet(fullName), total: calTotal() })
         })
         const url = await response.json();
         location.href = url;
       }
-      else location.href = "/thanh-toan/hoan-tat";
-
-      /*
-      const response = await fetch("/order/add", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          username, fullName, address, phone, email, paymentMethod,
-          total: calTotal(),
-          orderDetails: products
+      else if (paymentMethod === "Momo") {
+        const response = await fetch("/order/momo/payment", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ username: props.user.username, fullname: BoDauTiengViet(fullName), total: calTotal() })
         })
-      })
-    
-      if (response.ok) {
-        localStorage.removeItem("payItem");
-        alert("Đặt hàng thành công! Cảm ơn bạn đã lựa chọn Active Together!");
-        location.href = "/nguoi-dung/lich-su-don-hang";
+        const url = await response.json();
+        location.href = url;
       }
-      else alert("Đã có lỗi xảy ra, đặt hàng thất bại.");*/
+      else {
+        localStorage.removeItem("payItem");
+        location.href = "/thanh-toan/hoan-tat";
+      }
     }
   }
 
@@ -143,7 +148,7 @@ function OrderInfo(props) {
           <div className="fs-4 fw-bold fst-italic">THÔNG TIN NHẬN HÀNG</div>
           <hr className="mt-0 mb-4" />
           {
-            (this.props.username !== null) ? (
+            (props.username !== null) ? (
             <>
               <div className="form-detail-title">Địa chỉ đã lưu</div>
               <select onChange={handleAddress}>
@@ -162,6 +167,7 @@ function OrderInfo(props) {
           <select onChange={handlePaymentChange} defaultValue={paymentMethod}>
             <option value="Tiền mặt">Tiền mặt</option>
             <option value="VNPay">VNPay</option>
+            <option value="Momo">Momo</option>
           </select>
         </div>
 
@@ -222,7 +228,7 @@ export default class Order extends Component {
 
   async populateAddress() {
     const username = this.props.username;
-    const userResponse = await fetch(`/user?username=${username}`);
+    const userResponse = await fetch(`/user/get/detail`);
     if (!userResponse.ok) throw new Error('Network response was not ok');
     const userData = await userResponse.json();
     this.setState({ user: userData });

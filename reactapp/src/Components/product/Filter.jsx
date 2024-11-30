@@ -1,11 +1,6 @@
 import "./Filter.css"
 import { CamelToKebab } from "/src/Scripts/Utility";
 
-function DropdownClick(e) {
-  e.stopPropagation();
-  document.getElementById(e.target.children[0].id).checked = !document.getElementById(e.target.children[0].id).checked;
-}
-
 export default function Filter(props) {
   return (
     <div className="dropdown flex-fill" width={`calc(100% / ${props.col})`}>
@@ -13,8 +8,22 @@ export default function Filter(props) {
         {props.title}
       </button>
       <div className="dropdown-menu" onClick={e => DropdownClick(e)}>
-        {props.details.map((i,e) => (<div className="filter-item" key={e}><input type="checkbox" id={`${CamelToKebab(props.title)}-${e}`} /> {i}</div>))}
+        {props.details.map((i,e) => (
+          <div className="filter-item pointer" key={e}>
+            <input type="checkbox" id={`${CamelToKebab(props.title)}-${e}`} value={i.id}
+             onClick={() => props.onClick(props.params, i.id)} /> {i.name}
+          </div>
+        ))}
       </div>
     </div>
   );
+
+  function DropdownClick(e) {
+    e.stopPropagation();
+    if (e.target.classList.length == 0) return;
+
+    const clickDetail = document.getElementById(e.target.children[0].id)
+    clickDetail.checked = !clickDetail.checked;
+    props.onClick(props.params, e.target.children[0].value)
+  }
 }

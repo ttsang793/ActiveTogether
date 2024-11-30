@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Core.Entity;
+﻿namespace Core.Entity;
 
 public partial class User : BaseEntity
 {
-    public string? Username { get; set; }
+    public string? FirebaseUid { get; set; }
 
-    public string? Password { get; set; }
+    public string Username { get; set; } = null!;
 
     public string? FullName { get; set; }
 
@@ -20,8 +17,6 @@ public partial class User : BaseEntity
     public int? Point { get; set; }
 
     public string? Avatar { get; set; }
-
-    public bool? IsActive { get; set; }
 
     public virtual ICollection<CartDetail> CartDetails { get; set; } = new List<CartDetail>();
 

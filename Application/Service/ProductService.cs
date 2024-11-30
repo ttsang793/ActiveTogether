@@ -15,24 +15,25 @@ public class ProductService : IProductService
         _unitOfWork = unitOfWork;
     }
     
-    public async Task<IEnumerable<Product>> GetAllProducts(string search = "", int sort = 0)
+    public async Task<IEnumerable<Product>> GetAllProducts(List<SearchListDTO>? searchDTO = null, int sort = 0)
     {
-        search = (search == null) ? string.Empty : search.ToLower();
+        Expression<Func<Product, bool>>? searchExpression = null;
+
         Expression<Func<Product, object>> priceExpression = p => p.Price!;
         Expression<Func<Product, object>> nameExpression = p => p.Name!;
 
         return sort switch
         {
-            0 => await _unitOfWork.Products.GetAllProducts(search),
-            1 => await _unitOfWork.Products.GetAllProducts(search, false, priceExpression),
-            2 => await _unitOfWork.Products.GetAllProducts(search, true, priceExpression),
-            3 => await _unitOfWork.Products.GetAllProducts(search, false, nameExpression),
-            4 => await _unitOfWork.Products.GetAllProducts(search, true, nameExpression),
+            0 => await _unitOfWork.Products.GetAllProducts(searchDTO),
+            1 => await _unitOfWork.Products.GetAllProducts(searchDTO, false, priceExpression),
+            2 => await _unitOfWork.Products.GetAllProducts(searchDTO, true, priceExpression),
+            3 => await _unitOfWork.Products.GetAllProducts(searchDTO, false, nameExpression),
+            4 => await _unitOfWork.Products.GetAllProducts(searchDTO, true, nameExpression),
             _ => new List<Product>(),
         };
     }
     
-    public List<FilterDTO> GetAllFilter()
+    public List<FilterListDTO> GetAllFilter()
     {
         return _unitOfWork.Products.GetAllFilter();
     }
