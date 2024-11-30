@@ -18,4 +18,6 @@ public class ProductDetailDTO
     public decimal? OldPrice { get; set; }
 
     public int? Quantity { get; set; } = 0;
+
+    public string? Description { get; set; }
 }

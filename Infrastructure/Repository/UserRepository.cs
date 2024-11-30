@@ -45,6 +45,18 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         }
     }
 
+    public async Task<User> GetUserByUsername(string username)
+    {
+        try
+        {
+            return await GetDbSet().FirstAsync(u => u.Username == username);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     public async Task<User> GetUserByFirebaseUid(string uid)
     {
         try
@@ -69,12 +81,6 @@ public class UserRepository : BaseRepository<User>, IUserRepository
             u.Avatar = user.Avatar;
         }
         GetDbSet().Update(u);
-    }
-
-    public void UpdatePassword(UserUpdateDTO user, string username)
-    {
-        //var u = GetDbSet().First(u => u.Username == username && u.Password == user.Old);
-        //if (u != null) u.Password = user.New!;
     }
 
     public void GainPoint(int? userId, int? point)

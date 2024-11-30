@@ -19,6 +19,7 @@ export default function Products() {
     }
   ]);
   let [fillParams, setFillParams] = useState([{param: 'price', content: []}]);
+  let [initialParams, setInitialParams] = useState([]);
   let [loading, setLoading] = useState(true);
   const hasRun = useRef(false);
   
@@ -31,14 +32,12 @@ export default function Products() {
 
   function handleFilterClick(params, filter) {
     let i = fillParams.findIndex(f => f.param === params);
-    if (i >= 0) {
-      let content = fillParams[i].content;
-  
-      let j = content.findIndex(c => c === filter)
-      if (j === -1) content.push(filter); else content = [...content.slice(0,j), ...content.slice(j+1)];
-  
-      setFillParams(fillParams = [...fillParams.slice(0, i), {param: params, content}, ...fillParams.slice(i+1)]);
-    }
+    let content = fillParams[i].content;
+
+    let j = content.findIndex(c => c === filter)
+    if (j === -1) content.push(filter); else content = [...content.slice(0,j), ...content.slice(j+1)];
+
+    setFillParams(fillParams = [...fillParams.slice(0, i), {param: params, content}, ...fillParams.slice(i+1)]);
   }
 
   function reloadPage(e, ePage, eSort = sort) {
@@ -113,19 +112,28 @@ export default function Products() {
     const last = Math.min(numPerPage * page, products.length);
     const pageProducts = products.slice(numPerPage * (page - 1), last);
 
-    return (
+    return loading ? <></> : (
       <div className="product-list">
-        {pageProducts.map(p => <ProductGrid key={p.urlName} urlName={p.urlName} image={p.productColors[0].productImages[0].image} name={p.name} price={p.price} oldPrice={null} />)}
+        {pageProducts.map(p => {
+          try {
+            const salePercent = 1 - p.promotionDetails[0].percent;
+            return <ProductGrid key={p.urlName} urlName={p.urlName} image={p.productColors[0].productImages[0].image}
+            name={p.name} price={p.price * salePercent} oldPrice={p.promotionDetails.length > 0 ? p.price : null} />
+          }
+          catch {
+            return <ProductGrid key={p.urlName} urlName={p.urlName} image={p.productColors[0].productImages[0].image} name={p.name} price={p.price} oldPrice={null} />
+          }
+        })}
       </div>
     )
   }
 
   function renderProductPage() {
-    return (
+    return loading ? <></> : (
       <>
         <div className="my-4">
           {
-            <FilterList filters={fillArr} onClick={(params, filter) => handleFilterClick(params, filter)} reloadPage={e => reloadPage(e, 1)} />
+            <FilterList initialParams={initialParams} filters={fillArr} onClick={(params, filter) => handleFilterClick(params, filter)} reloadPage={e => reloadPage(e, 1)} />
           }
 
           <div className="order-tab mt-3">
@@ -180,10 +188,8 @@ export default function Products() {
 
     let searchList = [];
     for (const [key, value] of params.entries()) searchList.push({param: key, detailString: value})
-    console.log(searchList);
-
-    searchList.forEach(s => handleFilterClick(s.param, s.detailString));
-    console.log(fillParams);
+    searchList.forEach(s => s.detailString.split("_").forEach(c => handleFilterClick(s.param, c)));
+    setInitialParams(initialParams = fillParams);
 
     if (searchList.length === 0) searchList = null;
 
@@ -201,7 +207,7 @@ export default function Products() {
     });
   }
   
-  return (loading) ? <PleaseWait /> : (
+  return loading ? <PleaseWait /> : (
     products.length === 0 ? <ProductEmpty /> : (
       <main className="user-main">
         <h1 className="flex-grow-1 text-center fw-bold">SẢN PHẨM</h1>

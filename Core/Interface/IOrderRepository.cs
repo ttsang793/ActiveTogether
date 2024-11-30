@@ -15,6 +15,8 @@ public interface IOrderRepository
 
     IEnumerable<OrderDetailReadDTO> GetOrderDetailsByUsername(string username);
 
+    OrderDetail GetOrderDetailById(int id);
+
     Task<IEnumerable<OrderDetail>> GetOrderDetailsById(int id);
 
     int AddRefundOrder(RefundUpdateAdminDTO r, decimal newPrice);

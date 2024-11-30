@@ -12,7 +12,7 @@ export default function OrderRow(props) {
   const handleReason = e => setReason(e.target.value);
   const handleQuantity = e => setQuantity(e.target.value);
 
-  function renderModal(orderDetailId) {  
+  function renderModal(orderId, orderDetailId) {  
     return (
       <Modal show={show} onHide={handleHide} animation={false} size="xl" centered>
         <Modal.Header closeButton>
@@ -27,7 +27,7 @@ export default function OrderRow(props) {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <button className="small-at-btn" onClick={() => requestRefund(orderDetailId, props.orderDetail.price, quantity, reason)}>Đề xuất</button>
+          <button className="small-at-btn" onClick={() => requestRefund(orderId, orderDetailId, props.orderDetail.price, quantity, reason)}>Đề xuất</button>
           <button className="small-at-btn-secondary" onClick={handleHide}>Hủy</button>
         </Modal.Footer>
       </Modal>
@@ -54,12 +54,12 @@ export default function OrderRow(props) {
         </td>
       </tr>
       
-      { renderModal(props.orderDetail.id) }
+      { renderModal(props.order.id, props.orderDetail.id) }
     </>
   )
 }
 
-async function requestRefund(orderDetailId, price, quantity, reason) {
+async function requestRefund(orderId, orderDetailId, price, quantity, reason) {
   if (confirm(`Bạn có muốn đề nghị đổi trả sản phẩm này?`)) {
     const response = await fetch("/refund/request", {
       method: "POST",
@@ -67,10 +67,11 @@ async function requestRefund(orderDetailId, price, quantity, reason) {
         "Content-Type": "application/json",
         "Accept": "application/json"
       },
-      body: JSON.stringify({orderDetailId, price, quantity, reason})
+      body: JSON.stringify({orderId, orderDetailId, price, quantity, reason})
     })
 
-    if (response.ok) { alert("Đơn của bạn đã được đưa cho admin, bạn vui lòng chờ tí xíu nhé!"); location.reload(); }
+    if (response.status === 200) { alert("Đơn của bạn đã được đưa cho admin, bạn vui lòng chờ tí xíu nhé!"); location.reload(); }
+    else if (response.status === 400) { alert("Xin lỗi, sản phẩm đã quá thời hạn trả lại"); location.reload(); }
     else alert("Đã có lỗi xảy ra, đơn của bạn chưa được đưa cho admin, bạn vui lòng thử lại nhé!");
   }
 }

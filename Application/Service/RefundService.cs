@@ -2,8 +2,6 @@ using Application.Interface;
 using Core.DTO;
 using Core.Entity;
 using Core.Interface;
-using Microsoft.EntityFrameworkCore;
-using Mysqlx.Crud;
 
 namespace Application.Service;
 
@@ -14,6 +12,18 @@ public class RefundService : IRefundService
     public RefundService(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
+    }
+
+    public async Task<bool> StillInWaranty(int orderId, int orderDetailId)
+    {
+        TimeSpan timeSpan = (TimeSpan)(DateTime.Now - _unitOfWork.Orders.GetOrderById(orderId).DateReceived);
+        if (timeSpan.Days > 15)
+        {
+            _unitOfWork.Orders.ChangeRefundStatus(orderDetailId, true);
+            await _unitOfWork.SaveChangesAsync();
+            return false;
+        }
+        else return true;
     }
 
     public async Task<bool> RequestRefund(RefundRequestDTO refund)

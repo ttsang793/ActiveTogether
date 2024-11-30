@@ -4,7 +4,6 @@ using Core.Interface;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 
 namespace Infrastructure.Repository;
 
@@ -16,7 +15,10 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
 
     public async Task<IEnumerable<Product>> GetAllProducts(List<SearchListDTO>? searchDTO = null, bool desc = false, Expression<Func<Product, object>> expression = null)
     {
-        IQueryable<Product> productQuery = GetDbSet().Include(p => p.ProductColors).ThenInclude(p => p.ProductImages).Include(p => p.ProductSports);
+
+        var currentDate = DateTime.Now;
+        IQueryable<Product> productQuery = GetDbSet().Include(p => p.ProductColors).ThenInclude(p => p.ProductImages)
+            .Include(p => p.ProductSports).Include(p => p.PromotionDetails);
         List<string> sizeList = new();
 
         if (searchDTO != null)
@@ -72,7 +74,8 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
             if (gender >= 0 && !string.IsNullOrEmpty(searchDTO[gender].DetailString))
             {
                 searchDTO[gender].DetailArray = searchDTO[gender].DetailString!.Split("_").ToList();
-                searchDTO[gender].DetailArray!.Append("2");
+                searchDTO[gender].DetailArray!.Add("2");
+                foreach (var s in searchDTO[gender].DetailArray) Console.WriteLine(s);
                 productQuery = productQuery.Where(p => searchDTO[gender].DetailArray!.Contains(p.Gender.ToString()));
             }
         }

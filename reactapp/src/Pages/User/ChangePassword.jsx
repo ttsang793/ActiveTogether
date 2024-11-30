@@ -70,7 +70,7 @@ export default function ChangePassword() {
     if (confirm("Bạn có muốn cập nhật mật khẩu?")) {
       const user = auth.currentUser;
       updatePassword(user, newPass).then(() => {
-        alert("Cập nhật mật khẩu thành công. Vui lòng đăng nhập lại");
+        alert("Cập nhật mật khẩu thành công. Vui lòng đăng nhập lại!");
         fetch("/user/logout", { method: "POST" }).then(() => location.reload());
       }).catch(err => {
         console.error(err);

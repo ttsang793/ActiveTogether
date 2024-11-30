@@ -41,7 +41,7 @@ export default function FormTextBox(props) {
 
   if (props.type.toLowerCase().includes("password"))
     return (
-      <div className="form-input-container">
+      <div className={`form-input-container ${props.disabled ? "disabled" : ""}`}>
         <div className="d-flex align-items-center">
           <input
             type="password"
@@ -68,7 +68,7 @@ export default function FormTextBox(props) {
     );
 
   else return (
-    <div className="form-input-container">
+    <div className={`form-input-container ${props.disabled ? "disabled" : ""}`}>
       <div className="d-flex align-items-center">
         <input
           type="text"

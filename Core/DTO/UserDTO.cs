@@ -7,11 +7,11 @@ public class UserLoginDTO : BaseDTO
 
 public class UserRegisterDTO : BaseDTO
 {
-    public string FirebaseUid { get; set; } = null!;
+    public string? FirebaseUid { get; set; } = null!;
 
-    public string Username { get; set; } = null!;
+    public string? Username { get; set; } = null!;
 
-    public string FullName { get; set; } = null!;
+    public string? FullName { get; set; } = null!;
 
     public string? Phone { get; set; }
 

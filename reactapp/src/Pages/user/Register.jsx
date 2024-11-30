@@ -1,17 +1,8 @@
 import "./Login.css"
 import FormTextBox from "/src/Components/shared/FormTextBox"
 import { useState } from 'react'
-import { Encode } from "/src/Scripts/Utility";
 import { auth } from "/firebase";
 import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
-
-function showLoginForm(e) {
-  e.preventDefault();
-  document.title = document.getElementById("title").innerHTML = "Đăng nhập";
-  document.title += " tài khoản";
-  document.getElementById("sign-up-form").classList.add("disabled");
-  document.getElementById("login-form").classList.remove("disabled");
-}
 
 export default function Register() {
   let [username, setUsername] = useState("");
@@ -135,7 +126,6 @@ export default function Register() {
     if (!(errorUsername === "" && errorPassword === "" && errorConfirmPassword === "" && errorPhone === "" && errorEmail === "" && errorAddress === "")) return;
     
     if (confirm("Bạn có muốn đăng ký tài khoản?")) {
-      password = Encode(username, password);
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
       const response = await fetch("/user/register", {
@@ -144,11 +134,11 @@ export default function Register() {
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
-        body: JSON.stringify({firebaseUid: userCredential.user.uid, fullName, username, password, phone, email, address})
+        body: JSON.stringify({firebaseUid: userCredential.user.uid, fullName, username, phone, email, address})
       })
 
       if (response.ok) {
-        alert("Tài khoản đã được đăng ký. Vui lòng đăng nhập");
+        alert("Vui lòng kiểm tra email của bạn để tiếp tục xác nhận nhé!");
         await sendEmailVerification(userCredential.user);
         location.reload();
       }
@@ -167,7 +157,15 @@ export default function Register() {
       <FormTextBox type="addressSU" placeholder="Địa chỉ nhà" icon="bi-house-door-fill" value={address} onValueChange={handleAddress} errorValue={errorAddress} />
       
       <input type="submit" className="at-btn m-at-btn" value="Đăng ký" onClick={e => RegisterUser(e)} />
-      <div className="switch-question">Bạn đã có tài khoản? <a className="switch-page" onClick={e => showLoginForm(e)}>Đăng nhập ngay!</a></div>
+      <div className="switch-question">Bạn đã có tài khoản? <a className="switch-page pointer" onClick={e => showLoginForm(e)}>Đăng nhập ngay!</a></div>
     </form>
   )
+}
+
+function showLoginForm(e) {
+  e.preventDefault();
+  document.title = document.getElementById("title").innerHTML = "Đăng nhập";
+  document.title += " tài khoản";
+  document.getElementById("sign-up-form").classList.add("disabled");
+  document.getElementById("login-form").classList.remove("disabled");
 }

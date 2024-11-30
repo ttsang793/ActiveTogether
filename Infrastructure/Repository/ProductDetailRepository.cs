@@ -1,4 +1,4 @@
-using Core.DTO;
+﻿using Core.DTO;
 using Core.Entity;
 using Core.Interface;
 using Infrastructure.Data;
@@ -20,6 +20,13 @@ public class ProductDetailRepository : BaseRepository<ProductDetail>, IProductDe
 
     public IEnumerable<ProductDetailDTO> GetProductByUrlName(string urlName)
     {
+        var pDetail = (from p in GetDbContext().Products
+                       join prd in GetDbContext().PromotionDetails on p.Id equals prd.ProductId
+                       join pr in GetDbContext().Promotions on prd.PromotionId equals pr.Id
+                       where p.UrlName == urlName && DateTime.Now >= pr.DateStart && DateTime.Now <= pr.DateEnd
+                       select prd).ToList();
+        var percent = pDetail.Any() ? (decimal)(1 - pDetail[0].Percent) : 1;
+
         var detail = (from p in GetDbContext().Products
                       join pc in GetDbContext().ProductColors on p.Id equals pc.ProductId
                       join c in GetDbContext().Colors on pc.ColorCode equals c.Code
@@ -34,10 +41,12 @@ public class ProductDetailRepository : BaseRepository<ProductDetail>, IProductDe
                           Name = p.Name,
                           Color = c.Name,
                           Size = pd.Size,
-                          Price = pd.Price,
+                          Price = pd.Price * percent,
+                          OldPrice = (percent == 1) ? 0 : pd.Price,
                           Image = GetImageCode(pi.Image),
-                          Quantity = pd.Quantity
-                      }); ;
+                          Quantity = pd.Quantity,
+                          Description = string.IsNullOrEmpty(p.Description) ? "Chưa có mô tả" : p.Description
+                      });
         return detail;
     }
 

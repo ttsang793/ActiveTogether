@@ -10,11 +10,11 @@ public interface IUserService
 
     Task<string> GetEmailByUsername(string username);
 
+    Task<User> GetUserByUsername(string username);
+
     Task<User> GetUserByFirebaseUid(string uid);
 
     Task<bool> UploadImage(IFormFile file, string username);
 
     Task<bool> UpdateInfo(UserUpdateInfoDTO user, string username);
-
-    Task<bool> UpdatePassword(UserUpdateDTO user, string username);
 }

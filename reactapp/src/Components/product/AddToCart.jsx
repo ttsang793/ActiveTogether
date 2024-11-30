@@ -18,20 +18,13 @@ export default function AddToCart(props) {
 
       <div className="text">
         <button className="cart px-3" onClick={() => add(props.product, quantity, props.username)}>Thêm vào giỏ hàng</button> 
-        {/*<button className="buy-now px-3" onClick={() => buyNow(props.product, quantity)}>Mua ngay!</button> */}
+      <button className="buy-now px-3" onClick={() => buyNow(props.product, quantity, props.username, props.image)}>Mua ngay!</button>
       </div>
     </div>
   )
 }
 
 async function add(product, quantity, username) {
-  console.log({
-    username,
-    sku: product.sku,
-    price: product.price,
-    quantity: quantity
-  })
-
   if (username !== null) {
     const response = await fetch('/cart/add', {
       method: 'POST',
@@ -39,29 +32,53 @@ async function add(product, quantity, username) {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify({
-        username,
-        sku: product.sku,
-        price: product.price,
-        quantity: quantity
-      })
+      body: JSON.stringify({ username, sku: product.sku, price: product.price, quantity: quantity })
     })
 
     if (response.status === 200) alert("Thêm sản phẩm vào giỏ hàng thành công!");
     else if (response.status === 201) alert("Cập nhật thông tin sản phẩm thành công!");
     else alert("Đã có lỗi xảy ra, thêm sản phẩm vào giỏ hàng thất bại.");
   }
+  else {
+    alert("Vui lòng đăng nhập để thêm vào giỏ hàng");
+    location.href = '/dang-nhap';
+  }
 }
 
-async function buyNow(product, quantity) {
-  const username = localStorage.getItem("userLogin");
-    if (username !== null) {
-    localStorage.setItem("payItem", JSON.stringify(JSON.stringify({
-      userName: username,
-      sku: product.sku,
-      price: product.price,
-      quantity: quantity
-    })))
-    location.href = "/thanh-toan"
+async function buyNow(product, quantity, username, image) {  
+  if (username !== null) {
+    if (confirm("Bạn có muốn thanh toán ngay?")) {
+      const response = await fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ username, sku: product.sku, price: product.price, quantity: quantity })
+      })
+
+      if (response.ok) {
+        localStorage.setItem("payItem", JSON.stringify({
+          orderProducts: [
+            {
+              username,
+              name: product.name,
+              color: product.color,
+              size: product.size,
+              image: image,
+              sku: product.sku,
+              price: product.price,
+              quantity
+            }
+          ]
+        }));
+        location.href = "/thanh-toan";
+      }
+      else alert("Đã có lỗi xảy ra, thêm sản phẩm vào giỏ hàng thất bại.");
+    }
+  }
+  else {
+    alert("Vui lòng đăng nhập để thêm vào giỏ hàng");
+    location.href = '/dang-nhap';
   }
 }

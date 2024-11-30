@@ -62,9 +62,11 @@ export default function UserMain() {
           <Routes>
             <Route path="/gioi-thieu" element={<><Introduction /> <PageTitle title="Giới thiệu Active Together" /></>} />
             <Route path="/san-pham" element={<><Products /> <PageTitle title="Danh sách sản phẩm" /></>} />
+            {/*
             <Route path="/gio-hang" element={<><Cart username={username} /> <PageTitle title="Giỏ hàng của bạn" /></>} />
             <Route path="/thanh-toan" element={<><Order username={username} /> <PageTitle title="Thanh toán đơn hàng" /></>} />
             <Route path="/thanh-toan/hoan-tat" element={<><OrderFinished /> <PageTitle title="Thanh toán thành công" /></>} />
+            */}
             <Route path="/tin-tuc" element={<><Blog /> <PageTitle title="Tin tức, blog" /></>} />
             <Route path="/dang-nhap" element={
               username === null ? (<><Login /> <PageTitle title="Đăng nhập" /></>) :
@@ -99,6 +101,19 @@ export default function UserMain() {
             } />
             <Route path="/nguoi-dung/lich-su-don-hang" element={
               username !== null ? (<><OrdersHistory username={username} /> <PageTitle title="Lịch sử đơn hàng" /></>) :
+              (<Navigate to="/dang-nhap" replace />)
+            } />
+            
+            <Route path="/gio-hang" element={
+              username !== null ? <><Cart username={username} /> <PageTitle title="Giỏ hàng của bạn" /></> :
+              (<Navigate to="/dang-nhap" replace />)
+            } />
+            <Route path="/thanh-toan" element={
+              username !== null ? <><Order username={username} /> <PageTitle title="Thanh toán đơn hàng" /></> :
+              (<Navigate to="/dang-nhap" replace />)
+            } />
+            <Route path="/thanh-toan/hoan-tat" element={
+              username !== null ? <><OrderFinished /> <PageTitle title="Thanh toán thành công" /></> :
               (<Navigate to="/dang-nhap" replace />)
             } />
           </Routes>

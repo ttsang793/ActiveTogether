@@ -32,6 +32,11 @@ public class UserService : IUserService
         return await _unitOfWork.Users.UploadImage(file, username);
     }
 
+    public async Task<User> GetUserByUsername(string username)
+    {
+        return await _unitOfWork.Users.GetUserByUsername(username);
+    }
+
     public async Task<User> GetUserByFirebaseUid(string uid)
     {
         return await _unitOfWork.Users.GetUserByFirebaseUid(uid);
@@ -40,12 +45,6 @@ public class UserService : IUserService
     public async Task<bool> UpdateInfo(UserUpdateInfoDTO user, string username)
     {
         _unitOfWork.Users.UpdateInfo(user, username);
-        return await _unitOfWork.SaveChangesAsync();
-    }
-
-    public async Task<bool> UpdatePassword(UserUpdateDTO user, string username)
-    {
-        _unitOfWork.Users.UpdatePassword(user, username);
         return await _unitOfWork.SaveChangesAsync();
     }
 }

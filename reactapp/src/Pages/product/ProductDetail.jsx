@@ -50,7 +50,21 @@ export default class ProductDetail extends Component {
     );
   }
 
+  uniqueSku(idList) {
+    let tempList = idList;
+    idList = [];
+    while (true) {
+      idList.push(tempList[0]);
+      const sku = tempList[0].sku;
+      tempList = tempList.filter(t => t.sku !== sku);
+
+      if (tempList.length === 0) return idList;
+    }
+  }
+
   renderColor(colorList, idList) {
+    idList = this.uniqueSku(idList);
+
     return (
       <div className="my-2">
         Màu sắc:&nbsp;
@@ -129,7 +143,7 @@ export default class ProductDetail extends Component {
             <div className="price d-flex align-items-center">
               <div className="current-price">{DisplayPrice(product[0].price)}</div>
               {
-                product[0].oldPrice !== null ? <div className="old-price">{DisplayPrice(product[0].oldPrice)}</div> : <></>
+                product[0].oldPrice > 0 ? <div className="old-price">{DisplayPrice(product[0].oldPrice)}</div> : <></>
               }
             </div>
             <hr />
@@ -137,24 +151,14 @@ export default class ProductDetail extends Component {
             {(sizeList.length > 1) && this.renderSize(sizeList)}
             {(colorList.length > 1) && this.renderColor(colorList, idList)}
 
-            {<AddToCart type="text" product={product.find(p => p.sku === this.state.sku)} username={this.props.username} />}
+            {<AddToCart type="text" product={product.find(p => p.sku === this.state.sku)} username={this.props.username} image={image[this.state.index].image} />}
           </div>
         </div>
 
         <div className="product-description" id="product-description">
           <h2>Mô tả sản phẩm</h2>
           <hr />
-          <p>
-            Lorem ipsum odor amet, consectetuer adipiscing elit. Class natoque pharetra scelerisque potenti hac per. Nunc lacinia fringilla
-            hac dictumst magna integer. Porta dictum finibus penatibus fringilla, commodo auctor fusce adipiscing. Euismod gravida erat nisl
-            iaculis nullam. Odio purus etiam eleifend quisque duis montes odio consequat. Gravida purus aptent nam nunc sociosqu placerat.
-            Neque integer accumsan sed, euismod auctor sollicitudin porta eget ex. Donec elementum rhoncus auctor venenatis eu montes.
-            Bibendum aliquet egestas felis tellus posuere vivamus proin. Ultricies posuere donec vitae placerat varius porttitor. Litora
-            penatibus tempor ante congue blandit cras tempus lacus. Luctus cubilia libero proin; suspendisse consequat ad. Curabitur pulvinar
-            sagittis at facilisi augue? Fringilla iaculis ultricies nisi rhoncus amet arcu diam conubia. Nascetur tempor nostra condimentum
-            donec tincidunt, vulputate donec convallis. Montes semper purus a rhoncus nisi consequat. Aenean auctor vitae sapien luctus;
-            vestibulum natoque.
-          </p>
+          <p>{product[0].description}</p>
         </div>
 
         <ProductReview review={review} sizeList={sizeList} colorList={colorList} idList={idList} sku={product[0].sku} />

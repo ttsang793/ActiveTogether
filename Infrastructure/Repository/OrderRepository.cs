@@ -49,7 +49,7 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
         return GetDbSet().First(o => o.Id == id);
     }
 
-    private OrderDetail GetOrderDetailById(int id)
+    public OrderDetail GetOrderDetailById(int id)
     {
         return GetDbContext().OrderDetails.First(o => o.Id == id);
     }

@@ -1,4 +1,4 @@
-using Application.Interface;
+﻿using Application.Interface;
 using Core.DTO;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +18,10 @@ public class RefundController : ControllerBase
     }
 	
 	[HttpPost("request")]
-
-    public async Task<bool> RequestRefund([Bind("OrderDetailId", "Price", "Quantity", "Reason")] RefundRequestDTO refund)
+    public async Task<StatusCodeResult> RequestRefund([Bind("OrderId", "OrderDetailId", "Price", "Quantity", "Reason")] RefundRequestDTO refund)
     {
-		return await _refundService.RequestRefund(refund);
+        if (await _refundService.StillInWaranty(refund.OrderId, refund.OrderDetailId) == false)
+            return StatusCode(400);
+        return (await _refundService.RequestRefund(refund)) ? StatusCode(200) : StatusCode(404);
     }
 }

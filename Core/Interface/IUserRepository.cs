@@ -11,11 +11,11 @@ public interface IUserRepository : IUploadImage
 
     int GetUserIdByUsername(string username);
 
+    Task<User> GetUserByUsername(string username);
+
     Task<User> GetUserByFirebaseUid(string uid);
 
     void UpdateInfo(UserUpdateInfoDTO user, string username);
-
-    void UpdatePassword(UserUpdateDTO user, string username);
 
     void GainPoint(int? userId, int? point);
 }

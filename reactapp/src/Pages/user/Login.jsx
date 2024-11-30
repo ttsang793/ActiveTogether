@@ -2,6 +2,7 @@ import "./Login.css"
 import FormTextBox from "/src/Components/shared/FormTextBox"
 import { useState } from 'react'
 import Register from "/src/Pages/user/Register";
+import ForgetPassword from "/src/Pages/user/ForgetPassword";
 import { auth, provider } from "/firebase";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
@@ -11,6 +12,14 @@ function showSignupForm(e) {
   document.title += " tài khoản";
   document.getElementById("login-form").classList.add("disabled");
   document.getElementById("sign-up-form").classList.remove("disabled");
+}
+
+function showForgetForm(e) {
+  e.preventDefault();
+  document.title = document.getElementById("title").innerHTML = "Khôi phục";
+  document.title += " tài khoản";
+  document.getElementById("login-form").classList.add("disabled");
+  document.getElementById("forget-form").classList.remove("disabled");
 }
 
 export default function Login() {
@@ -54,28 +63,28 @@ export default function Login() {
       try {
         const response = await fetch(`/user/get/email?username=${username}`);
         email = await response.text();
-
-        try {
-          const userCredential = await signInWithEmailAndPassword(auth, email, password);
-          const idToken = await userCredential.user.getIdToken();
-    
-          fetch(`/user/login?token=${idToken}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            }
-          }).then(() => { alert("Đăng nhập thành công!"); location.href = "/" })
-        }
-        catch (err) {
-          if (err.message.includes("auth/user-disabled")) setErrorUsername("Tài khoản đã bị khóa. Vui lòng kiểm tra lại.");
-          else if (err.message.includes("auth/invalid-credential")) setErrorPassword("Sai mật khẩu, vui lòng nhập lại.");
-        }
       }
       catch {
         setErrorUsername("Tài khoản không tồn tại. Vui lòng kiểm tra lại.");        
       }
-    }    
+    }
+    
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const idToken = await userCredential.user.getIdToken();
+
+      fetch(`/user/login?token=${idToken}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      }).then(() => { alert("Đăng nhập thành công!"); location.href = "/" })
+    }
+    catch (err) {
+      if (err.message.includes("auth/user-disabled")) setErrorUsername("Tài khoản đã bị khóa. Vui lòng kiểm tra lại.");
+      else if (err.message.includes("auth/invalid-credential")) setErrorPassword("Sai mật khẩu, vui lòng nhập lại.");
+    }
   }
 
   async function GoogleLogin() {
@@ -100,10 +109,10 @@ export default function Login() {
       <hr />
 
       <form className="login-form" id="login-form">
-        <FormTextBox type="username" placeholder="Tên người dùng" icon="bi-person-fill" value={username} onValueChange={handleUsername} errorValue={errorUsername} />
+        <FormTextBox type="username" placeholder="Tên người dùng hoặc email" icon="bi-person-fill" value={username} onValueChange={handleUsername} errorValue={errorUsername} />
         <FormTextBox type="password" placeholder="Mật khẩu" icon="bi-lock-fill" value={password} onValueChange={handlePassword} errorValue={errorPassword} />
         <div className="text-start">
-          <a className="switch-page" href="">Quên mật khẩu?</a>
+          <a className="switch-page" onClick={e => showForgetForm(e)}>Quên mật khẩu?</a>
         </div>
         
         <input type="submit" className="at-btn m-at-btn" value="Đăng nhập" onClick={e => LoginUser(e)} />
@@ -113,10 +122,11 @@ export default function Login() {
             <img src="google.webp" alt="Google" onClick={GoogleLogin} className="redirect-icon mx-2" />
           </abbr>
         </div>
-        <div className="switch-question">Bạn chưa có tài khoản? <a className="switch-page" onClick={e => showSignupForm(e)}>Đăng ký ngay!</a></div>
+        <div className="switch-question">Bạn chưa có tài khoản? <a className="switch-page pointer" onClick={e => showSignupForm(e)}>Đăng ký ngay!</a></div>
       </form>
 
       <Register />
+      <ForgetPassword />
     </main>
   )
 }

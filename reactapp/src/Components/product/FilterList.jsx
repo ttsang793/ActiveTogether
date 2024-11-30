@@ -7,7 +7,10 @@ export default function FilterList(props) {
 
   return (
     <div className="filter w-100">
-      { props.filters.map((f,i) => <Filter id={f.id} title={f.title} params={f.params} details={f.details} col={props.filters.length} key={i} onClick={onClick} />) }
+      {
+        props.filters.map((f,i) => <Filter title={f.title} params={f.params} col={props.filters.length} key={i} details={f.details}
+                                            initialParams={props.initialParams} onClick={onClick} />)
+      }
       <div className="d-flex align-items-center pointer px-3 save-btn" onClick={reloadPage}>
         <i className={`bi bi-floppy`}></i>
       </div>

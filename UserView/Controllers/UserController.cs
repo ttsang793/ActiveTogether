@@ -24,7 +24,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<StatusCodeResult> Register([Bind("FirebaseUid", "Username", "Password", "Phone", "Email", "Address")] UserRegisterDTO user)
+    public async Task<StatusCodeResult> Register([Bind("FirebaseUid", "Username", "FullName", "Phone", "Email", "Address")] UserRegisterDTO user)
     {
         return (await _userService.Register(user)) ? StatusCode(200) : StatusCode(404);
     }
@@ -61,6 +61,21 @@ public class UserController : ControllerBase
     public void Logout()
     {
         HttpContext.Session.Remove("token");
+    }
+
+    [HttpPost("forgetPassword")]
+    public async Task<StatusCodeResult> ForgetPassword([Bind("Username", "Phone", "Email")] UserRegisterDTO user)
+    {
+        try
+        {
+            var userForget = await _userService.GetUserByUsername(user.Username);
+            if (userForget == null) return StatusCode(400);
+            return (userForget.Phone == user.Phone && userForget.Email == user.Email) ? StatusCode(200) : StatusCode(400);
+        }
+        catch
+        {
+            return StatusCode(404);
+        }
     }
 
     [HttpPost("avatar/upload")]

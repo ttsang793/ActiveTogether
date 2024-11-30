@@ -83,8 +83,8 @@ export default class Home extends Component {
           <div className="home-content-detail">
             <h2 className="home-title">SẢN PHẨM THEO GIỚI TÍNH</h2>
             <div className="home-content-collection">
-              <HomeSelection params="gender" id={0} image="/src/images/sport/woman.png" name="Nữ" width={25} radius={false} />
-              <HomeSelection params="gender" id={1} image="/src/images/sport/man.png" name="Nam" width={25} radius={false} />
+              <HomeSelection params="gender" id={0} image="/src/images/sport/man.png" name="Nam" width={25} radius={false} />
+              <HomeSelection params="gender" id={1} image="/src/images/sport/woman.png" name="Nữ" width={25} radius={false} />
             </div>
           </div>
         </div>

@@ -3,13 +3,6 @@ import PleaseWait from "/src/Shared/PleaseWait";
 import "./OrderFinished.css"
 
 export default function OrderFinished() {
-  return (
-    <main className='user-main payment-container'>
-      <h1 className="text-center fw-bold">THANH TOÁN THÀNH CÔNG</h1>
-      <hr />
-    </main>
-  );
-  /*
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -110,5 +103,5 @@ export default function OrderFinished() {
 
       { renderBody() }
     </main>
-  );*/
+  );
 }
