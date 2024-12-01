@@ -1,24 +1,32 @@
 import "./Login.css"
 import FormTextBox from "/src/Components/shared/FormTextBox"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { auth } from "/firebase";
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { updatePassword } from "firebase/auth";
 
-export default function Register() {
+export default function RedirectRegister() {
   let [username, setUsername] = useState("");
   let [password, setPassword] = useState("");
   let [fullName, setFullName] = useState("");
   let [confirmPassword, setConfirmPassword] = useState("");
   let [phone, setPhone] = useState("");
-  let [email, setEmail] = useState("");
   let [address, setAddress] = useState("");
   let [errorUsername, setErrorUsername] = useState("");
   let [errorPassword, setErrorPassword] = useState("");
   let [errorFullName, setErrorFullName] = useState("");
   let [errorConfirmPassword, setErrorConfirmPassword] = useState("");
   let [errorPhone, setErrorPhone] = useState("");
-  let [errorEmail, setErrorEmail] = useState("");
   let [errorAddress, setErrorAddress] = useState("");
+  let userLeaving = false;
+
+  useEffect(() => {
+    fetch('/user/login/tempToken').then(response => {if (!response.ok) throw new Exception("No token")})
+      .catch(() => fetch('/user/login/cleartemp', {method: 'DELETE'}).finally(() => location.href = "/"))
+  }, [])
+  
+  window.addEventListener('beforeunload', () => {
+    fetch('/user/login/cleartemp', {method: 'DELETE'}).then(() => { alert("Đăng ký thất bại!"); location.href = '/'; })
+  });
 
   const handleUsername = e => {
     setUsername(username = e.target.value);
@@ -87,19 +95,6 @@ export default function Register() {
     setErrorPhone(errorPhone = error);
   }
 
-  const handleEmail = e => {
-    setEmail(email = e.target.value);
-    handleErrorEmail();
-  }
-
-  const handleErrorEmail = () => {
-    let error = "";
-
-    if (email === "") error = "Email không được để trống";
-    else if (!email.match(/.+@[a-z]+(\.[a-z]*)+/gm)) error = "Email phải đúng định dạng (example@mail.com)";
-    setErrorEmail(errorEmail = error);
-  }
-
   const handleAddress = e => {
     setAddress(address = e.target.value);
     handleErrorAddress();
@@ -120,52 +115,55 @@ export default function Register() {
     handleErrorPassword();
     handleErrorConfirmPassword();
     handleErrorPhone();
-    handleErrorEmail();
     handleErrorAddress();
 
-    if (!(errorUsername === "" && errorPassword === "" && errorConfirmPassword === "" && errorPhone === "" && errorEmail === "" && errorAddress === "")) return;
+    if (!(errorUsername === "" && errorPassword === "" && errorConfirmPassword === "" && errorPhone === "" && errorAddress === "")) return;
     
-    if (confirm("Bạn có muốn đăng ký tài khoản?")) {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    if (confirm("Bạn đã hoàn tất điền thông tin tài khoản chưa?")) {
+      const user = auth.currentUser;
+      try {
+        await updatePassword(user, password);
+        const response = await fetch("/user/register/google", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({firebaseUid: user.uid, fullName, username, phone, email: user.email, address})
+        })
 
-      const response = await fetch("/user/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({firebaseUid: userCredential.user.uid, fullName, username, phone, email, address})
-      })
-
-      if (response.ok) {
-        alert("Vui lòng kiểm tra email của bạn để tiếp tục xác nhận nhé!");
-        await sendEmailVerification(userCredential.user);
-        location.reload();
+        if (response.ok) {
+          fetch('/user/login/cleartemp', {method: 'DELETE'}).then(() => {
+            alert("Đăng nhập thành công!");
+            location.href = "/"
+          })
+        }
+        else alert("Đã có lỗi xảy ra, đăng ký tài khoản thất bại.");
       }
-      else alert("Đã có lỗi xảy ra, đăng ký tài khoản thất bại.");
+      catch (err) {
+        console.error(err);
+        alert("Đã có lỗi xảy ra, đăng ký tài khoản thất bại.");
+      }
     }
   }
 
   return (
-    <form className="login-form disabled" id="sign-up-form">
-      <FormTextBox type="usernameSU" placeholder="Username" icon="bi-person-fill" value={username} onValueChange={handleUsername} errorValue={errorUsername} />
-      <FormTextBox type="passwordSU" placeholder="Mật khẩu" icon="bi-lock-fill" value={password} onValueChange={handlePassword} errorValue={errorPassword} />
-      <FormTextBox type="confirmpasswordSU" placeholder="Xác nhận mật khẩu" icon="bi-lock-fill" value={confirmPassword} onValueChange={handleConfirmPassword} errorValue={errorConfirmPassword} />
-      <FormTextBox type="fullNameSU" placeholder="Họ tên người dùng" icon="bi-person-fill" value={fullName} onValueChange={handleFullName} errorValue={errorFullName} />
-      <FormTextBox type="phoneSU" placeholder="Số điện thoại" icon="bi-telephone-fill" value={phone} onValueChange={handlePhone} errorValue={errorPhone} />
-      <FormTextBox type="emailSU" placeholder="Địa chỉ email" icon="bi-envelope-at-fill" value={email} onValueChange={handleEmail} errorValue={errorEmail} />
-      <FormTextBox type="addressSU" placeholder="Địa chỉ nhà" icon="bi-house-door-fill" value={address} onValueChange={handleAddress} errorValue={errorAddress} />
-      
-      <input type="submit" className="at-btn m-at-btn" value="Đăng ký" onClick={e => RegisterUser(e)} />
-      <div className={`switch-question`}>Bạn đã có tài khoản? <a className="switch-page pointer" onClick={e => showLoginForm(e)}>Đăng nhập ngay!</a></div>
-    </form>
-  )
-}
+    <main className="login-main">
+      <h1 className="fw-bold text-uppercase">Đăng ký</h1>
+      <hr />
 
-function showLoginForm(e) {
-  e.preventDefault();
-  document.title = document.getElementById("title").innerHTML = "Đăng nhập";
-  document.title += " tài khoản";
-  document.getElementById("sign-up-form").classList.add("disabled");
-  document.getElementById("login-form").classList.remove("disabled");
+      <p className="fs-5"><b><i>Lưu ý: Nếu bạn rời khỏi trang, đăng ký sẽ thất bại!</i></b></p>
+
+      <form className="login-form">
+        <FormTextBox type="usernameSU" placeholder="Username" icon="bi-person-fill" value={username} onValueChange={handleUsername} errorValue={errorUsername} />
+        <FormTextBox type="passwordSU" placeholder="Mật khẩu" icon="bi-lock-fill" value={password} onValueChange={handlePassword} errorValue={errorPassword} />
+        <FormTextBox type="confirmpasswordSU" placeholder="Xác nhận mật khẩu" icon="bi-lock-fill" value={confirmPassword} onValueChange={handleConfirmPassword} errorValue={errorConfirmPassword} />
+        <FormTextBox type="fullNameSU" placeholder="Họ tên người dùng" icon="bi-person-fill" value={fullName} onValueChange={handleFullName} errorValue={errorFullName} />
+        <FormTextBox type="phoneSU" placeholder="Số điện thoại" icon="bi-telephone-fill" value={phone} onValueChange={handlePhone} errorValue={errorPhone} />
+        <FormTextBox type="addressSU" placeholder="Địa chỉ nhà" icon="bi-house-door-fill" value={address} onValueChange={handleAddress} errorValue={errorAddress} />
+        
+        <input type="submit" className="at-btn m-at-btn" value="Đăng ký" onClick={e => RegisterUser(e)} />
+      </form>
+    </main>
+  )
 }

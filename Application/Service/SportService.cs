@@ -2,6 +2,7 @@ using Application.Interface;
 using Core.Entity;
 using Core.Interface;
 using Microsoft.AspNetCore.Http;
+using System.Linq.Expressions;
 
 namespace Application.Service;
 
@@ -14,9 +15,9 @@ public class SportService : ISportService
         _unitOfWork = unitOfWork;
     }
 
-    public IEnumerable<Sport> GetAllSports()
+    public IEnumerable<Sport> GetAllSports(Expression<Func<Sport, bool>> expression = null)
     {
-        return _unitOfWork.Sports.GetAllSports(s => s.Id > 0);
+        return _unitOfWork.Sports.GetAllSports(expression);
     }
 
     public async Task<bool> Insert(Sport sport)

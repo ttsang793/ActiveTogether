@@ -137,9 +137,10 @@ function UserDetailPartial(props) {
           reauthenticateWithCredential(userAuth, credential)
             .then(() => {
               verifyBeforeUpdateEmail(userAuth, email)
-                .then(() =>
-                  alert("Vui lòng kiểm tra email của bạn để tiếp tục xác nhận thay đổi email")
-                );
+                .then(() => {
+                  alert("Vui lòng kiểm tra email mới của bạn để tiếp tục xác nhận thay đổi email.");
+                  fetch("/user/logout", { method: "POST" }).then(() => location.reload());
+                });
             });
         }
       }
@@ -159,22 +160,20 @@ function UserDetailPartial(props) {
       const userAuth = auth.currentUser;
       const credential = EmailAuthProvider.credential(userAuth.email, password);
 
-      /*
       const response = await fetch(`/user/lock?username=${username}`, {
-        method: "PUT",
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
-        body: JSON.stringify({ fullName, phone, email, avatar: image })
-      });*/
+      });
 
-      //if (response.ok) {
+      if (response.ok) {
         await reauthenticateWithCredential(userAuth, credential);
         await deleteUser(userAuth);
         alert("Tạm biệt bạn nhé, hi vọng chúng ta sẽ gặp lại nhau - Active Together");
         fetch("/user/logout", { method: "POST" }).then(() => location.reload());
-      //}
+      }
     }
     else alert("Cảm ơn bạn đã ở lại với chúng mình. Nếu chúng mình có bất cứ điều gì làm cho bạn không hài lòng, hãy gửi ở Báo cáo nhé!");
   }

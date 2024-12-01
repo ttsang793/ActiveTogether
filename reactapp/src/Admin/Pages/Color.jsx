@@ -1,19 +1,36 @@
 import React, { Component } from "react"
 import "./Color.css";
+import AdminTextBox from "/src/Admin/Components/AdminTextBox";
 
 export default class AColor extends Component {
   static displayName = AColor.name;
 
   constructor(props) {
     super(props);
-    this.state = {color: [], cCode: "#000000", cName: ""}
+    this.state = {color: [], cCode: "#000000", cName: "", cCodeError: "", cNameError: "", cSearch: ""}
   }
 
   componentDidMount() { this.populateColorData() }
 
   async saveNewColor(e) {
     e.preventDefault();
-    (this.state.cId !== "") ? updateColor(this.state.cId, this.state.cName) : addColor(this.state.cName);
+    if (this.state.cName === "") this.setState({cNameError: "Vui lòng nhập tên màu sắc"})
+    else if (this.state.color.findIndex(c => c.name === this.state.cName) > -1) this.setState({cNameError: "Tên màu sắc không được trùng với các màu sắc khác"})
+    else {  
+      if (confirm("Bạn có chắc chắn lưu màu sắc này?"))  {
+        const response = await fetch("/api/color/save", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          body: JSON.stringify({code: this.state.cCode.toUpperCase(), name: this.state.cName})
+        })
+    
+        if (response.status == 200) { alert("Lưu màu sắc thành công."); location.reload(); }
+        else alert("Đã có lỗi xảy ra. Lưu màu sắc thất bại.")
+      }
+    }
   }
 
   renderTable(colors) {
@@ -45,19 +62,21 @@ export default class AColor extends Component {
 
         <div className="row">
           <div className="col-3">
-            <div className="d-flex">
+            <label htmlFor="code-error" className="fw-semibold">Mã màu sắc:</label>
+            <div className="d-flex mt-1 mb-3">
               <input type="color" value={this.state.cCode} onChange={e => this.setState({cCode: e.target.value})} className="form-control color-picker" />
               <input type="text" value={this.state.cCode.toUpperCase()} className="form-control" readOnly />
+              <div id="code-error" className="error-value">{this.state.cCodeError}</div>
             </div>
-            <input type="text" onChange={e => this.setState({cName: e.target.value})} value={this.state.cName} className="form-control mt-3" placeholder="Tên màu sắc" />
-            
-            <input type="submit" value="Lưu" onClick={e => addColor(e, this.state.cCode, this.state.cName)} className="at-btn mt-3 me-2" />
+            <AdminTextBox type="text" detail="name" onChange={(e) => this.setState({cName: e.target.value})} value={this.state.cName} errorValue={this.state.cNameError} placeholder="Tên màu sắc" />
+
+            <input type="submit" value="Lưu" onClick={e => this.saveNewColor(e)} className="at-btn mt-3 me-2" />
             <input type="button" value="Hủy" onClick={() => this.cancelColor()} className="at-btn-secondary mt-3" />
           </div>
 
           <div className="col-9">
             <div className="d-flex">
-              <input type="search" className="form-control" placeholder="Nhập tên màu sắc cần tìm..." />
+              <AdminTextBox type="search" placeholder="Nhập tên màu sắc cần tìm..." value={this.state.cSearch} onChange={e => this.setState({ cSearch: e.target.value })} onKeyDown={() => this.findData()} />
               <button className="small-at-sbtn"><i className="bi bi-search"></i></button>
             </div>
 
@@ -84,28 +103,13 @@ export default class AColor extends Component {
     fetch("/api/color/get").then(response => response.json()).then(data => this.setState({color: data}));
   }
 
+  async findData() {
+    if (this.state.cSearch === "") this.populateColorData();
+    else fetch(`/api/color/find?name=${this.state.cSearch}`).then(response => response.json()).then(data => this.setState({color: data}));
+  }  
+
   cancelColor() {
-    this.setState({cCode: "#000000", cName: ""});
-  }
-}
-
-async function addColor(e, code, name) {
-  e.preventDefault();
-  code = "%23" + code.substring(1).toUpperCase();
-
-  if (confirm("Bạn có chắc chắn lưu màu sắc này?"))  {
-    const response = await fetch("/api/color/save", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-      },
-      body: JSON.stringify({code, name})
-    })
-
-    if (response.status == 200) { alert("Thêm màu sắc thành công."); location.reload(); }
-    else if (response.status == 201) { alert("Cập nhật màu sắc thành công."); location.reload(); }
-    else alert("Đã có lỗi xảy ra. Lưu màu sắc thất bại.")
+    this.setState({cCode: "#000000", cName: "", cCodeError: "", cNameError: ""});
   }
 }
 

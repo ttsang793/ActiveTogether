@@ -1,18 +1,21 @@
-import React, { Component } from "react"
+import React, { Component } from "react";
+import AdminTextBox from "/src/Admin/Components/AdminTextBox";
 
 export default class ABrand extends Component {
   static displayName = ABrand.name;
 
   constructor(props) {
     super(props);
-    this.state = {brand: [], bId: "", bName: ""}
+    this.state = {brand: [], bId: "", bName: "", bNameError: "", bSearch: ""}
   }
 
   componentDidMount() { this.populateBrandData() }
 
   async saveNewBrand(e) {
     e.preventDefault();
-    (this.state.bId !== "") ? updateBrand(this.state.bId, this.state.bName) : addBrand(this.state.bName);
+    if (this.state.bName === "") this.setState({bNameError: "Vui lòng nhập tên thương hiệu"})
+    else if (this.state.brand.findIndex(b => b.name === this.state.bName) > -1) this.setState({bNameError: "Tên thương hiệu không được trùng với thương hiệu đã tạo"})
+    else (this.state.bId !== "") ? updateBrand(this.state.bId, this.state.bName) : addBrand(this.state.bName);
   }
 
   renderTable(brands) {
@@ -42,16 +45,17 @@ export default class ABrand extends Component {
 
 
         <div className="row">
-          <div className="col-3">
-            <input type="text" value={this.state.bId} className="form-control" readOnly placeholder="Mã thương hiệu" />
-            <input type="text" onChange={(e) => this.setState({bName: e.target.value})} value={this.state.bName} className="form-control mt-3" placeholder="Tên thương hiệu" />
+          <div className="col-3">            
+            <AdminTextBox type="text" detail="id" value={this.state.bId} readOnly placeholder="Mã thương hiệu" />
+            <AdminTextBox type="text" detail="name" onChange={(e) => this.setState({bName: e.target.value})} value={this.state.bName} errorValue={this.state.bNameError} placeholder="Tên thương hiệu" />
+              
             <input type="submit" value="Lưu" onClick={e => this.saveNewBrand(e)} className="at-btn mt-3 me-2" />
             <input type="button" value="Hủy" onClick={() => this.cancelBrand()} className="at-btn-secondary mt-3" />
           </div>
 
           <div className="col-9">
             <div className="d-flex">
-              <input type="search" className="form-control" placeholder="Nhập tên thương hiệu cần tìm..." />
+              <AdminTextBox type="search" placeholder="Nhập tên thương hiệu cần tìm..." value={this.state.bSearch} onChange={e => this.setState({ bSearch: e.target.value })} onKeyDown={() => this.findData()} />
               <button className="small-at-sbtn"><i className="bi bi-search"></i></button>
             </div>
             
@@ -76,6 +80,11 @@ export default class ABrand extends Component {
 
   async populateBrandData() {
     fetch("/api/brand/get").then(response => response.json()).then(data => this.setState({brand: data}));
+  }
+
+  async findData() {
+    if (this.state.bSearch === "") this.populateBrandData();
+    else fetch(`/api/brand/find?name=${this.state.bSearch}`).then(response => response.json()).then(data => this.setState({brand: data}));
   }
 
   cancelBrand() {

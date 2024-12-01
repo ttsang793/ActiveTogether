@@ -21,13 +21,17 @@ public class ColorController : ControllerBase
     {
         return _colorService.GetAllColors();
     }
+
+    [HttpGet("find")]
+    public IEnumerable<Color> GetAllColorsByName(string name)
+    {
+        return _colorService.GetAllColors(c => c.Name.ToLower().Contains(name.ToLower()));
+    }
     
     [HttpPost("save")]
     public async Task<StatusCodeResult> Save(Color color)
     {
-        color.Code = "#" + color.Code[3..];
-        sbyte result = await _colorService.Save(color);
-        return (result == 0) ? StatusCode(200) : ((result == 1) ? StatusCode(201) : StatusCode(404));
+        return (await _colorService.Save(color)) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("lock")]

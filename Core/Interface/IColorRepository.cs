@@ -3,13 +3,15 @@ using System.Linq.Expressions;
 
 namespace Core.Interface;
 
-public interface IColorRepository : IInsert<Color>, IUpdate<Color>
+public interface IColorRepository
 {
     IEnumerable<Color> GetAllColors(Expression<Func<Color, bool>> expression = null);
 
-    Color GetByColorCode(string code);
+    Task<Color> GetByColorCode(string code);
 
-    void Lock(string code);
+    Task Save(Color color);
+
+    Task Lock(string code);
   
-    void Unlock(string code);
+    Task Unlock(string code);
 }

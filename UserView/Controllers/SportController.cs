@@ -20,6 +20,6 @@ public class SportController : ControllerBase
     [HttpGet("get")]
     public IEnumerable<Sport> GetAllSports()
     {
-        return _sportService.GetAllSports();
+        return _sportService.GetAllSports(s => s.Id > 0);
     }
 }

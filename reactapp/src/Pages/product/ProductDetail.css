@@ -1,6 +1,7 @@
 .product-detail {
   column-gap: 20px;
   font-size: 18px;
+  animation: fadeIn 0.5s;
 
   /* Hình ảnh */
   .product-detail-image {

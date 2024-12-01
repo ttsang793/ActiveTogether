@@ -20,9 +20,15 @@ public class SportController : ControllerBase
     [HttpGet("get")]
     public IEnumerable<Sport> GetAllSports()
     {
-        return _sportService.GetAllSports();
+        return _sportService.GetAllSports(s => s.Id > 0);
     }
-    
+
+    [HttpGet("find")]
+    public IEnumerable<Sport> GetAllSports(string name)
+    {
+        return _sportService.GetAllSports(s => s.Name.ToLower().Contains(name.ToLower()));
+    }
+
     [HttpPost("add")]
     public async Task<StatusCodeResult> Insert(Sport sport)
     {

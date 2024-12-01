@@ -1,6 +1,7 @@
 using Application.Interface;
 using Core.Entity;
 using Core.Interface;
+using System.Linq.Expressions;
 
 namespace Application.Service;
 
@@ -13,35 +14,26 @@ public class ColorService : IColorService
         _unitOfWork = unitOfWork;
     }
 
-    public IEnumerable<Color> GetAllColors()
+    public IEnumerable<Color> GetAllColors(Expression<Func<Color, bool>> expression = null)
     {
-        return _unitOfWork.Colors.GetAllColors();
+        return _unitOfWork.Colors.GetAllColors(expression);
     }
 
-    public async Task<sbyte> Save(Color color)
+    public async Task<bool> Save(Color color)
     {
-        Color c = _unitOfWork.Colors.GetByColorCode(color.Code);
-        if (c == null)
-        {
-            _unitOfWork.Colors.Insert(color);
-            return (await _unitOfWork.SaveChangesAsync()) ? (sbyte)0 : (sbyte)-1;
-        }
-        else
-        {
-            _unitOfWork.Colors.Update(color);
-            return (await _unitOfWork.SaveChangesAsync()) ? (sbyte)1 : (sbyte)-1;
-        }
+        await _unitOfWork.Colors.Save(color);
+        return await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<bool> Lock(string code)
     {
-        _unitOfWork.Colors.Lock(code);
+        await _unitOfWork.Colors.Lock(code);
         return await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<bool> Unlock(string code)
     {
-        _unitOfWork.Colors.Unlock(code);
+        await _unitOfWork.Colors.Unlock(code);
         return await _unitOfWork.SaveChangesAsync();
     }
 }

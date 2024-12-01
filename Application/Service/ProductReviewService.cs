@@ -28,7 +28,7 @@ public class ProductReviewService : IProductReviewService
             Star = reviewDTO.Star,
             Review = reviewDTO.Review,
             DatePublish = DateTime.Now,
-            UserId = _unitOfWork.Users.GetUserIdByUsername(reviewDTO.Username!)
+            UserId = await _unitOfWork.Users.GetUserIdByUsername(reviewDTO.Username!)
         };
 
         _unitOfWork.ProductReviews.Upload(review);

@@ -4,53 +4,57 @@ import ProductSuggestion from "/src/Components/product/ProductSuggestion";
 import ProductReview from "/src/Components/product/ProductReview";
 import AddToCart from "/src/Components/product/AddToCart";
 import { DisplayPrice } from "/src/Scripts/Utility.js"
-import React, { Component } from 'react'
+import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
 
-export default class ProductDetail extends Component {
-  static displayName = ProductDetail.name;
+export default function ProductDetail(props) {
+  let { urlName, colorId } = useParams();
+  colorId = colorId === undefined ? 0 : colorId;
+  let [ product, setProduct ] = useState([]);
+  let [ image, setImage ] = useState([]);
+  let [ review, setReview ] = useState([]);
+  let [ index, setIndex ] = useState(0);
+  let [ sku, setSku ] = useState("");
+  let [ loading, setLoading ] = useState(true);
 
-  constructor(props) {
-    super(props);
-    this.state = { product: [], image: [], review: [], index: 0, sku: "", loading: true }
-  }
+  useEffect(() => {
+    populateProductDetail(urlName);
+  }, []);
 
-  componentDidMount() {
-    const url = location.pathname.substring(10);
-    this.populateProductDetail(url);
-  }
-
-  handleIndexChange(index, total) {
-    this.setState({index: index < 0 ? total - 1 : index % total}, () => {
-      if (total < 3) {
-        document.getElementsByClassName("main-small-img")[0].classList.remove("main-small-img");
-        document.getElementsByClassName("small-img")[this.state.index].classList.add("main-small-img");
-      }
-    })
+  function handleIndexChange(newIndex, total) {
+    setIndex(index = newIndex < 0 ? total - 1 : newIndex % total);
+    if (total < 3) {
+      document.getElementsByClassName("main-small-img")[0].classList.remove("main-small-img");
+      document.getElementsByClassName("small-img")[index].classList.add("main-small-img");
+    }
   }
   
-  handleOptionChange(e, i = 0, idList = []) {
+  function handleOptionChange(e, i = 0, idList = []) {
     if (e.target.classList.contains("color")) {
-      this.handleIndexChange(e.target.id, this.state.image.length)
-      this.setState({sku: idList[i].sku + this.state.sku.substring(5)});
+      handleIndexChange(e.target.id, image.length)
+      const newSku = idList[i].sku + sku.substring(5);
+      setSku(sku = newSku);
     }
-    else this.setState({sku: this.state.sku.substring(0,5) + e.target.innerHTML});
+    else {
+      const newSku = sku.substring(0,5) + e.target.innerHTML;
+      setSku(sku = newSku);
+    }
   }
 
-  renderSize(sizeList) {
+  function renderSize(sizeList) {
     return (
       <div className="my-2">
         Kích thước:&nbsp;
         <div className="select-list">
           {sizeList.map((s, i) =>
-            <button className={`select-option size ${this.state.sku.substring(5) === s ? "selected" : ""}`} key={i}
-            onClick={e => this.handleOptionChange(e)}>{s}</button>
+            <button className={`select-option size ${(sku.substring(5)) === s ? "selected" : ""}`} key={i} onClick={handleOptionChange}>{s}</button>
           )}
         </div>
       </div>
     );
   }
 
-  uniqueSku(idList) {
+  function uniqueSku(idList) {
     let tempList = idList;
     idList = [];
     while (true) {
@@ -62,24 +66,24 @@ export default class ProductDetail extends Component {
     }
   }
 
-  renderColor(colorList, idList) {
-    idList = this.uniqueSku(idList);
+  function renderColor(colorList, idList) {
+    idList = uniqueSku(idList);
 
     return (
       <div className="my-2">
         Màu sắc:&nbsp;
         <div className="select-list">
           {colorList.map((c, i) =>
-            <button className={`select-option color ${this.state.sku.substring(0,5) === idList[i].sku ? "selected" : ""}`} id={idList[i].id} key={i}
-            onClick={e => this.handleOptionChange(e, i, idList)}>{c}</button>
+            <button className={`select-option color ${sku.substring(0,5) === idList[i].sku ? "selected" : ""}`} id={idList[i].id} key={i}
+            onClick={e => handleOptionChange(e, i, idList)}>{c}</button>
           )}
         </div>
       </div>
     );
   }
 
-  renderProductDetail(product, image,review) {
-    document.title = this.state.product[0].name;
+  function renderProductDetail() {
+    document.title = product[0].name;
 
     let colorList = []
     product.forEach(p => {
@@ -104,34 +108,35 @@ export default class ProductDetail extends Component {
             <div className="position-relative"> 
               {
                 (image.length > 1) ?
-                <button onClick={() => this.handleIndexChange(this.state.index - 1, image.length)} className="carousel-prev">&lt;</button> :
+                <button onClick={() => handleIndexChange(index - 1, image.length)} className="carousel-prev">&lt;</button> :
                 <></>
               }
-              <img src={`${image[this.state.index].image}`} className="showing" id="showing" />
+              <img src={`${image[index].image}`} className="showing" id="showing" />
               {
                 (image.length > 1) ?
-                <button onClick={() => this.handleIndexChange(this.state.index + 1, image.length)} className="carousel-next">&gt;</button> :
+                <button onClick={() => handleIndexChange(index + 1, image.length)} className="carousel-next">&gt;</button> :
                 <></>
               }
             </div>
 
             
             <div className="d-flex align-item-center mt-2" style={{columnGap: "9px"}}> 
-            { (image.length >= 3) ? (
+            {
+              (image.length >= 3) ? (
                 <>
-                  <img src={`${image[this.state.index % image.length].image}`} className="small-img main-small-img" />
+                  <img src={`${image[index % image.length].image}`} className="small-img main-small-img" />
 
-                  <img src={`${image[(this.state.index + 1) % image.length].image }`}
-                    className="small-img" onClick={() => this.handleIndexChange(this.state.index + 1, image.length)} />
+                  <img src={`${image[(index + 1) % image.length].image }`}
+                    className="small-img" onClick={() => handleIndexChange(index + 1, image.length)} />
                     
-                  <img src={`${image[(this.state.index + 2) % image.length].image}`}
-                    className="small-img" onClick={() => this.handleIndexChange(this.state.index + 2, image.length)} />
+                  <img src={`${image[(index + 2) % image.length].image}`}
+                    className="small-img" onClick={() => handleIndexChange(index + 2, image.length)} />
                 </>
               )
               : (
                 <>
-                  <img src={`${image[0].image}`} className="small-img main-small-img" onClick={() => this.handleIndexChange(0, image.length)} />
-                  {image.length === 2 ? <img src={`${image[1].image}`} className="small-img" onClick={() => this.handleIndexChange(1, 2)} /> : ""}
+                  <img src={`${image[0].image}`} className="small-img main-small-img" onClick={() => handleIndexChange(0, image.length)} />
+                  {image.length === 2 ? <img src={`${image[1].image}`} className="small-img" onClick={() => handleIndexChange(1, 2)} /> : ""}
                 </>
               )
             }              
@@ -148,10 +153,10 @@ export default class ProductDetail extends Component {
             </div>
             <hr />
 
-            {(sizeList.length > 1) && this.renderSize(sizeList)}
-            {(colorList.length > 1) && this.renderColor(colorList, idList)}
+            {(sizeList.length > 1) && renderSize(sizeList)}
+            {(colorList.length > 1) && renderColor(colorList, idList)}
 
-            {<AddToCart type="text" product={product.find(p => p.sku === this.state.sku)} username={this.props.username} image={image[this.state.index].image} />}
+            {<AddToCart type="text" product={product.find(p => p.sku === sku)} username={props.username} image={image[index].image} />}
           </div>
         </div>
 
@@ -174,25 +179,32 @@ export default class ProductDetail extends Component {
     )
   }
 
-  render() {
-    const content = this.state.loading ? <PleaseWait /> : this.renderProductDetail(this.state.product, this.state.image, this.state.review);
-    return content;
-  }
+  return loading ? <PleaseWait /> : renderProductDetail(product, image, review);
 
-  async populateProductDetail(url) {
+  async function populateProductDetail(url) {
     const response = await fetch(`/product?urlName=${url}`);
     if (!response.ok) throw new Error('Network response was not ok');
     const productData = await response.json();
-    this.setState({ product: productData, sku: productData[0].sku.substring(0,5) + productData[0].size });
 
     const imageResponse = await fetch(`/product/img?urlName=${url}`);
     if (!imageResponse.ok) throw new Error('Network response was not ok');
     const imageData = await imageResponse.json();
-    this.setState({ image: imageData });
 
     const reviewResponse = await fetch(`/product/review/get?urlName=${url}`);
     if (!reviewResponse.ok) throw new Error('Network response was not ok');
     const reviewData = await reviewResponse.json();
-    this.setState({ review: reviewData, loading: false });
+    
+    const skuData = []
+    productData.forEach(p => {
+      if (skuData.findIndex(s => s.sku.includes(p.sku.substring(0,5))) === -1) skuData.push(p);
+    })
+
+    //Set Item
+    setProduct(product = productData);
+    setSku(sku = skuData[colorId].sku);
+    setIndex(index = Number(skuData[colorId].image) - 1);
+    setImage(image = imageData);
+    setReview(review = reviewData);
+    setLoading(loading = false);
   }
 }

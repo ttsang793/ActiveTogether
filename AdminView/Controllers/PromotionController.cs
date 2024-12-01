@@ -23,6 +23,12 @@ public class PromotionController : ControllerBase
         return _promotionService.GetAllPromotions();
     }
 
+    [HttpGet("find")]
+    public IEnumerable<Promotion> GetAllPromotions(string title)
+    {
+        return _promotionService.GetAllPromotions(p => p.Title.ToLower().Contains(title.ToLower()));
+    }
+
     [HttpGet("detail/get")]
     public IEnumerable<PromotionDetail> GetAllPromotionDetails()
     {

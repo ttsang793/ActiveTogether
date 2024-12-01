@@ -53,9 +53,10 @@ public class BlogRepository : BaseRepository<BlogArticle>, IBlogRepository
         };
     }
 
-    public IEnumerable<BlogArticle> GetAllBlogs()
+    public IEnumerable<BlogArticle> GetAllBlogs(Expression<Func<BlogArticle, bool>> expression = null)
     {
-        return GetDbSet().ToList();
+      if (expression == null) return GetDbSet().ToList();
+      else return GetDbSet().Where(expression).ToList();
     }
     
     public BlogArticle GetBlogById(int id)

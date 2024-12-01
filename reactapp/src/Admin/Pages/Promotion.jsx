@@ -1,13 +1,15 @@
-import { DisplayDate, ParseDateTime } from "/src/Scripts/Utility"
+import { DisplayDate } from "/src/Scripts/Utility"
 import React, { Component } from "react"
 import PleaseWait from "/src/Shared/PleaseWait"
+import AdminTextBox from "/src/Admin/Components/AdminTextBox";
 
 export default class APromotion extends Component {
   static displayName = APromotion.name;
 
   constructor(props) {
     super(props);
-    this.state = { loading: true, promotion: [], pId: "", pTitle: "", pDateStart: new Date().toLocaleDateString('en-CA'), pDateEnd: new Date().toLocaleDateString('en-CA') }
+    this.state = { loading: true, promotion: [], pId: "", pName: "", pDateStart: new Date().toLocaleDateString('en-CA'),
+                    pDateEnd: new Date().toLocaleDateString('en-CA'), pNameError: "", pDateStartError: "", pDateEndError: "", pSearch: "" }
   }
 
   componentDidMount() {
@@ -45,28 +47,28 @@ export default class APromotion extends Component {
         <hr />
 
         <div className="row">
-          <div className="col-3">            
-            <input type="text" value={this.state.pId} className="form-control" readOnly placeholder="Mã chương trình" />
-            <input type="text" onChange={(e) => this.setState({pTitle: e.target.value})} value={this.state.pTitle} className="form-control mt-3" placeholder="Tên chương trình" />
-            <input type="date" className="form-control mt-3" onChange={e => this.setState({ pDateStart: e.target.value })} value={this.state.pDateStart} />
-            <input type="date" className="form-control mt-3" onChange={e => this.setState({ pDateEnd: e.target.value })} value={this.state.pDateEnd} />
+          <div className="col-3">
+            <AdminTextBox type="text" detail="id" value={this.state.pId} readOnly placeholder="Mã chương trình" />
+            <AdminTextBox type="text" detail="name" onChange={(e) => this.setState({pName: e.target.value})} value={this.state.pName} errorValue={this.state.pNameError} placeholder="Tên môn chương trình" />
+            <AdminTextBox type="date" detail="date-start" onChange={(e) => this.setState({pDateStart: e.target.value})} value={this.state.pDateStart} errorValue={this.state.pDateStartError} placeholder="Ngày bắt đầu" />
+            <AdminTextBox type="date" detail="date-end" onChange={(e) => this.setState({pDateEnd: e.target.value})} value={this.state.pDateEnd} errorValue={this.state.pDateEndError} placeholder="Ngày kết thúc" />
             <input type="submit" value="Lưu" onClick={e => this.saveNewPromotion(e)} className="at-btn mt-3 me-2" />
             <input type="button" value="Hủy" onClick={() => this.cancelPromotion()} className="at-btn-secondary mt-3" />
           </div>
 
           <div className="col-9">
             <div className="d-flex">
-              <input type="search" className="form-control" placeholder="Nhập tên chương trình giảm giá cần tìm..." />
+              <AdminTextBox type="search" placeholder="Nhập tên chương trình giảm giá cần tìm..." value={this.state.pSearch} onChange={e => this.setState({ pSearch: e.target.value })} onKeyDown={() => this.findData()} />
               <button className="small-at-sbtn"><i className="bi bi-search"></i></button>
             </div>            
 
             <table className="table table-striped table-hover pointer table-bordered mt-3">
               <thead>
                 <tr>
-                  <th className="text-center">ID</th>
-                  <th className="text-center">Tiêu đề</th>
-                  <th className="text-center">Ngày bắt đầu</th>
-                  <th className="text-center">Ngày kết thúc</th>
+                  <th className="text-center align-middle">ID</th>
+                  <th className="text-center align-middle">Tiêu đề</th>
+                  <th className="text-center align-middle">Ngày bắt đầu</th>
+                  <th className="text-center align-middle">Ngày kết thúc</th>
                   <th className="w-120px"></th>
                 </tr>
               </thead>
@@ -84,6 +86,11 @@ export default class APromotion extends Component {
   async saveNewPromotion(e) {
     e.preventDefault();
     this.state.pId === "" ? this.addPromotion() : this.updatePromotion();
+  }
+
+  async findData() {
+    if (this.state.pSearch === "") this.populatePromotionDetail();
+    else fetch(`/api/promotion/find?title=${this.state.pSearch}`).then(response => response.json()).then(data => this.setState({promotion: data}));
   }
 
   async addPromotion() {

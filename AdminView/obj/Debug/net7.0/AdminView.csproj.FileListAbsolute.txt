@@ -87,3 +87,4 @@ D:\SGU\DoAnCode\ActiveTogether\AdminView\bin\Debug\net7.0\Newtonsoft.Json.Bson.d
 D:\SGU\DoAnCode\ActiveTogether\AdminView\bin\Debug\net7.0\System.Collections.Immutable.dll
 D:\SGU\DoAnCode\ActiveTogether\AdminView\bin\Debug\net7.0\System.Management.dll
 D:\SGU\DoAnCode\ActiveTogether\AdminView\bin\Debug\net7.0\runtimes\win\lib\net7.0\System.Management.dll
+D:\SGU\DoAnCode\ActiveTogether\AdminView\bin\Debug\net7.0\RestSharp.dll

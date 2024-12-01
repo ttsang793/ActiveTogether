@@ -32,12 +32,15 @@ export default function Products() {
 
   function handleFilterClick(params, filter) {
     let i = fillParams.findIndex(f => f.param === params);
-    let content = fillParams[i].content;
+    try {
+      let content = fillParams[i].content;
 
-    let j = content.findIndex(c => c === filter)
-    if (j === -1) content.push(filter); else content = [...content.slice(0,j), ...content.slice(j+1)];
+      let j = content.findIndex(c => c === filter)
+      if (j === -1) content.push(filter); else content = [...content.slice(0,j), ...content.slice(j+1)];
 
-    setFillParams(fillParams = [...fillParams.slice(0, i), {param: params, content}, ...fillParams.slice(i+1)]);
+      setFillParams(fillParams = [...fillParams.slice(0, i), {param: params, content}, ...fillParams.slice(i+1)]);
+    }
+    catch {}
   }
 
   function reloadPage(e, ePage, eSort = sort) {
@@ -117,11 +120,10 @@ export default function Products() {
         {pageProducts.map(p => {
           try {
             const salePercent = 1 - p.promotionDetails[0].percent;
-            return <ProductGrid key={p.urlName} urlName={p.urlName} image={p.productColors[0].productImages[0].image}
-            name={p.name} price={p.price * salePercent} oldPrice={p.promotionDetails.length > 0 ? p.price : null} />
+            return <ProductGrid key={p.urlName} urlName={p.urlName} name={p.name} price={p.price * salePercent} oldPrice={p.promotionDetails.length > 0 ? p.price : null} productColors={p.productColors} />
           }
           catch {
-            return <ProductGrid key={p.urlName} urlName={p.urlName} image={p.productColors[0].productImages[0].image} name={p.name} price={p.price} oldPrice={null} />
+            return <ProductGrid key={p.urlName} urlName={p.urlName} name={p.name} price={p.price} oldPrice={null} productColors={p.productColors} />
           }
         })}
       </div>

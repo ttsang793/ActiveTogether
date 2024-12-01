@@ -6,22 +6,6 @@ import ForgetPassword from "/src/Pages/user/ForgetPassword";
 import { auth, provider } from "/firebase";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
-function showSignupForm(e) {
-  e.preventDefault();
-  document.title = document.getElementById("title").innerHTML = "Đăng ký";
-  document.title += " tài khoản";
-  document.getElementById("login-form").classList.add("disabled");
-  document.getElementById("sign-up-form").classList.remove("disabled");
-}
-
-function showForgetForm(e) {
-  e.preventDefault();
-  document.title = document.getElementById("title").innerHTML = "Khôi phục";
-  document.title += " tài khoản";
-  document.getElementById("login-form").classList.add("disabled");
-  document.getElementById("forget-form").classList.remove("disabled");
-}
-
 export default function Login() {
   let [username, setUsername] = useState("");
   let [password, setPassword] = useState("");
@@ -48,6 +32,22 @@ export default function Login() {
     let error = "";
     if (password === "") error = "Vui lòng nhập mật khẩu";
     setErrorPassword(error);
+  }
+
+  function showSignupForm(e) {
+    e.preventDefault();
+    document.title = document.getElementById("title").innerHTML = "Đăng ký";
+    document.title += " tài khoản";
+    document.getElementById("login-form").classList.add("disabled");
+    document.getElementById("sign-up-form").classList.remove("disabled");
+  }
+
+  function showForgetForm(e) {
+    e.preventDefault();
+    document.title = document.getElementById("title").innerHTML = "Khôi phục";
+    document.title += " tài khoản";
+    document.getElementById("login-form").classList.add("disabled");
+    document.getElementById("forget-form").classList.remove("disabled");
   }
 
   async function LoginUser(e) {
@@ -82,25 +82,40 @@ export default function Login() {
       }).then(() => { alert("Đăng nhập thành công!"); location.href = "/" })
     }
     catch (err) {
-      if (err.message.includes("auth/user-disabled")) setErrorUsername("Tài khoản đã bị khóa. Vui lòng kiểm tra lại.");
-      else if (err.message.includes("auth/invalid-credential")) setErrorPassword("Sai mật khẩu, vui lòng nhập lại.");
+      if (err.message.includes("auth/invalid-credential")) setErrorPassword("Sai mật khẩu, vui lòng nhập lại.");
     }
   }
 
-  async function GoogleLogin() {
+  async function GoogleLogin(e) {
+    e.preventDefault();
     auth.languageCode = 'vi';
     provider.setCustomParameters({ 'hl': 'vi' });
 
-    signInWithPopup(auth, provider).then(result => {
-      const idToken = result._tokenResponse.idToken;
-      fetch(`/user/login?token=${idToken}`, {
+    try {
+      const credential = await signInWithPopup(auth, provider);
+      const availableResponse = await fetch(`/user/login/check`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
-        }
-      }).then(() => { alert("Đăng nhập thành công!"); location.href = "/" })
-    }).catch(err => console.log(err.message));
+        },
+        body: JSON.stringify({ tempToken: credential._tokenResponse.idToken, email: credential.user.email })
+      });
+      if (availableResponse.status == 200) {
+        fetch(`/user/login?token=${idToken}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        }).then(() => { alert("Đăng nhập thành công!"); location.href = "/" })
+      }
+      else {
+        alert("Vui lòng đăng ký tài khoản để hoàn thành đăng nhập!");
+        location.href = `/lan-dau-google/`
+      }
+    }
+    catch (err) { console.error(err.message); }
   }
 
   return (    
@@ -112,17 +127,17 @@ export default function Login() {
         <FormTextBox type="username" placeholder="Tên người dùng hoặc email" icon="bi-person-fill" value={username} onValueChange={handleUsername} errorValue={errorUsername} />
         <FormTextBox type="password" placeholder="Mật khẩu" icon="bi-lock-fill" value={password} onValueChange={handlePassword} errorValue={errorPassword} />
         <div className="text-start">
-          <a className="switch-page" onClick={e => showForgetForm(e)}>Quên mật khẩu?</a>
+          <a className="switch-page" onClick={showForgetForm}>Quên mật khẩu?</a>
         </div>
         
-        <input type="submit" className="at-btn m-at-btn" value="Đăng nhập" onClick={e => LoginUser(e)} />
+        <input type="submit" className="at-btn m-at-btn" value="Đăng nhập" onClick={LoginUser} />
         <div className="switch-question mt-3">
           Hoặc có thể đăng nhập bằng:
           <abbr title="Google" className="pointer">
             <img src="google.webp" alt="Google" onClick={GoogleLogin} className="redirect-icon mx-2" />
           </abbr>
         </div>
-        <div className="switch-question">Bạn chưa có tài khoản? <a className="switch-page pointer" onClick={e => showSignupForm(e)}>Đăng ký ngay!</a></div>
+        <div className="switch-question">Bạn chưa có tài khoản? <a className="switch-page pointer" onClick={showSignupForm}>Đăng ký ngay!</a></div>
       </form>
 
       <Register />

@@ -5,7 +5,7 @@ namespace Application.Interface;
 
 public interface IUserAddressService
 {
-    IEnumerable<UserAddress> GetAddressByUsername(string username);
+    Task<IEnumerable<UserAddress>> GetAddressByUsername(string username);
 
-    Task<bool> UpdateAddressByUsername(UserAddressDTO address, string username);
+    Task<bool> UpdateAddressByUsername(UserAddressListDTO address, string username);
 }

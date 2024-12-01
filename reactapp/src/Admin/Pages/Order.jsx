@@ -20,12 +20,12 @@ export default class AOrder extends Component {
         <table className="table table-striped table-bordered table-hover mt-3">
           <thead>
             <tr>
-              <th className="text-center">ID</th>
-              <th className="text-center">Ngày đặt hàng</th>
-              <th className="text-center">Ngày xác nhận</th>
-              <th className="text-center">Ngày nhận hàng</th>
-              <th className="text-center">Trạng thái</th>
-              <th className="text-center">Tổng</th>
+              <th className="text-center align-middle">ID</th>
+              <th className="text-center align-middle">Ngày đặt hàng</th>
+              <th className="text-center align-middle">Ngày xác nhận</th>
+              <th className="text-center align-middle">Ngày nhận hàng</th>
+              <th className="text-center align-middle">Trạng thái</th>
+              <th className="text-center align-middle">Tổng</th>
               <th className="button-col"></th>
             </tr>
           </thead>

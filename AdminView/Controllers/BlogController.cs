@@ -24,6 +24,12 @@ public class BlogController : ControllerBase
         return _blogService.GetAllBlogs();
     }
 
+    [HttpGet("find")]
+    public IEnumerable<BlogArticle> GetAllBlogs(string title)
+    {
+        return _blogService.GetAllBlogs(b => b.Title.ToLower().Contains(title.ToLower()));
+    }
+
     [HttpGet("get/detail")]
     public BlogArticle GetBlogById(int id)
     {

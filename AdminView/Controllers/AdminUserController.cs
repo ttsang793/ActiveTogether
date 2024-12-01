@@ -21,7 +21,7 @@ public class AdminUserController : ControllerBase
     [HttpPost("login")]
     public async Task<StatusCodeResult> Login([Bind("Id")] AdminLoginDTO user)
     {
-        AdminUser result = await _adminUserService.Login(user);
+        //AdminUser result = await _adminUserService.Login(user);
 
         /*
         if (result == null) return StatusCode(404);

@@ -1,18 +1,21 @@
-import React, { Component } from "react"
+import React, { Component } from "react";
+import AdminTextBox from "/src/Admin/Components/AdminTextBox";
 
 export default class ACategory extends Component {
   static displayName = ACategory.name;
 
   constructor(props) {
     super(props);
-    this.state = {category: [], cId: "", cName: ""}
+    this.state = {category: [], cId: "", cName: "", cNameError: "", cSearch: ""}
   }
 
   componentDidMount() { this.populateCategoryData() }
 
   async saveNewCategory(e) {
     e.preventDefault();
-    (this.state.cId !== "") ? updateCategory(this.state.cId, this.state.cName) : addCategory(this.state.cName);
+    if (this.state.cName === "") this.setState({cNameError: "Vui lòng nhập tên danh mục"})
+    else if (this.state.category.findIndex(c => c.name === this.state.cName) > -1) this.setState({cNameError: "Tên danh mục không được trùng với danh mục đã tạo"})
+    else (this.state.cId !== "") ? updateCategory(this.state.cId, this.state.cName) : addCategory(this.state.cName);
   }
 
   renderTable(categories) {
@@ -42,16 +45,17 @@ export default class ACategory extends Component {
 
         <div className="row">
           <div className="col-3">
-            <input type="text" value={this.state.cId} className="form-control" readOnly placeholder="Mã loại" />
-            <input type="text" onChange={(e) => this.setState({cName: e.target.value})} value={this.state.cName} className="form-control mt-3" placeholder="Tên loại" />
+            <AdminTextBox type="text" detail="id" value={this.state.cId} readOnly placeholder="Mã loại" />
+            <AdminTextBox type="text" detail="name" onChange={(e) => this.setState({cName: e.target.value})} value={this.state.cName} errorValue={this.state.cNameError} placeholder="Tên loại" />
+
             <input type="submit" value="Lưu" onClick={e => this.saveNewCategory(e)} className="at-btn mt-3 me-2" />
             <input type="button" value="Hủy" onClick={() => this.cancelCategory()} className="at-btn-secondary mt-3" />
           </div>
 
           <div className="col-9">
             <div className="d-flex">
-              <input type="search" className="form-control" placeholder="Nhập tên loại sản phẩm cần tìm..." />
-              <button className="small-at-sbtn"><i className="bi bi-search"></i></button>
+              <AdminTextBox type="search" placeholder="Nhập tên loại sản phẩm cần tìm..." value={this.state.cSearch} onChange={e => this.setState({ cSearch: e.target.value })} onKeyDown={() => this.findData()} />
+              <button className="small-at-sbtn" onClick={() => this.findData()}><i className="bi bi-search"></i></button>
             </div>
 
             
@@ -78,8 +82,13 @@ export default class ACategory extends Component {
     fetch("/api/category/get").then(response => response.json()).then(data => this.setState({category: data}));
   }
 
+  async findData() {
+    if (this.state.cSearch === "") this.populateCategoryData();
+    else fetch(`/api/category/find?name=${this.state.cSearch}`).then(response => response.json()).then(data => this.setState({category: data}));
+  }
+
   cancelCategory() {
-    this.setState({cId: "", cName: ""});
+    this.setState({cId: "", cName: "", cNameError: ""});
   }
 }
 

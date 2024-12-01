@@ -5,9 +5,11 @@ namespace Core.Interface;
 
 public interface IUserAddressRepository
 {
-    IEnumerable<UserAddress> GetAddressByUsername(string username);
+    Task<IEnumerable<UserAddress>> GetAddressByUserId(int id);
 
-    void UpdateAddressByUsername(UserAddressDTO address, string username);
+    Task UpdateAddressByUserId(UserAddressListDTO address, int id);
 
-    void CreateInitialAddress(UserAddressListDTO address);
+    Task DeleteAll(int id);
+
+    Task CreateInitialAddress(UserAddressDTO address);
 }

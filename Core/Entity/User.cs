@@ -4,7 +4,7 @@ public partial class User : BaseEntity
 {
     public string? FirebaseUid { get; set; }
 
-    public string Username { get; set; } = null!;
+    public string? Username { get; set; } = null!;
 
     public string? FullName { get; set; }
 

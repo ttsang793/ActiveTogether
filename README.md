@@ -20,17 +20,40 @@ Với phương châm <q><i>Together, we'll build an Active community</i></q>, Ac
 
 ## Hình ảnh một số trang của Active Together
 <img src="https://lh3.googleusercontent.com/pw/AP1GczMT1Pj3ten9lN26YpOztss1ySE1v_q2y1q-hL_ZHFTTxzmrFdGEZEwzf1cFYVZRD8hbh6RzWsqtc0ev4rst8uirZAY3b5N5ewRCZMPN9lCZQklK1DU=w1080-h585-no" alt="Home Active Together" />
+<p align="center">Trang chủ của Active Together</p>
+<img src="https://lh3.googleusercontent.com/pw/AP1GczP6NsrIrdNg__Et6RPu_cxq63aO8Oq5kLuXLYEAaj5U5D5COw7hpmhLS4w-RzV7AJbT0mUefQVPyAUXAqMEDJBIGmFBG5Wo7nM3W99JEUUP7OgzFJ8DP_ZlEJYz4wVDcGKra2LsGNyTVr9B9k7K4eBj=w3636-h2436-s-no-gm" alt="Product Page Active Together">
+<p align="center">Trang sản phẩm</p>
 
 ## Hướng dẫn cài đặt
 * Bước 1: Cài đặt **[XAMPP](https://www.apachefriends.org/download.html)** (PHP >= 8.2.0).
-* Bước 2: Cài đặt **[.NET 7.0](https://dotnet.microsoft.com/en-us/download/dotnet/7.0).**
-* Bước 3 (tùy chọn):
-* Bước 4: Chạy cơ sở dữ liệu ở folder database:
-  * Bước 4.1: Mở trình soạn thảo SQL của máy tính của bạn. Ví dụ, bạn có thể bỏ vào PHPMyAdmin của XAMPP:
+* Bước 2: Cài đặt **[.NET 7.0](https://dotnet.microsoft.com/en-us/download/dotnet/7.0).** Nếu bạn sử dụng IDE như Visual Studio thì có thể bỏ qua bước này.
+* Bước 3: Chạy cơ sở dữ liệu:
+  * Bước 3.1: Khởi động XAMPP. Kích hoạt 2 dịch vụ sau: Apache và MySQL.
+  * Bước 3.2: Mở trình soạn thảo SQL của máy tính của bạn. Ví dụ, bạn có thể bỏ vào PHPMyAdmin của XAMPP:
     ```
     https://localhost/phpmyadmin
     ```
-  * Bước 4.2: Copy các câu lệnh trong file _src/db/empty_db.sql_ vào trình soạn thảo SQL vửa mở, rồi sau đó thực thi.
+  * Bước 3.3: Copy các câu lệnh trong file _/Database/empty_db.sql_ vào trình soạn thảo SQL vửa mở, rồi sau đó thực thi.
+* Bước 4: Tích hợp đăng nhập bằng  và thanh toán điện tử:
+  * Đăng nhập bằng Google:
+    * Khởi tạo file firebase.js ở /reactapp. Nội dung file ở [tài liệu hướng dẫn của Google Firebase](https://firebase.google.com/docs/web/setup).
+    * Tạo project Google Firebase, download secret key của project đó. Tạo thư mục /json, rồi copy file .json mới tải vào thư mục đó.
+  * [VNPay](https://sandbox.vnpayment.vn/apis/docs/thanh-toan-pay/pay.html), [Momo](https://developers.momo.vn/v3/vi/docs/payment/api/wallet/onetime): Làm theo hướng dẫn của nhà sản xuất.
+
+* Bước 5: Chạy trang web:
+  * Ở frontend, di chuyển tới thư mục reactapp
+    ```
+    cd reactapp
+    ```
+  * Sau đó chạy câu lệnh sau để khởi động trang web:
+    ```
+    npm run dev
+    ```
+  * Ở backend, mở Visual Studio hoặc IDE C# mà bạn dùng. Sau đó bắt đầu chạy.
+  * Nếu bạn dùng Visual Studio Code, gõ câu lệnh sau:
+    ```
+    dotnet run
+    ```
 
 ## Thành viên thực hiện
 * [3121560077 - Trần Tuấn Sang](https://ttsang793.github.io)

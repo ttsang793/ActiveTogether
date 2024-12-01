@@ -1,11 +1,12 @@
 using Core.Entity;
 using Core.DTO;
+using System.Linq.Expressions;
 
 namespace Application.Interface;
 
 public interface IPromotionService
 {
-    IEnumerable<Promotion> GetAllPromotions();
+    IEnumerable<Promotion> GetAllPromotions(Expression<Func<Promotion, bool>> expression = null);
 
     IEnumerable<PromotionDetail> GetAllPromotionDetails();
 

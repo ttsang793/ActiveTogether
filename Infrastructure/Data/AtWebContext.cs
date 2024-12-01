@@ -249,6 +249,7 @@ public partial class AtWebContext : DbContext
                 .HasMaxLength(20)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("name");
+            entity.Ignore(e => e.Id);
         });
 
         modelBuilder.Entity<Import>(entity =>

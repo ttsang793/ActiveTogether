@@ -38,7 +38,7 @@ public class OrderService : IOrderService
     {
         var order = new Order
         {
-            UserId = o.Username != "" ? _unitOfWork.Users.GetUserIdByUsername(o.Username) : 0,
+            UserId = o.Username != "" ? await _unitOfWork.Users.GetUserIdByUsername(o.Username) : 0,
             Address = o.Address,
             Email = o.Email,
             FullName = o.FullName,

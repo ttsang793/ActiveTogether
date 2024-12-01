@@ -1,6 +1,7 @@
 using Application.Interface;
 using Core.Entity;
 using Core.Interface;
+using System.Linq.Expressions;
 
 namespace Application.Service;
 
@@ -13,9 +14,9 @@ public class BrandService : IBrandService
         _unitOfWork = unitOfWork;
     }
 
-    public IEnumerable<Brand> GetAllBrands()
+    public IEnumerable<Brand> GetAllBrands(Expression<Func<Brand, bool>> expression = null)
     {
-        return _unitOfWork.Brands.GetAllBrands();
+        return _unitOfWork.Brands.GetAllBrands(expression);
     }
 
     public async Task<bool> Insert(Brand brand)

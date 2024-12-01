@@ -2,6 +2,7 @@
 using Core.Entity;
 using Core.DTO;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository;
 public class UserAddressRepository : BaseRepository<UserAddress>, IUserAddressRepository
@@ -10,17 +11,14 @@ public class UserAddressRepository : BaseRepository<UserAddress>, IUserAddressRe
     {
     }
 
-    public IEnumerable<UserAddress> GetAddressByUsername(string username)
+    public async Task<IEnumerable<UserAddress>> GetAddressByUserId(int id)
     {
-        return (from ua in GetDbSet()
-                join u in GetDbContext().Users on ua.UserId equals u.Id
-                where u.Username == username
-                select ua);
+        return await GetDbSet().Where(u => u.UserId == id).ToListAsync();
     }
 
-    public void UpdateAddressByUsername(UserAddressDTO address, string username)
+    public async Task UpdateAddressByUserId(UserAddressListDTO address, int id)
     {
-        var oldUserAddresses = GetAddressByUsername(username);
+        var oldUserAddresses = await GetAddressByUserId(id);
         GetDbSet().RemoveRange(oldUserAddresses);
 
         foreach (var a in address.AddressList)
@@ -32,7 +30,14 @@ public class UserAddressRepository : BaseRepository<UserAddress>, IUserAddressRe
             });
     }
 
-    public void CreateInitialAddress(UserAddressListDTO address)
+    public async Task DeleteAll(int id)
+    {
+        var oldUserAddresses = await GetAddressByUserId(id);
+        GetDbSet().RemoveRange(oldUserAddresses);
+    }
+    
+    public async Task CreateInitialAddress(UserAddressDTO address)
+
     {
         GetDbSet().Add(new UserAddress
         {

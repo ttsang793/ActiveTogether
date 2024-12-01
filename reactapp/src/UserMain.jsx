@@ -5,6 +5,7 @@ import Cart from "./Pages/product/Cart";
 import Order from './Pages/product/Order'
 import OrderFinished from './Pages/product/OrderFinished';
 import Login from "./Pages/user/Login";
+import RedirectRegister from "./Pages/user/RedirectRegister";
 import Introduction from './Pages/blog/Introduction';
 import FourOFour from './Pages/FourOFour';
 
@@ -69,15 +70,17 @@ export default function UserMain() {
             */}
             <Route path="/tin-tuc" element={<><Blog /> <PageTitle title="Tin tức, blog" /></>} />
             <Route path="/dang-nhap" element={
-              username === null ? (<><Login /> <PageTitle title="Đăng nhập" /></>) :
+              username === null ? (<><Login /> <PageTitle title="Đăng nhập tài khoản" /></>) :
               (<Navigate to="/nguoi-dung" replace />)
             } />
+            <Route path="/lan-dau-google" element={(<><RedirectRegister /> <PageTitle title="Đăng ký tài khoản" /></>)} />
             <Route path="*" element={<><FourOFour /> <PageTitle title="404 | Trang không tìm thấy"/></>} />
 
             {
               // Trang con của Sản phẩm
-            }
-            <Route path="/san-pham/*" element={<ProductDetail username={username} />} />
+            
+            <Route path="/san-pham/:urlName/" element={<ProductDetail username={username} />} />}
+            <Route path="/san-pham/:urlName/:colorId" element={<ProductDetail username={username} />} />
 
             {
               //Trang con của Tin tức, blog

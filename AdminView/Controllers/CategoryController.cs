@@ -21,6 +21,12 @@ public class CategoryController : ControllerBase
     {
         return _categoryService.GetAllCategories();
     }
+
+    [HttpGet("find")]
+    public IEnumerable<Category> GetAllCateroriesByName(string name)
+    {
+        return _categoryService.GetAllCategories(c => c.Name.ToLower().Contains(name.ToLower()));
+    }
     
     [HttpPost("add")]
     public async Task<StatusCodeResult> Insert(Category category)

@@ -1,6 +1,7 @@
 using Application.Interface;
 using Core.DTO;
 using Core.Entity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace UserView.Controllers;
@@ -29,6 +30,13 @@ public class UserController : ControllerBase
         return (await _userService.Register(user)) ? StatusCode(200) : StatusCode(404);
     }
 
+    [HttpPost("register/google")]
+    public async Task<StatusCodeResult> RegisterGoogle([Bind("FirebaseUid", "Username", "FullName", "Phone", "Email", "Address")] UserRegisterDTO user)
+    {
+        HttpContext.Session.SetString("token", HttpContext.Session.GetString("tempToken"));
+        return await Register(user);
+    }
+
     [HttpGet("get/email")]
     public async Task<string> GetEmailByUsername(string username)
     {
@@ -38,6 +46,7 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public StatusCodeResult Login(string token)
     {
+
         HttpContext.Session.SetString("token", token);
         return StatusCode(200);
     }
@@ -91,6 +100,38 @@ public class UserController : ControllerBase
         return await _userService.GetUserByFirebaseUid(firebaseId);
     }
 
+    [HttpPost("login/check")]
+    public async Task<StatusCodeResult> IsUserRegister([Bind("TempToken", "Email")] GoogleLoginDTO googleLoginDTO)
+    {
+        var firebaseUid = (await _firebaseAuthService.VerifyIdToken(googleLoginDTO.TempToken)).Uid;
+        var user = await _userService.GetUserByFirebaseUid(firebaseUid);
+        if (user != null) return StatusCode(200);
+        HttpContext.Session.SetString("tempToken", googleLoginDTO.TempToken);
+        HttpContext.Session.SetString("tempEmail", googleLoginDTO.Email);
+        return StatusCode(404);
+    }
+
+    [HttpGet("login/tempToken")]
+    public async Task<StatusCodeResult> GetTempToken()
+    {
+        try
+        {
+            var idToken = await _firebaseAuthService.VerifyIdToken(HttpContext.Session.GetString("tempToken"));
+            return StatusCode(200);
+        }
+        catch
+        {
+            return StatusCode(404);
+        }
+    }
+
+    [HttpDelete("login/clearTemp")]
+    public void ClearTempToken()
+    {
+        HttpContext.Session.Remove("tempEmail");
+        HttpContext.Session.Remove("tempToken");
+    }
+
     [HttpPut("updateInfo")]
     public async Task<StatusCodeResult> UpdateInfo([Bind("Fullname", "Phone", "Email", "Avatar")] UserUpdateInfoDTO user, string username)
     {
@@ -99,14 +140,20 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("get/address")]
-    public IEnumerable<UserAddress> GetAddressByUsername(string username)
+    public async Task<IEnumerable<UserAddress>> GetAddressByUsername(string username)
     {
-		return _userAddressService.GetAddressByUsername(username);
+		return await _userAddressService.GetAddressByUsername(username);
     }
 
     [HttpPut("update/address")]
-    public async Task<StatusCodeResult> UpdateAddressByUsername([Bind("AddressList")] UserAddressDTO address, string username)
+    public async Task<StatusCodeResult> UpdateAddressByUsername([Bind("AddressList")] UserAddressListDTO address, string username)
 	{
 		return (await _userAddressService.UpdateAddressByUsername(address, username)) ? StatusCode(200) : StatusCode(404);
 	}
+
+    [HttpDelete("lock")]
+    public async Task<StatusCodeResult> Lock(string username)
+    {
+        return (await _userService.Lock(username)) ? StatusCode(200) : StatusCode(404);
+    }
 }

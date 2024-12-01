@@ -21,6 +21,12 @@ public class BrandController : ControllerBase
     {
         return _brandService.GetAllBrands();
     }
+
+    [HttpGet("find")]
+    public IEnumerable<Brand> GetAllBrandsByName(string name)
+    {
+        return _brandService.GetAllBrands(b => b.Name.ToLower().Contains(name.ToLower()));
+    }
     
     [HttpPost("add")]
     public async Task<StatusCodeResult> Insert(Brand brand)

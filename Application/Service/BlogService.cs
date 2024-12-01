@@ -3,6 +3,7 @@ using Core.DTO;
 using Core.Entity;
 using Core.Interface;
 using Microsoft.AspNetCore.Http;
+using System.Linq.Expressions;
 
 namespace Application.Service;
 
@@ -30,9 +31,9 @@ public class BlogService : IBlogService
         return await _unitOfWork.Blogs.GetByUrlAsync(url);
     }
 
-    public IEnumerable<BlogArticle> GetAllBlogs()
+    public IEnumerable<BlogArticle> GetAllBlogs(Expression<Func<BlogArticle, bool>> expression = null)
     {
-        return _unitOfWork.Blogs.GetAllBlogs();
+        return _unitOfWork.Blogs.GetAllBlogs(expression);
     }
 
     public BlogArticle GetBlogById(int id)

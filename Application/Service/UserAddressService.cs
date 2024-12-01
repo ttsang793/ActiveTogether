@@ -14,14 +14,16 @@ public class UserAddressService : IUserAddressService
         _unitOfWork = unitOfWork;
     }
 
-    public IEnumerable<UserAddress> GetAddressByUsername(string username)
+    public async Task<IEnumerable<UserAddress>> GetAddressByUsername(string username)
     {
-		return _unitOfWork.UserAddresses.GetAddressByUsername(username);
+        int id = await _unitOfWork.Users.GetUserIdByUsername(username);
+		return await _unitOfWork.UserAddresses.GetAddressByUserId(id);
     }
 
-    public async Task<bool> UpdateAddressByUsername(UserAddressDTO address, string username)
-	{
-		_unitOfWork.UserAddresses.UpdateAddressByUsername(address, username);
+    public async Task<bool> UpdateAddressByUsername(UserAddressListDTO address, string username)
+    {
+        int id = await _unitOfWork.Users.GetUserIdByUsername(username);
+        await _unitOfWork.UserAddresses.UpdateAddressByUserId(address, id);
 		return await _unitOfWork.SaveChangesAsync();
 	}
 }

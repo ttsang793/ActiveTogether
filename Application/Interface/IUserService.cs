@@ -17,4 +17,6 @@ public interface IUserService
     Task<bool> UploadImage(IFormFile file, string username);
 
     Task<bool> UpdateInfo(UserUpdateInfoDTO user, string username);
+
+    Task<bool> Lock(string username);
 }

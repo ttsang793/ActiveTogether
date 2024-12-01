@@ -1,0 +1,24 @@
+.form-input-container {
+  position: relative;
+  width: 100%;
+  
+  i {
+    position: absolute;
+    font-size: 26px;
+    color: var(--darkest);
+  }
+  
+  .password-eye {
+    right: 10px;
+    cursor: pointer;
+    transition-duration: 0.25s;
+  }
+  
+  .password-eye:hover {
+    color: var(--darker);
+  }
+  
+  .readonly {
+    pointer-events: none;
+  }
+}

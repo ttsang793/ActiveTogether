@@ -67,7 +67,7 @@ export default function AdminMain() {
     )
   
 
-  else if (role === 0) return loading ? <PleaseWait /> : <FourOThree />
+  //else if (role === 0) return loading ? <PleaseWait /> : <FourOThree />
 
   else return loading ? <PleaseWait /> : (
     <Router>

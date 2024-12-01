@@ -18,7 +18,7 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         return (await GetDbSet().Where(u => u.Username == username).FirstOrDefaultAsync()).Email;
     }
 
-    public int Register(UserRegisterDTO user)
+    public async Task<int> Register(UserRegisterDTO user)
     {
         GetDbSet().Add(new User
         {
@@ -32,13 +32,13 @@ public class UserRepository : BaseRepository<User>, IUserRepository
             Avatar = "/src/images/avatar/default.jpg"
         });
 
-        return GetDbSet().OrderByDescending(o => o.Id).First().Id;
+        return (await GetDbSet().OrderByDescending(o => o.Id).FirstAsync()).Id;
     }
 
-    public int GetUserIdByUsername(string username)
+    public async Task<int> GetUserIdByUsername(string username)
     {
         try {
-            return GetDbSet().First(u => u.Username == username).Id;
+            return (await GetDbSet().FirstAsync(u => u.Username == username)).Id;
         }
         catch {
             return -1;
@@ -70,23 +70,41 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         }
     }
 
-    public void UpdateInfo(UserUpdateInfoDTO user, string username)
+    public async Task UpdateInfo(UserUpdateInfoDTO user, string username)
     {
-        var u = GetDbSet().First(u => u.Username == username);
+        var u = await GetDbSet().FirstAsync(u => u.Username == username);
         if (u != null)
         {
             u.FullName = user.FullName;
             u.Phone = user.Phone;
             u.Email = user.Email;
             u.Avatar = user.Avatar;
+            GetDbSet().Update(u);
         }
-        GetDbSet().Update(u);
     }
 
     public void GainPoint(int? userId, int? point)
     {
         var u = GetDbSet().First(u => u.Id == userId);
         u.Point += point;
+    }
+
+    private async Task<bool> DeleteImage(string username)
+    {
+        try
+        {
+            string[] files = Directory.GetFiles(_uploadDirectory, username + ".*");
+            if (files.Any())
+            {
+                foreach (string file in files) File.Delete(file);
+                return true;
+            }
+            else return false;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public async Task<bool> UploadImage(IFormFile file, string username)
@@ -96,6 +114,8 @@ public class UserRepository : BaseRepository<User>, IUserRepository
             var fileName = username + Path.GetExtension(file.FileName);
             var filePath = Path.Combine(_uploadDirectory, fileName);
 
+            await DeleteImage(username);
+
             using var stream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(stream);
 
@@ -104,6 +124,24 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         catch
         {
             return false;
+        }
+    }
+
+    public async Task Lock(string username)
+    {
+        var u = await GetDbSet().FirstAsync(u => u.Username == username);
+        if (u != null)
+        {
+            u.FirebaseUid = null;
+            u.Username = null;
+            u.DateCreated = null;
+            u.Phone = null;
+            u.Email = null;
+            u.Point = 0;
+            u.Avatar = null;
+            
+            await DeleteImage(username);
+            GetDbSet().Update(u);
         }
     }
 }

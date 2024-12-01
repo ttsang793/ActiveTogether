@@ -2,6 +2,7 @@ using Core.Interface;
 using Core.Entity;
 using Infrastructure.Data;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository;
 public class ColorRepository : BaseRepository<Color>, IColorRepository
@@ -17,30 +18,35 @@ public class ColorRepository : BaseRepository<Color>, IColorRepository
     }
 
 
-    public Color GetByColorCode(string code)
+    public async Task<Color> GetByColorCode(string code)
     {
-        return GetDbSet().FirstOrDefault(c => c.Code == code);
+        try
+        {
+            return await GetDbSet().Where(c => c.Code == code).FirstOrDefaultAsync();
+        }
+        catch
+        {
+            return null;
+        }
     }
 
-    public void Insert(Color color)
+    public async Task Save(Color color)
     {
-        GetDbSet().Add(color);
+        bool isExisting = GetDbSet().Any(c => c.Code == color.Code);
+
+        if (!isExisting) GetDbSet().Add(color);
+        else GetDbSet().Update(color);
     }
 
-    public void Update(Color color)
+    public async Task Lock(string code)
     {
-        GetDbSet().Update(color);
-    }
-
-    public void Lock(string code)
-    {
-        var color = GetByColorCode(code);
+        var color = await GetByColorCode(code);
         color.IsActive = false;
     }
 
-    public void Unlock(string code)
+    public async Task Unlock(string code)
     {
-        var color = GetByColorCode(code);
+        var color = await GetByColorCode(code);
         color.IsActive = true;
     }
 }

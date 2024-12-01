@@ -13,7 +13,7 @@ public interface IBlogService
 
     Task<BlogDetailReadDTO> GetByUrlAsync(string url);
 
-    IEnumerable<BlogArticle> GetAllBlogs();
+    IEnumerable<BlogArticle> GetAllBlogs(Expression<Func<BlogArticle, bool>> expression = null);
     
     BlogArticle GetBlogById(int id);
 

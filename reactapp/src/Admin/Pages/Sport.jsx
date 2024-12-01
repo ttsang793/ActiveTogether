@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import axios from 'axios';
 import { CamelToKebab } from "/src/Scripts/Utility"
+import AdminTextBox from "/src/Admin/Components/AdminTextBox";
 import "./Sport.css"
 
 export default class ASport extends Component {
@@ -8,7 +9,7 @@ export default class ASport extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {sport: [], sId: "", sName: "", sImage: null }
+    this.state = {sport: [], sId: "", sName: "", sImage: null, sNameError: "", sImageError: "", sSearch: "" }
   }
 
   componentDidMount() { this.populateSportData() }
@@ -61,8 +62,8 @@ export default class ASport extends Component {
 
         <div className="row">
           <div className="col-3">
-            <input type="text" value={this.state.sId} className="form-control" readOnly placeholder="Mã môn thể thao" />
-            <input type="text" onChange={(e) => this.setState({sName: e.target.value})} value={this.state.sName} className="form-control mt-3" placeholder="Tên môn thể thao" />
+            <AdminTextBox type="text" detail="id" value={this.state.sId} readOnly placeholder="Mã môn thể thao" />
+            <AdminTextBox type="text" detail="name" onChange={(e) => this.setState({sName: e.target.value})} value={this.state.sName} errorValue={this.state.sNameError} placeholder="Tên môn thể thao" />
             
             <div className="mt-3">
               <input type="file" id="upload-thumbnail" onChange={e => this.handleFileUpload(e)} accept="image/*" className="disabled" />
@@ -70,6 +71,7 @@ export default class ASport extends Component {
               <div id="image-container" className="image-container mb-2">
                 <button className="close small-at-sbtn" onClick={() => this.handleDeleteImage()}>&times;</button>
                 <img id="small-image" src="/src/images/avatar/default.jpg" style={{maxWidth: "150px", width: "100%"}} />
+                <div id="image-error" className="error-value">{this.state.sImageError}</div>
               </div>
             </div>
             
@@ -79,7 +81,7 @@ export default class ASport extends Component {
 
           <div className="col-9">
             <div className="d-flex">
-              <input type="search" className="form-control" placeholder="Nhập môn thể thao cần tìm..." />
+              <AdminTextBox type="search" placeholder="Nhập môn thể thao cần tìm..." value={this.state.sSearch} onChange={e => this.setState({ sSearch: e.target.value })} onKeyDown={() => this.findData()} />
               <button className="small-at-sbtn"><i className="bi bi-search"></i></button>
             </div>
 
@@ -107,27 +109,38 @@ export default class ASport extends Component {
     fetch("/api/sport/get").then(response => response.json()).then(data => this.setState({sport: data}));
   }
 
-  cancelSport(e) {
-    e.preventDefault();
+  async findData() {
+    if (this.state.sSearch === "") this.populateSportData();
+    else fetch(`/api/sport/find?name=${this.state.sSearch}`).then(response => response.json()).then(data => this.setState({sport: data}));
+  }
+
+  cancelSport() {
     this.handleDeleteImage();
-    this.setState({ sId: "", sName: "", sImage: null });
+    this.setState({ sId: "", sName: "", sImage: null, sNameError: "", sImageError: "" });
   }
 
   async saveNewSport(e) {
     e.preventDefault();
+    let flagError = false;
+
+    if (this.state.sName === "") { this.setState({sNameError: "Vui lòng nhập tên danh mục"}); flagError = true; }
+    else if (this.state.sport.findIndex(c => c.name === this.state.sName) > -1) { this.setState({sNameError: "Tên danh mục không được trùng với danh mục đã tạo"}); flagError = true }
 
     let fileName = "";
     
     if (typeof(this.state.sImage) !== "string")
     {
       if (!this.state.sImage) {
-        alert("Vui lòng chọn hình tiêu đề của môn thể thao!");
-        return;
+        this.setState({sImageError: "Vui lòng chọn hình tiêu đề của môn thể thao!"});
+        flagError = true;
       }
+      fileName = "/src/images/sport/" + CamelToKebab(this.state.sName) + this.state.sImage.name.substring(this.state.sImage.name.lastIndexOf("."));
     }
-    
-    fileName = "/src/images/sport/" + CamelToKebab(this.state.sName) + this.state.sImage.name.substring(this.state.sImage.name.lastIndexOf("."));
+    else fileName = "/src/images/sport/" + CamelToKebab(this.state.sName) + this.state.sImage.substring(this.state.sImage.lastIndexOf("."));
 
+    if (flagError) return;
+    
+    
     (this.state.sId !== "") ? this.updateSport(this.state.sId, this.state.sName, fileName) : this.addSport(this.state.sName, fileName);
   }
 

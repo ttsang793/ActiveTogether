@@ -1,6 +1,7 @@
 using Application.Interface;
 using Core.Entity;
 using Core.Interface;
+using System.Linq.Expressions;
 
 namespace Application.Service;
 
@@ -13,9 +14,9 @@ public class CategoryService : ICategoryService
         _unitOfWork = unitOfWork;
     }
 
-    public IEnumerable<Category> GetAllCategories()
+    public IEnumerable<Category> GetAllCategories(Expression<Func<Category, bool>> expression = null)
     {
-        return _unitOfWork.Categories.GetAllCategories();
+        return _unitOfWork.Categories.GetAllCategories(expression);
     }
 
     public async Task<bool> Insert(Category category)

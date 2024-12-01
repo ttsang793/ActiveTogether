@@ -55,13 +55,13 @@ export default class ARefund extends Component {
         <table className="table table-striped table-bordered table-hover mt-3">
           <thead>
             <tr>
-              <th className="text-center">ID</th>
-              <th className="text-center">Mã HĐ</th>
-              <th className="text-center">Mã SKU</th>
-              <th className="text-center">Thông tin sản phẩm</th>
-              <th className="text-center">SL</th>
-              <th className="text-center">Lý do đổi trả</th>
-              <th className="text-center">Tình trạng</th>
+              <th className="text-center align-middle">ID</th>
+              <th className="text-center align-middle">Mã HĐ</th>
+              <th className="text-center align-middle">Mã SKU</th>
+              <th className="text-center align-middle">Thông tin sản phẩm</th>
+              <th className="text-center align-middle">SL</th>
+              <th className="text-center align-middle">Lý do đổi trả</th>
+              <th className="text-center align-middle">Tình trạng</th>
               <th className="button-col w-10"></th>
             </tr>
           </thead>

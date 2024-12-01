@@ -1,10 +1,11 @@
 using Core.Entity;
+using System.Linq.Expressions;
 
 namespace Application.Interface;
 
 public interface IBrandService
 {
-    IEnumerable<Brand> GetAllBrands();
+    IEnumerable<Brand> GetAllBrands(Expression<Func<Brand, bool>> expression = null);
 
     Task<bool> Insert(Brand brand);
 

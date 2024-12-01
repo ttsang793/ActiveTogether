@@ -10,10 +10,11 @@
   box-shadow: -5px -5px 15px var(--shadow);
   width: 100%;
   color: var(--darkest);
+  animation: fadeIn 0.5s;
 
   &:hover {
-    scale: 1.07;
-    box-shadow: none;
+    background-color: var(--lightest);
+    box-shadow: -5px -5px 15px var(--mid-light);
   }  
 
   .product-thumbnail {
@@ -28,7 +29,7 @@
   }
 
   .product-name {
-    flex: 1 1 0;
+    flex-grow: 1;
 
     p {
       margin: 0.5rem 0;
@@ -42,6 +43,32 @@
       color: var(--darker);
       font-style: italic;
       text-decoration: underline;
+    }
+  }
+
+  .product-color-list {
+    display: flex;
+    column-gap: 4px;
+    min-height: calc(20px + 1rem);
+
+    .product-color {
+      width: 20px;
+      height: 20px;
+      border: 1px solid var(--black);
+      border-radius: 50%;
+      transition: 0.25s;
+
+      &:hover {  
+        ~:not(:hover) {
+          filter: brightness(50%) grayscale(100%);
+          scale: 0.6;
+        }
+      }
+    
+      &:has(~:hover) {
+        filter: brightness(50%) grayscale(100%);
+        scale: 0.6;
+      }
     }
   }
   

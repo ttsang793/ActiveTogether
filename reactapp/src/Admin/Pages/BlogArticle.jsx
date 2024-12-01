@@ -1,11 +1,12 @@
 import React, { Component } from "react"
+import AdminTextBox from "/src/Admin/Components/AdminTextBox";
 
 export default class ABlogArticle extends Component {
   static displayName = ABlogArticle.name;
 
   constructor(props) {
     super(props);
-    this.state = {article: []}
+    this.state = {article: [], bSearch: ""}
   }
 
   componentDidMount() { this.populateArticleData() }
@@ -50,7 +51,7 @@ export default class ABlogArticle extends Component {
           </a>
 
           <div className="d-flex flex-grow-1">
-            <input type="search" className="form-control" placeholder="Nhập tiêu đề bài blog cần tìm..." />
+            <AdminTextBox type="search" placeholder="Nhập tiêu đề bài blog cần tìm..." value={this.state.bSearch} onChange={e => this.setState({ bSearch: e.target.value })} onKeyDown={() => this.findData()} />
             <button className="small-at-sbtn"><i className="bi bi-search"></i></button>
           </div>
         </div>
@@ -76,6 +77,11 @@ export default class ABlogArticle extends Component {
 
   async populateArticleData() {
     fetch("/api/blog/get").then(response => response.json()).then(data => this.setState({article: data}));
+  }
+
+  async findData() {
+    if (this.state.bSearch === "") this.populateArticleData();
+    else fetch(`/api/blog/find?title=${this.state.bSearch}`).then(response => response.json()).then(data => this.setState({article: data}));
   }
 }
 

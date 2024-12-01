@@ -38,16 +38,23 @@ public class UserUpdateInfoDTO : BaseDTO
     public string? Avatar { get; set; }
 }
 
-public class UserAddressDTO : BaseDTO
+public class UserAddressListDTO : BaseDTO
 {
-    public List<UserAddressListDTO> AddressList { get; set; } = new List<UserAddressListDTO>();
+    public List<UserAddressDTO> AddressList { get; set; } = new List<UserAddressDTO>();
 }
 
-public class UserAddressListDTO : BaseDTO
+public class UserAddressDTO : BaseDTO
 {
     public int UserId { get; set; }
 
     public string Type { get; set; } = null!;
 
     public string Address { get; set; } = null!;
+}
+
+public class GoogleLoginDTO
+{
+    public string TempToken { get; set; }
+
+    public string Email { get; set; }
 }

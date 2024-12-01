@@ -2,6 +2,7 @@ using Application.Interface;
 using Core.Entity;
 using Core.DTO;
 using Core.Interface;
+using System.Linq.Expressions;
 
 namespace Application.Service;
 
@@ -14,9 +15,9 @@ public class PromotionService : IPromotionService
         _unitOfWork = unitOfWork;
     }
 
-    public IEnumerable<Promotion> GetAllPromotions()
+    public IEnumerable<Promotion> GetAllPromotions(Expression<Func<Promotion, bool>> expression = null)
     {
-        return _unitOfWork.Promotions.GetAllPromotions();
+        return _unitOfWork.Promotions.GetAllPromotions(expression);
     }
 
     public IEnumerable<PromotionDetail> GetAllPromotionDetails()
