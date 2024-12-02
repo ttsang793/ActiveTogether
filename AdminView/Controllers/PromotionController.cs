@@ -1,4 +1,4 @@
-using Application.Interface;
+﻿using Application.Interface;
 using Core.Entity;
 using Core.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -34,16 +34,47 @@ public class PromotionController : ControllerBase
     {
         return _promotionService.GetAllPromotionDetails();
     }
+
+    private string[] DataValidation(PromotionAdminDTO promotionDTO)
+    {
+        bool errorFlag = false;
+        string[] result = new string[3];
+        if (string.IsNullOrEmpty(promotionDTO.Title))
+        {
+            errorFlag = true;
+            result[0] = "Vui lòng nhập tên chương trình khuyến mãi";
+        }
+        if (DateTime.Compare(DateTime.Parse(promotionDTO.DateStart), DateTime.Now) <= 0)
+        {
+            errorFlag = true;
+            result[1] = "Ngày bắt đầu phải lớn hơn ngày hiện tại";
+        }
+        if (DateTime.Compare(DateTime.Parse(promotionDTO.DateEnd), DateTime.Now) <= 0)
+        {
+            errorFlag = true;
+            result[2] = "Ngày kết thúc phải lớn hơn ngày hiện tại";
+        }
+        if (DateTime.Compare(DateTime.Parse(promotionDTO.DateStart), DateTime.Parse(promotionDTO.DateEnd)) >= 0)
+        {
+            errorFlag = true;
+            result[2] = "Ngày kết thúc phải nhỏ hơn ngày bắt đầu";
+        }
+        return errorFlag ? result : Array.Empty<string>();
+    }
     
     [HttpPost("add")]
-    public async Task<StatusCodeResult> Insert([Bind("Title", "DateStart", "DateEnd")]PromotionAdminDTO promotionDTO)
+    public async Task<ActionResult> Insert([Bind("Title", "DateStart", "DateEnd")]PromotionAdminDTO promotionDTO)
     {
+        string[] validationResult = DataValidation(promotionDTO);
+        if (validationResult.Length > 0) return BadRequest(new { errors = validationResult });
         return (await _promotionService.Insert(promotionDTO)) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("update")]
-    public async Task<StatusCodeResult> Update([Bind("Id", "Title", "DateStart", "DateEnd")]PromotionAdminDTO promotionDTO)
+    public async Task<ActionResult> Update([Bind("Id", "Title", "DateStart", "DateEnd")]PromotionAdminDTO promotionDTO)
     {
+        string[] validationResult = DataValidation(promotionDTO);
+        if (validationResult.Length > 0) return BadRequest(new { errors = validationResult });
         return (await _promotionService.Update(promotionDTO)) ? StatusCode(200) : StatusCode(404);
     }
 

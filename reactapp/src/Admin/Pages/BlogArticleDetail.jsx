@@ -1,6 +1,7 @@
 import { Component } from "react"
 import { CamelToKebab } from "/src/Scripts/Utility";
 import axios from 'axios';
+import AdminTextBox from "/src/Admin/Components/AdminTextBox";
 import "./BlogArticleDetail.css"
 
 export default class ABlogArticleDetail extends Component {
@@ -8,7 +9,7 @@ export default class ABlogArticleDetail extends Component {
 
   constructor(props) {
     super(props)
-    this.state = { aId: "", aTitle: "", aBrief: "", aThumbnail: null, aWrittenAdmin: 0, aDatePublish: "", aContent: "" }
+    this.state = { aId: "", aTitle: "", aBrief: "", aThumbnail: null, aWrittenAdmin: 0, aDatePublish: "", aContent: "", aTitleError: "", aBriefError: "", aThumbnailError: "", aContentError: "" }
   }
 
   componentDidMount() {
@@ -37,16 +38,22 @@ export default class ABlogArticleDetail extends Component {
         <h1 className="flex-grow-1 text-center fw-bold">{location.search.includes("?id=") ? "SỬA" : "THÊM"} BÀI BLOG</h1>
         <hr />
 
-        <input type="text" className="form-control mb-2" value={this.state.aId} readOnly placeholder="Mã bài" />
-        <input type="text" className="form-control mb-2" onChange={e => this.setState({ aTitle: e.target.value })} value={this.state.aTitle} placeholder="Tiêu đề bài viết" autoFocus />
-        <textarea onChange={(e) => this.setState({ aBrief: e.target.value })} value={this.state.aBrief} className="form-control mb-2" placeholder="Tóm tắt bài viết"></textarea>
-        <input type="file" id="upload-thumbnail" onChange={e => this.handleFileUpload(e)} accept="image/*" className="disabled" />
-        <input type="button" value="Chọn hình tiêu đề..." onClick={() => document.getElementById('upload-thumbnail').click()} className="small-at-btn mb-2" />
-        <div id="image-container" className="image-container mb-2">
-          <button className="small-at-sbtn close" onClick={() => this.handleDeleteImage()}>&times;</button>
-          <img id="small-image" src="/src/images/avatar/default.jpg" style={{height: "300px"}} />
+        
+        <AdminTextBox type="text" detail="id" value={this.state.sId} readOnly placeholder="Mã bài" />
+        <AdminTextBox type="text" detail="name" onChange={(e) => this.setState({aTitle: e.target.value})} value={this.state.aTitle} errorValue={this.state.aTitleError} placeholder="Tiêu đề" />
+        <AdminTextBox type="textarea" detail="name" onChange={(e) => this.setState({aBrief: e.target.value})} value={this.state.aBrief} errorValue={this.state.aBriefError} placeholder="Tóm tắt" />
+
+        <div className="mt-3">
+          <input type="file" id="upload-thumbnail" onChange={e => this.handleFileUpload(e)} accept="image/*" className="disabled" />
+          <input type="button" value="Chọn hình tiêu đề..." onClick={() => document.getElementById('upload-thumbnail').click()} className="small-at-btn mb-2" />
+          <div id="image-container" className="image-container mb-2">
+            <button className="small-at-sbtn close" onClick={() => this.handleDeleteImage()}>&times;</button>
+            <img id="small-image" src="/src/images/blog/default.jpg" style={{height: "300px"}} />
+          </div>
+          <div id="image-error" className="error-value">{this.state.aThumbnailError}</div>
         </div>
-        <textarea onChange={(e) => this.setState({ aContent: e.target.value })} value={this.state.aContent} className="form-control mb-2" placeholder="Nội dung" style={{height: "300px"}}></textarea>
+
+        <AdminTextBox type="textarea" detail="name" onChange={(e) => this.setState({aContent: e.target.value})} value={this.state.aContent} errorValue={this.state.aContentError} placeholder="Nội dung" />
 
         <input type="button" value="Lưu" className="small-at-btn me-2" onClick={e => this.saveNewArticle(e)} />
         <input type="button" value="Hủy" className="small-at-btn-secondary" onClick={() => location.href = "/admin/bai-blog"} />
@@ -71,9 +78,11 @@ export default class ABlogArticleDetail extends Component {
         alert("Vui lòng chọn hình tiêu đề của bài viết!");
         return;
       }
+      fileName = "/src/images/blog/thumbnail_" + this.state.aId + this.state.aThumbnail.name.substring(this.state.aThumbnail.name.lastIndexOf("."));
     }
+    else fileName = "/src/images/blog/thumbnail_" + this.state.aId + this.state.aThumbnail.substring(this.state.aThumbnail.lastIndexOf("."));
 
-    fileName = "/src/images/blog/thumbnail_" + this.state.aId + this.state.aThumbnail.name.substring(this.state.aThumbnail.name.lastIndexOf("."));
+    
     (this.state.aId === "") ? this.addArticle(this.state.aThumbnail.name.substring(this.state.aThumbnail.name.lastIndexOf("."))) : this.updateArticle(fileName);
   }
 
@@ -97,6 +106,10 @@ export default class ABlogArticleDetail extends Component {
       });
 
       if (this.uploadThumbnail() && response.ok) { alert("Bài blog đã thêm thành công"); location.href = "/admin/bai-blog" }
+      else if (response.status === 400) {
+        const data = await response.json();
+        this.setState({ aTitleError: data[0], aBriefError: data[1], aThumbnailError: data[2], aContentError: data[3] })
+      }
       else alert("Đã có lỗi xảy ra, bài blog đã thêm thất bại");
     }
   }
@@ -123,14 +136,24 @@ export default class ABlogArticleDetail extends Component {
       });
 
       if (response.ok) {
-        if (typeof(this.state.aThumbnail) === "string" || this.uploadThumbnail()) {
-          alert("Bài blog đã cập nhật thành công");
-          location.href = "/admin/bai-blog"
-        }
+        if (typeof(this.state.aThumbnail) === "string" || this.uploadThumbnail()) { alert("Bài blog đã cập nhật thành công"); location.href = "/admin/bai-blog" }
         else alert("Lỗi hình ảnh, bài blog đã cập nhật thất bại");
+      }
+      else if (response.status === 400) {
+        const data = await response.json();
+        this.setState({ aTitleError: data[0], aBriefError: data[1], aThumbnailError: data[2], aContentError: data[3] })
       }
       else alert("Đã có lỗi xảy ra, bài blog đã cập nhật thất bại");
     }
+  }  
+
+  loadBlogContent(a) {
+    localStorage.setItem("article-load", JSON.stringify({
+      title: this.state.aTitle,
+      brief: this.state.aBrief,
+      content: this.state.aContent
+    }));
+    location.href = "/admin/xem-bai-blog";
   }
 
   async uploadThumbnail() {

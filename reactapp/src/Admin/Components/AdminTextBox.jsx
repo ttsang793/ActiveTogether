@@ -34,6 +34,34 @@ export default function AdminTextBox(props) {
       </div>
     )
   }
+  else if (props.type === "select") {
+    return (
+      <div className="mb-3">
+        <label htmlFor={props.detail} className="fw-semibold">{props.placeholder}:</label>
+        <select id={props.detail} className="form-control mt-1" value={props.value} onChange={handleChange}>
+          <option value="-1" disabled selected hidden>{props.placeholder}</option>
+          {
+            props.list.map(l => <option key={l.id} value={l.id}>{l.name}</option>)
+          }
+        </select>
+        <div id={props.detail + "-error"} className="error-value">{props.errorValue}</div>
+      </div>
+    )
+  }
+  else if (props.type === "textarea") (
+    <div className="mb-3">
+      <label htmlFor={props.detail} className="fw-semibold">{props.placeholder}:</label>
+      <textarea
+        id={props.detail}
+        value={props.value}
+        className="form-control mt-1"
+        placeholder={props.placeholder}
+        onChange={handleChange}
+      >
+      </textarea>
+      <div id={props.detail + "-error"} className="error-value">{props.errorValue}</div>
+    </div>
+  )
   else return (
     <div className="mb-3">
       <label htmlFor={props.detail} className="fw-semibold">{props.placeholder}:</label>

@@ -1,12 +1,12 @@
-import React, { Component } from "react"
-import PleaseWait from "/src/Shared/PleaseWait"
+import React, { Component } from "react";
+import PleaseWait from "/src/Shared/PleaseWait";
 
 export default class AProductColor extends Component {
   static displayName = AProductColor.name;
 
   constructor(props) {
     super(props);
-    this.state = { loading: true, color: [], productColor: [], cId: "", cCode: "" }
+    this.state = { loading: true, color: [], productColor: [], cId: "", cCode: "", cCodeError: "" }
   }
 
   componentDidMount() {
@@ -22,7 +22,11 @@ export default class AProductColor extends Component {
 
   async saveNewProductColor(e) {
     e.preventDefault();
-    (this.state.cId !== "") ? this.updateProductColor() : this.addProductColor();
+    if (this.state.cCode === "")
+      this.setState({cCodeError: "Vui lòng chọn màu"});
+    else if ((this.state.cId === "" && this.state.productColor.findIndex(pc => pc.colorCode == this.state.cCode)) || (this.state.productColor.filter(pc => pc.ProductId == this.state.cId).findIndex(pc => pc.colorCode == this.state.cCode)))
+      this.setState({cCodeError: "Vui lòng chọn màu không trùng với các màu đã lưu"});
+    else (this.state.cId !== "") ? this.updateProductColor() : this.addProductColor();
   }
 
   renderTable(colors) {
@@ -59,15 +63,20 @@ export default class AProductColor extends Component {
 
         <div className="row">
           <div className="col-3">
-            <input type="text" value={this.state.cId} className="form-control" readOnly placeholder="ID chi tiết" />            
+            <div className="mb-3">
+              <label htmlFor="id">ID chi tiết:</label>
+              <input id="id" type="text" value={this.state.cId} className="form-control mt-1" readOnly placeholder="ID chi tiết" />
+            </div>
 
-            <div className="mt-3">
-              <select className="form-control" value={this.state.cCode} onChange={e => this.handleColorChange(e)}>
+            <div className="mb-3">
+              <label htmlFor="color">Màu sản phẩm</label>
+              <select className="form-control mt-1" id="color" value={this.state.cCode} onChange={e => this.handleColorChange(e)}>
                 <option value="" disabled selected hidden>Màu sản phẩm</option>
                 {
                   this.state.color.map(c => <option key={c.code} value={c.code}>{c.code} - {c.name}</option>)
                 }
               </select>
+              <div id="color-error" className="error-value">{this.state.cCodeError}</div>
             </div>
 
           <input type="submit" value="Lưu" onClick={e => this.saveNewProductColor(e)} className="at-btn mt-3 me-2" />
@@ -105,7 +114,7 @@ export default class AProductColor extends Component {
   }
 
   cancelProductColor() {
-    this.setState({cId: "", cCode: ""})
+    this.setState({cId: "", cCode: "", cCodeError: ""})
   }  
   
   async addProductColor() {

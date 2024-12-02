@@ -19,12 +19,12 @@ export default class ABlogArticle extends Component {
             <tr key={a.id} className="pointer">
               <td className="align-middle">{a.id}</td>
               <td className="align-middle">
-                <img src={a.thumbnail} alt="thumbnail"width={"200px"} />
+                <img src={a.thumbnail} alt="thumbnail" width={"200px"} />
               </td>
               <td className="align-middle">{a.title}</td>
               <td className="align-middle">{a.writtenAdmin}</td>
               <td className="align-middle">
-                <a href={`/admin/xem-bai-blog?id=${a.id}`}>
+                <a onClick={() => this.loadBlogContent(a)}>
                   <i className="bi bi-eye"></i>
                 </a>
                 <a href={`/admin/thong-tin-bai-blog?id=${a.id}`}>
@@ -82,6 +82,11 @@ export default class ABlogArticle extends Component {
   async findData() {
     if (this.state.bSearch === "") this.populateArticleData();
     else fetch(`/api/blog/find?title=${this.state.bSearch}`).then(response => response.json()).then(data => this.setState({article: data}));
+  }
+
+  loadBlogContent(a) {
+    localStorage.setItem("article-load", JSON.stringify(a));
+    location.href = "/admin/xem-bai-blog";
   }
 }
 

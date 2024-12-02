@@ -1,55 +1,34 @@
-import { Component } from "react"
+import { useEffect } from 'react';
+import "./BlogArticlePreview.css"
 
-export default class ABlogArticlePreview extends Component {
-  static displayName = ABlogArticlePreview.name;
+export default function ABlogArticlePreview() {
+  const article = JSON.parse(localStorage.getItem("article-load"));
 
-  constructor(props) {
-    super(props)
-    this.state = { article: "" }
-  }
+  useEffect(() => {
+    localStorage.removeItem("article-load");
+  }, [article]);
 
-  componentDidMount() {
-    const id = new URLSearchParams(location.search).get("id");
-    this.populateArticleData(id);
-  }
+  document.title = article.title;
 
-  render() {
+  return (
+    <main className="admin-main blog-article">
+      <h1 className="flex-grow-1 text-center fw-bold">{article.title.toUpperCase()}</h1>
+      <hr />
+
+      <p className="brief">{article.brief}</p>
+      <div className="paragraph">
+        {renderHTMLContent(article.content)}
+      </div>
+    </main>
+  )
+
+  function renderHTMLContent(htmlString) {
     return (
-      <main>
-        <h1>{this.state.article.title}</h1>
-        <p>{this.state.article.brief}</p>
-        <div className="content text-justify"></div>
-      </main>
-    )
-  }
-
-  async populateArticleData(id) {
-    try {
-      const response = await fetch(`/api/blog/get/content?id=${id}`);
-
-      // Check if the response is OK
-      if (!response.ok) {
-        throw new Error(`Failed to fetch data, status: ${response.status}`);
-      }
-
-      // Log the response body as text to see what is returned
-      const responseText = await response.json(); // Get response as text first
-
-      // Check if the response is JSON, and parse it if valid
-      try {
-        // Update state with article data once fetched
-        this.setState({ article: responseText });
-      }
-      catch (jsonError) {
-        throw new Error("Failed to parse JSON response: " + jsonError.message);
-      }
-
-      // Log updated state after setState
-      document.getElementsByClassName("content")[0].innerHTML = this.state.article.content;
-    }
-    catch (error) {
-      // Handle errors (network or other)
-      console.error("Error fetching article data:", error);
-    }
+      <div
+        dangerouslySetInnerHTML={{
+          __html: htmlString
+        }}
+      />
+    );
   }
 }

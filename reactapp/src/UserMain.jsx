@@ -38,7 +38,7 @@ export default function UserMain() {
     fetch('/user/cookie', { method: 'GET', headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include'})
     .then(response => response.json())
     .then(data => { setLoading(false); setName(name = data.name); setUsername(username = data.username); setAvatar(avatar = data.avatar) })
-    .catch(err => { setLoading(false); console.log(err) });
+    .catch(() => setLoading(false));
   }, []);
 
   if (location.pathname === "/")

@@ -111,6 +111,10 @@ export default class APromotion extends Component {
       })
 
       if (response.ok) { alert("Thêm chương trình khuyến mãi thành công"); location.reload(); }
+      else if (response.status === 400) {
+        const data = await response.json();
+        this.setState({pNameError: data.errors[0], pDateStartError: data.errors[1], pDateEndError: data.errors[2]})
+      }
       else alert("Đã có lỗi xảy ra, thêm chương trình khuyến mãi thất bại");
     }
   }

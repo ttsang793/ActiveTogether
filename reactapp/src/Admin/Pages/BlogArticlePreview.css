@@ -1,0 +1,36 @@
+@font-face {
+  font-family: "Playwrite BR";
+  src: url("/src/fonts/Playwrite_BR.ttf");
+}
+
+.blog-article {
+  line-height: 2rem;
+}
+
+.brief {
+  font-size: 1.1rem;
+  text-align: justify;
+  font-style: italic;
+}
+
+.paragraph {
+  font-size: 1.1rem;
+  text-align: justify;
+  line-height: 2rem;
+
+  h2 {
+    font-weight: bold;
+    font-style: italic;
+    font-family: "Playwrite BR", 'Segoe UI', 'san-serif';
+    font-size: 1.7rem;
+    padding-bottom: 10px;
+    margin-top: 3rem;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(70,70,70,0.25);
+    line-height: 3rem;
+  }
+
+  img {
+    height: 20dvw;
+  }
+}

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import AdminTextBox from "/src/Admin/Components/AdminTextBox";
 
 export default class RoleDetail extends Component {
   static DisplayName = RoleDetail.name;
@@ -8,7 +9,7 @@ export default class RoleDetail extends Component {
     const params = new URLSearchParams(location.search);
     const id = params.get("id") === null ? "" : params.get("id");
 
-    this.state = { addId: "", rId: id, rName: "", rPermission: [], permission: [] }
+    this.state = { addId: "", rId: id, rName: "", rNameError: "", rPermission: [], permission: [] }
   }
 
   componentDidMount() {
@@ -29,10 +30,10 @@ export default class RoleDetail extends Component {
         <h1 className="flex-grow-1 text-center fw-bold">QUYỀN CỦA VAI TRÒ</h1>
         <hr />
         
-        <input type="text" value={this.state.rId} className="form-control" readOnly placeholder="Mã vai trò" />
-        <input type="text" onChange={(e) => this.setState({ rName: e.target.value })} value={this.state.rName} className="form-control mt-3" placeholder="Tên vai trò" />
-
-        <div className="row form-control m-0 mt-3 d-flex">
+        <AdminTextBox type="text" detail="id" value={this.state.rId} readOnly placeholder="Mã vai trò" />
+        <AdminTextBox type="text" detail="name" onChange={(e) => this.setState({rName: e.target.value})} value={this.state.rName} errorValue={this.state.rNameError} placeholder="Tên vai trò" />
+          
+        <div className="row form-control m-0 mb-3 d-flex">
           {
             this.state.permission.map((p, i) =>
               <div className="col-3 my-2 text-justify" key={i}>
@@ -67,6 +68,10 @@ export default class RoleDetail extends Component {
       });
   
       if (response.ok) { alert("Vai trò đã thêm thành công"); location.href = "/admin/phan-quyen" }
+      else if (response.status === 400) {
+        const data = await response.json();
+        this.setState({ rNameError: data.error });
+      }
       else alert("Đã có lỗi xảy ra, vai trò đã thêm thất bại");
     }
   }
@@ -83,6 +88,10 @@ export default class RoleDetail extends Component {
       });
   
       if (response.ok) { alert("Vai trò đã cập nhật thành công"); location.href = "/admin/phan-quyen" }
+      else if (response.status === 400) {
+        const data = await response.json();
+        this.setState({ rNameError: data.error });
+      }
       else alert("Đã có lỗi xảy ra, vai trò đã cập nhật thất bại");
     }
   }

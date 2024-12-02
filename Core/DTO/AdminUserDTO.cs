@@ -11,6 +11,16 @@ public class AdminUserDTO : BaseDTO {
 
   public string? RoleName { get; set; }
 }
+public class AdminUserInsertDTO : BaseDTO
+{
+    public string? FullName { get; set; }
+
+    public string? Phone { get; set; }
+
+    public string? Email { get; set; }
+
+    public int? RoleId { get; set; }
+}
 
 public class RoleDTO : BaseDTO
 {

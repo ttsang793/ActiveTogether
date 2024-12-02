@@ -26,7 +26,7 @@ public class ProductController : ControllerBase
     [HttpPost("get")]
     public async Task<IEnumerable<Product>> GetAllProducts([FromBody] List<SearchListDTO>? searchDTO, int sort)
     {
-        return await _productService.GetAllProducts(searchDTO, sort);
+        return await _productService.GetAllProductsRead(searchDTO, sort);
     }
     
     [HttpGet("")]

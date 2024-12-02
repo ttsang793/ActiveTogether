@@ -4,6 +4,7 @@ using Core.DTO;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Infrastructure.Repository;
 public class RoleRepository : BaseRepository<Role>, IRoleRepository
@@ -12,9 +13,10 @@ public class RoleRepository : BaseRepository<Role>, IRoleRepository
     {
     }
 
-    public async Task<IEnumerable<Role>> GetAllRoles()
+    public async Task<IEnumerable<Role>> GetAllRoles(Expression<Func<Role, bool>> expression = null)
     {
-        return await GetDbSet().Include(r => r.RolePermissions).ToListAsync();
+        if (expression == null) return await GetDbSet().Include(r => r.RolePermissions).ToListAsync();
+        return await GetDbSet().Include(r => r.RolePermissions).Where(expression).ToListAsync();
     }
 
     public async Task<Role> GetAllRolePermissionsById(int id)

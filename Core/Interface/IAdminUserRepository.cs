@@ -1,21 +1,22 @@
 using Core.Entity;
 using Core.DTO;
 using Microsoft.AspNetCore.Http;
+using System.Linq.Expressions;
 
 namespace Core.Interface;
 public interface IAdminUserRepository : IInsert<AdminUser>
 {
-    Task<IEnumerable<AdminUser>> GetAllAdminUsers();
+    Task<IEnumerable<AdminUser>> GetAllAdminUsers(Expression<Func<AdminUser, bool>> expression = null);
 
     Task<AdminUser> GetUserById(int id);
 
-    Task<bool> Update(int id, int roleId);
+    Task<AdminUser> GetUserByFirebaseUid(string uid);
 
-    Task<bool> UpdateInfo(UserUpdateInfoDTO user, int id);
+    Task Update(int id, int roleId);
 
-    Task<bool> UpdatePassword(UserUpdateDTO user, int id);
+    Task Update(UserUpdateInfoDTO user, int id);
 
     Task<bool> UploadImage(IFormFile file, int id);
 
-    Task<bool> Lock(int id);
+    Task Lock(int id);
 }

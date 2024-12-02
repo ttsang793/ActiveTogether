@@ -4,6 +4,7 @@ using Core.Entity;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using System.Linq.Expressions;
 
 namespace Infrastructure.Repository;
 public class AdminUserRepository : BaseRepository<AdminUser>, IAdminUserRepository
@@ -13,9 +14,9 @@ public class AdminUserRepository : BaseRepository<AdminUser>, IAdminUserReposito
     {
     }
 
-    public async Task<IEnumerable<AdminUser>> GetAllAdminUsers()
+    public async Task<IEnumerable<AdminUser>> GetAllAdminUsers(Expression<Func<AdminUser, bool>> expression = null)
     {
-        return await GetDbSet().Where(u => !u.FullName.Contains("Admin")).ToListAsync();
+        return await GetDbSet().Where(expression).ToListAsync();
     }
 
     public async Task<AdminUser> GetUserById(int id)
@@ -31,7 +32,32 @@ public class AdminUserRepository : BaseRepository<AdminUser>, IAdminUserReposito
         }
     }
 
-    public async Task<bool> UpdateInfo(UserUpdateInfoDTO user, int id)
+    public async Task<AdminUser> GetUserByFirebaseUid(string uid)
+    {
+        try
+        {
+            var user = await GetDbSet().Where(u => u.FirebaseUid == uid).FirstAsync();
+            return user;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public void Insert(AdminUser adminUser)
+    {
+        GetDbSet().Add(adminUser);
+    }
+
+    public async Task Update(int id, int roleId)
+    {
+        var adminUser = await GetUserById(id);
+        adminUser.RoleId = roleId;
+        GetDbSet().Update(adminUser);
+    }
+
+    public async Task Update(UserUpdateInfoDTO user, int id)
     {
         var u = await GetUserById(id);
         if (u != null)
@@ -41,15 +67,24 @@ public class AdminUserRepository : BaseRepository<AdminUser>, IAdminUserReposito
             u.Avatar = user.Avatar;
             GetDbSet().Update(u);
         }
-        return true;
     }
 
-    public async Task<bool> UpdatePassword(UserUpdateDTO user, int id)
+    private async Task<bool> DeleteImage(int id)
     {
-        /*
-        var u = await GetDbSet().FirstAsync(u => u.Id == id && u.Password == user.Old);
-        if (u != null) u.Password = user.New!;*/
-        return true;
+        try
+        {
+            string[] files = Directory.GetFiles(_uploadDirectory, $"NV_${id}.*");
+            if (files.Any())
+            {
+                foreach (string file in files) File.Delete(file);
+                return true;
+            }
+            else return false;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public async Task<bool> UploadImage(IFormFile file, int id)
@@ -59,7 +94,7 @@ public class AdminUserRepository : BaseRepository<AdminUser>, IAdminUserReposito
             var fileName = "NV_" + id + Path.GetExtension(file.FileName);
             var filePath = Path.Combine(_uploadDirectory, fileName);
 
-            Console.WriteLine(filePath);
+            await DeleteImage(id);
 
             using var stream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(stream);
@@ -72,23 +107,20 @@ public class AdminUserRepository : BaseRepository<AdminUser>, IAdminUserReposito
         }
     }
 
-    public void Insert(AdminUser adminUser)
-    {
-        GetDbSet().Add(adminUser);
-    }
-
-    public async Task<bool> Update(int id, int roleId)
-    {
-        var adminUser = await GetUserById(id);
-        adminUser.RoleId = roleId;
-        GetDbSet().Update(adminUser);
-        return true;
-    }
-
-    public async Task<bool> Lock(int id)
+    public async Task Lock(int id)
     {
         AdminUser user = await GetUserById(id);
-        //user.IsActive = false;
-        return true;
+        if (user != null)
+        {
+            user.FirebaseUid = null;
+            user.Phone = null;
+            user.Email = null;
+            user.RoleId = 0;
+            user.IsActive = false;
+            user.Avatar = null;
+            
+            await DeleteImage(id);
+            GetDbSet().Update(user);
+        }
     }
 }

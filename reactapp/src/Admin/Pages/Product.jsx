@@ -2,13 +2,16 @@ import "./Product.css"
 import { Component } from "react";
 import { CamelToKebab } from "/src/Scripts/Utility";
 import PleaseWait from "/src/Shared/PleaseWait";
+import AdminTextBox from "/src/Admin/Components/AdminTextBox";
 
 export default class AProduct extends Component {
   static displayName = AProduct.name;
+  gender = [ { id: "0", name: "Nam" }, { id: "1", name: "Nữ" }, { id: "2", name: "Unisex" } ]
 
   constructor(props) {
     super(props);
-    this.state = { loading: true, product: [], sport: [], category: [], brand: [], pId: "", pName: "", pBrandId: "", pCategoryId: "", pDesc: "", pGender: 0, pIsChildren: false, pSport: []}
+    this.state = { loading: true, product: [], sport: [], category: [], brand: [], pId: "", pName: "", pBrandId: "-1", pCategoryId: "-1", pDesc: "", pGender: "-1",
+      pIsChildren: false, pSport: [], pNameError: "", pBrandIdError: "", pCategoryIdEror: "", pGenderError: "", pSportError: "", pSearch: "" }
   }
 
   componentDidMount = () => {
@@ -98,60 +101,39 @@ export default class AProduct extends Component {
 
         <div className="row">
           <div className="col-3">
-            <input type="text" value={this.state.pId} className="form-control" readOnly placeholder="Mã sản phẩm" />
-            <input type="text" onChange={(e) => this.setState({ pName: e.target.value })} value={this.state.pName} className="form-control mt-3" placeholder="Tên sản phẩm" />
-
-            <div className="mt-3">
-              <select className="form-control" value={this.state.pBrandId} onChange={e => this.handleBrandChange(e)}>
-                <option value="" disabled selected hidden>Thương hiệu</option>
-                {
-                  this.state.brand.map(b => <option key={b.id} value={b.id}>{b.id} - {b.name}</option>)
-                }
-              </select>
-            </div>
-
-            <div className="mt-3">
-              <select className="form-control" value={this.state.pCategoryId} onChange={e => this.handleCategoryChange(e)}>
-                <option value="" disabled selected hidden>Loại sản phẩm</option>
-                {
-                  this.state.category.map(c => <option key={c.id} value={c.id}>{c.id} - {c.name}</option>)
-                }
-              </select>
-            </div>
-
-            <div className="mt-3">
-              <select className="form-control" value={this.state.pGender} onChange={e => this.handleGenderChange(e)}>
-                <option value="" disabled selected hidden>Giới tính</option>
-                <option value="0">Nam</option>
-                <option value="1">Nữ</option>
-                <option value="2">Unisex</option>
-              </select>
-            </div>
+            <AdminTextBox type="text" detail="id" value={this.state.pId} readOnly placeholder="Mã sản phẩm" />
+            <AdminTextBox type="text" detail="name" onChange={(e) => this.setState({pName: e.target.value})} value={this.state.pName} errorValue={this.state.pNameError} placeholder="Tên sản phẩm" />
+            <AdminTextBox type="select" detail="brand" placeholder="Thương hiệu" value={this.state.pBrandId} onChange={e => this.handleBrandChange(e)} list={this.state.brand} errorValue={this.state.pBrandIdError} />
+            <AdminTextBox type="select" detail="category" placeholder="Loại sản phẩm" value={this.state.pCategoryId} onChange={e => this.handleCategoryChange(e)} list={this.state.category} errorValue={this.state.pCategoryIdError} />
+            <AdminTextBox type="select" detail="gender" placeholder="Giới tính" value={this.state.pGender} onChange={e => this.handleGenderChange(e)} list={this.gender} errorValue={this.state.pGenderError} />
             
-            <div className="mt-3 form-control">
-              <input type="checkbox" id="0" checked={this.state.pSport.includes(0)} onChange={(e) => this.handleSportChange(e, s.id)} /> Tất cả
-              {
-                this.state.sport.map(s => { return (
-                  <div key={s.name}>
-                    <input type="checkbox" id={`sport-${s.id}`} checked={this.state.pSport.includes(s.id)} onChange={(e) => this.handleSportChange(e, s.id)} /> {s.name}
-                  </div>
-                )})
-              }
+            <div className="mb-3">
+              <div className="form-control">
+                <input type="checkbox" id="0" checked={this.state.pSport.includes(0)} onChange={(e) => this.handleSportChange(e, s.id)} /> Tất cả
+                {
+                  this.state.sport.map(s => { return (
+                    <div key={s.name}>
+                      <input type="checkbox" id={`sport-${s.id}`} checked={this.state.pSport.includes(s.id)} onChange={(e) => this.handleSportChange(e, s.id)} /> {s.name}
+                    </div>
+                  )})
+                }
+                </div>
+              <div id="sport-error" className="error-value">{this.state.pSportError}</div>
             </div>
 
-            <textarea placeholder="Mô tả" className="form-control mt-3" style={{ height: "100px" }} onChange={(e) => this.setState({ pDesc: e.target.value })} value={this.state.pDesc}></textarea>
+            <textarea placeholder="Mô tả" className="form-control mb-3" style={{ height: "100px" }} onChange={(e) => this.setState({ pDesc: e.target.value })} value={this.state.pDesc}></textarea>
 
-            <div className="mt-3 form-control">
+            <div className="mb-3 form-control">
               <input type="checkbox" checked={this.state.pIsChildren} onChange={e => this.setState({ pIsChildren: e.target.checked })} /> Sản phẩm có size trẻ em
             </div>
             
-            <input type="submit" value="Lưu" onClick={e => this.saveNewProduct(e)} className="at-btn mt-3 me-2" />
-            <input type="button" value="Hủy" onClick={() => this.cancelProduct()} className="at-btn-secondary mt-3" />
+            <input type="submit" value="Lưu" onClick={e => this.saveNewProduct(e)} className="at-btn me-2" />
+            <input type="button" value="Hủy" onClick={() => this.cancelProduct()} className="at-btn-secondary" />
           </div>
 
           <div className="col-9">
             <div className="d-flex">
-              <input type="search" className="form-control" placeholder="Nhập tên sản phẩm cần tìm..." />
+              <AdminTextBox type="search" placeholder="Nhập tên sản phẩm cần tìm..." value={this.state.pSearch} onChange={e => this.setState({ pSearch: e.target.value })} onKeyDown={() => this.findData()} />
               <button className="small-at-sbtn"><i className="bi bi-search"></i></button>
             </div>
 
@@ -191,6 +173,11 @@ export default class AProduct extends Component {
     fetch("/api/sport/get").then(response => response.json()).then(data => this.setState({sport: data}));
   }
 
+  async findData() {
+    if (this.state.pSearch === "") this.populateProductData();
+    else fetch(`/api/sport/find?name=${this.state.pSearch}`).then(response => response.json()).then(data => this.setState({product: data}));
+  }
+
   async saveNewProduct(e) {
     e.preventDefault();
     this.state.pId === "" ? this.addProduct() : this.updateProduct();
@@ -208,16 +195,27 @@ export default class AProduct extends Component {
           id: this.state.product.length + 1,
           name: this.state.pName,
           urlName: CamelToKebab(this.state.pName),
-          brandId: this.state.pBrandId,
-          categoryId: this.state.pCategoryId,
+          brandId: Number(this.state.pBrandId),
+          categoryId: Number(this.state.pCategoryId),
           description: this.state.pDesc,
-          gender: this.state.pGender,
+          gender: Number(this.state.pGender),
           isChildren: this.state.pIsChildren,
           sportId: this.state.pSport
         })
       });
   
       if (response.ok) { alert("Sản phẩm đã thêm thành công"), location.reload() }
+      else if (response.status === 400) {
+        const data = await response.json();
+
+        this.setState({
+          pNameError: data.errors[0],
+          pBrandIdError: data.errors[1],
+          pCategoryIdError: data.errors[2],
+          pGenderError: data.errors[3],
+          pSportError: data.errors[4]
+        })
+      }
       else alert("Đã có lỗi xảy ra, sản phẩm đã thêm thất bại");
     }  
   }
@@ -234,16 +232,29 @@ export default class AProduct extends Component {
           id: this.state.pId,
           name: this.state.pName,
           urlName: CamelToKebab(this.state.pName),
-          brandId: this.state.pBrandId,
-          categoryId: this.state.pCategoryId,
+          brandId: Number(this.state.pBrandId),
+          categoryId: Number(this.state.pCategoryId),
           description: this.state.pDesc,
-          gender: this.state.pGender,
+          gender: Number(this.state.pGender),
           isChildren: this.state.pIsChildren,
           sportId: this.state.pSport
         })
       });
   
       if (response.ok) { alert("Sản phẩm đã cập nhật thành công"), location.reload() }
+      else if (response.status === 400) {
+        const data = await response.json();
+        console.log(data);
+
+        /*
+        this.setState({
+          pNameError: data.errors[0],
+          pBrandIdError: data.errors[1],
+          pCategoryIdError: data.errors[2],
+          pGenderError: data.errors[3],
+          pSportError: data.errors[4]
+        })*/        
+      }
       else alert("Đã có lỗi xảy ra, sản phẩm đã cập nhật thất bại");
     }  
   }

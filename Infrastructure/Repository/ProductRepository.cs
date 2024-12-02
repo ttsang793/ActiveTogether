@@ -13,7 +13,13 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
     }
 
-    public async Task<IEnumerable<Product>> GetAllProducts(List<SearchListDTO>? searchDTO = null, bool desc = false, Expression<Func<Product, object>> expression = null)
+    public async Task<IEnumerable<Product>> GetAllProducts(Expression<Func<Product, bool>> expression = null)
+    {
+        if (expression == null) return await GetDbSet().Include(p => p.ProductColors).ThenInclude(p => p.ProductImages).Include(p => p.ProductSports).ToListAsync();
+        else return await GetDbSet().Include(p => p.ProductColors).ThenInclude(p => p.ProductImages).Include(p => p.ProductSports).Where(expression).ToListAsync();
+    }
+
+    public async Task<IEnumerable<Product>> GetAllProductsRead(List<SearchListDTO>? searchDTO = null, bool desc = false, Expression<Func<Product, object>> expression = null)
     {
 
         var currentDate = DateTime.Now;

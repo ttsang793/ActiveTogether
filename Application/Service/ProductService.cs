@@ -14,8 +14,12 @@ public class ProductService : IProductService
     {
         _unitOfWork = unitOfWork;
     }
-    
-    public async Task<IEnumerable<Product>> GetAllProducts(List<SearchListDTO>? searchDTO = null, int sort = 0)
+    public async Task<IEnumerable<Product>> GetAllProducts(Expression<Func<Product, bool>> expression = null)
+    {
+        return await _unitOfWork.Products.GetAllProducts(expression);
+    }
+
+    public async Task<IEnumerable<Product>> GetAllProductsRead(List<SearchListDTO>? searchDTO = null, int sort = 0)
     {
         Expression<Func<Product, bool>>? searchExpression = null;
 
@@ -24,11 +28,11 @@ public class ProductService : IProductService
 
         return sort switch
         {
-            0 => await _unitOfWork.Products.GetAllProducts(searchDTO),
-            1 => await _unitOfWork.Products.GetAllProducts(searchDTO, false, priceExpression),
-            2 => await _unitOfWork.Products.GetAllProducts(searchDTO, true, priceExpression),
-            3 => await _unitOfWork.Products.GetAllProducts(searchDTO, false, nameExpression),
-            4 => await _unitOfWork.Products.GetAllProducts(searchDTO, true, nameExpression),
+            0 => await _unitOfWork.Products.GetAllProductsRead(searchDTO),
+            1 => await _unitOfWork.Products.GetAllProductsRead(searchDTO, false, priceExpression),
+            2 => await _unitOfWork.Products.GetAllProductsRead(searchDTO, true, priceExpression),
+            3 => await _unitOfWork.Products.GetAllProductsRead(searchDTO, false, nameExpression),
+            4 => await _unitOfWork.Products.GetAllProductsRead(searchDTO, true, nameExpression),
             _ => new List<Product>(),
         };
     }

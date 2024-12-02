@@ -8,9 +8,9 @@ public interface IAdminUserService
 {
 	Task<AdminUser> GetUserById(int id);
 
-	Task<bool> UpdateInfo(UserUpdateInfoDTO user, int id);
+	Task<AdminUser> GetUserByFirebaseUid(string uid);
 
-    Task<bool> UploadImage(IFormFile file, int id);
-
-    Task<bool> UpdatePassword(UserUpdateDTO user, int id);
+	Task<bool> Update(UserUpdateInfoDTO user, int id);
+	
+	Task<bool> UploadImage(IFormFile file, int id);
 }

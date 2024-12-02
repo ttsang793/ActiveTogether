@@ -96,6 +96,9 @@ public partial class AtWebContext : DbContext
                 .HasMaxLength(15)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("phone");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("is_active");
             entity.Property(e => e.RoleId)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("int(11)")

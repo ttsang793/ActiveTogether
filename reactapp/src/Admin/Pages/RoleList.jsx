@@ -1,6 +1,4 @@
 export default function RoleList({roles}) {
-  console.log(roles);
-
   function renderRoleList() {
     return (
       roles.map((r, i) => 

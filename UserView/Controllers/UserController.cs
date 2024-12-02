@@ -1,7 +1,6 @@
 using Application.Interface;
 using Core.DTO;
 using Core.Entity;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace UserView.Controllers;
@@ -46,7 +45,6 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public StatusCodeResult Login(string token)
     {
-
         HttpContext.Session.SetString("token", token);
         return StatusCode(200);
     }

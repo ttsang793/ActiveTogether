@@ -1,6 +1,7 @@
 import FormTextBox from "/src/Components/shared/FormTextBox"
 import { useState } from 'react'
-import { Encode2 } from "/src/Scripts/Utility";
+import { auth } from "/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import "./Login.css"
 
 export default function ALogin() {  
@@ -32,6 +33,7 @@ export default function ALogin() {
   }
 
   async function LoginUser(e) {
+    let email = "";
     e.preventDefault();
 
     handleUsernameError();
@@ -39,24 +41,27 @@ export default function ALogin() {
   
     if (errorUsername !== "" || errorPassword !== "") return;
 
-    password = Encode2(username, password);
-    
-    const response = await fetch("/api/adminuser/login", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({username, password})
-    });
-    
-    if (response.ok) {
-      alert("Đăng nhập thành công");
-      location.href = "/admin/home";
+    try {
+      const emailResponse = await fetch(`/api/adminuser/get/email?id=${username}`);
+      email = await emailResponse.text();
     }
-    else if (response.status === 404) setErrorUsername("Tài khoản không tồn tại. Vui lòng kiểm tra lại.");
-    else if (response.status === 403) setErrorUsername("Nhân viên đã nghỉ việc.");
-    else if (response.status === 500) setErrorPassword("Sai mật khẩu, vui lòng nhập lại.");
+    catch { setErrorUsername("Tài khoản không tồn tại. Vui lòng kiểm tra lại."); return; }
+
+    try {      
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const idToken = await userCredential.user.getIdToken();
+    
+      const response = await fetch(`/api/adminuser/login?token=${idToken}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+      console.log(response);
+      if (response.status === 200) { alert("Đăng nhập thành công!"); location.href = "/admin/home" };
+    }
+    catch { setErrorPassword("Sai mật khẩu, vui lòng nhập lại."); }
   }
 
   return (

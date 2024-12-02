@@ -6,7 +6,9 @@ namespace Core.Interface;
 
 public interface IProductRepository : IInsert<Product>, IUpdate<Product>, ILock, IUnlock
 {
-    Task<IEnumerable<Product>> GetAllProducts(List<SearchListDTO>? searchDTO = null, bool desc = false, Expression<Func<Product, object>> expression = null);
+    Task<IEnumerable<Product>> GetAllProducts(Expression<Func<Product, bool>> expression = null);
+
+    Task<IEnumerable<Product>> GetAllProductsRead(List<SearchListDTO>? searchDTO = null, bool desc = false, Expression<Func<Product, object>> expression = null);
 
     void Insert(List<ProductSport> productSports);
 

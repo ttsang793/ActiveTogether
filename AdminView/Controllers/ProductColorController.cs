@@ -1,7 +1,6 @@
 using Application.Interface;
 using Core.Entity;
 using Microsoft.AspNetCore.Mvc;
-using System.Drawing;
 
 namespace AdminView.Controllers;
 

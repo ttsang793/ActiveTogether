@@ -71,8 +71,8 @@ export default class ASport extends Component {
               <div id="image-container" className="image-container mb-2">
                 <button className="close small-at-sbtn" onClick={() => this.handleDeleteImage()}>&times;</button>
                 <img id="small-image" src="/src/images/avatar/default.jpg" style={{maxWidth: "150px", width: "100%"}} />
-                <div id="image-error" className="error-value">{this.state.sImageError}</div>
               </div>
+              <div id="image-error" className="error-value">{this.state.sImageError}</div>
             </div>
             
             <input type="submit" value="Lưu" onClick={e => this.saveNewSport(e)} className="at-btn mt-3 me-2" />
