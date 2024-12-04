@@ -11,10 +11,10 @@ export default function OrderFinished() {
       location.href = "/gio-hang";
     }
     if (location.search.length > 0) {
-      fetch("https://localhost:5173/order/vnpay/result" + location.search)
-        .then(response => response.json())
-        .then(data => setSuccess(data))
-        .catch(() => setSuccess(false));
+      const params = new URLSearchParams(location.search);
+      const vnpaypd = Number(params.get("vnpaypd"));
+      const momopd = Number(params.get("momopd"));
+      setSuccess(vnpaypd > 0 || momopd > 0)
     }
     else setSuccess(true); //thanh toán bằng tiền mặt
   }, []);

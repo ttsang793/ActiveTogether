@@ -18,10 +18,10 @@ public class VnPayService : IVnPayService
 
     public string CreatePaymentUrl(OrderDTO order, HttpContext context)
     {
-        var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+        var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["Vnpay:TimeZoneId"]);
         var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
         var tick = DateTime.Now.Ticks.ToString();
-        var urlCallBack = _configuration["PaymentCallBack:ReturnUrl"];
+        var urlCallBack = _configuration["Vnpay:ReturnUrl"];
 
         VnPayLibrary pay = new();
         pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);

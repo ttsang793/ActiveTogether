@@ -151,8 +151,8 @@ public class PermissionController : ControllerBase
 	}
 
 	[HttpGet("get")]
-    public async Task<IEnumerable<Permission>> GelAllPermission()
+    public async Task<IEnumerable<Permission>> GetAllPermission()
     {
-        return await _permissionService.GelAllPermission();
+        return await _permissionService.GetAllPermission();
     }
 }

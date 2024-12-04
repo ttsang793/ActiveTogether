@@ -28,13 +28,13 @@ public class PermissionService : IPermissionService
 
 	public async Task<bool> UpdateAdminRole(int id, int roleId)
 	{
-		_unitOfWork.AdminUsers.Update(id, roleId);
+		await _unitOfWork.AdminUsers.Update(id, roleId);
 		return await _unitOfWork.SaveChangesAsync();
 	}
 
 	public async Task<bool> LockAdmin(int id)
 	{
-		_unitOfWork.AdminUsers.Lock(id);
+        await _unitOfWork.AdminUsers.Lock(id);
 		return await _unitOfWork.SaveChangesAsync();
     }
 
@@ -62,8 +62,8 @@ public class PermissionService : IPermissionService
 		return await _unitOfWork.SaveChangesAsync();
 	}
 
-	public async Task<IEnumerable<Permission>> GelAllPermission()
+	public async Task<IEnumerable<Permission>> GetAllPermission()
 	{
-		return await _unitOfWork.RolePermissions.GelAllPermission();
+		return await _unitOfWork.RolePermissions.GetAllPermission();
 	}
 }

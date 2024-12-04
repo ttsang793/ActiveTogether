@@ -78,7 +78,7 @@ export default function AdminUserList({users, roles}) {
 
   return (
     <>
-      <div className="col-8">
+      <div className="col-9">
         <div className="d-flex c-10">
           <button className="small-at-sbtn" onClick={handleShow}><i className="bi bi-plus"></i></button>
           

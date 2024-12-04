@@ -11,7 +11,7 @@ public class RolePermissionRepository : BaseRepository<RolePermission>, IRolePer
     {
     }
 
-    public async Task<IEnumerable<Permission>> GelAllPermission()
+    public async Task<IEnumerable<Permission>> GetAllPermission()
     {
         return await GetDbContext().Permissions.ToListAsync();
     }

@@ -48,8 +48,7 @@ public class OrderController : ControllerBase
     public IActionResult GetVnPayResult()
     {
         var response = _vnPayService.PaymentExecute(Request.Query);
-
-        return Redirect($"https://locahost:5173/thanh-toan/hoan-tat?VNPayOId={response.OrderId}");
+        return Redirect($"http://localhost:5173/thanh-toan/hoan-tat?vnpaypd={response.PaymentId}");
     }
 
     [HttpPost("momo/payment")]
@@ -60,11 +59,11 @@ public class OrderController : ControllerBase
     }
 
     [HttpGet("momo/result")]
-    public MomoPaymentResponseModel GetMomoResult()
+    public IActionResult GetMomoResult()
     {
         var response = _momoService.PaymentExecuteAsync(Request.Query);
-
-        return response;
+        int paymentId = response.OrderId == null ? 0 : int.Parse(response.OrderId);
+        return Redirect($"http://localhost:5173/thanh-toan/hoan-tat?momopd={paymentId}");
     }
 
     [HttpPost("add")]

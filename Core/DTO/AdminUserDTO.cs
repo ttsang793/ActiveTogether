@@ -1,6 +1,8 @@
+using Core.Entity;
+
 namespace Core.DTO;
 
-public class AdminLoginDTO : BaseDTO
+public class AdminPageDTO : BaseDTO
 {
     public int Id { get; set; }
 }
@@ -29,4 +31,16 @@ public class RoleDTO : BaseDTO
     public string? Name { get; set; }
 
     public int[]? PermissionIds { get; set; }
+}
+public class LoginAdminDTO : BaseDTO
+{
+    public string? Name { get; set; }
+
+    public int? Username { get; set; }
+
+    public string? Avatar { get; set; }
+
+    public int? Role { get; set; }
+
+    public List<int>? PermissionGroup { get; set; }
 }

@@ -1,3 +1,6 @@
+import FourOThree from '/src/Shared/FourOThree';
+import FourOFour from '/src/Shared/FourOFour';
+
 import Home from './Pages/Home';
 import Products from './Pages/product/Products';
 import Blog from './Pages/blog/Blog';
@@ -7,7 +10,7 @@ import OrderFinished from './Pages/product/OrderFinished';
 import Login from "./Pages/user/Login";
 import RedirectRegister from "./Pages/user/RedirectRegister";
 import Introduction from './Pages/blog/Introduction';
-import FourOFour from './Pages/FourOFour';
+import ALogin from "./Admin/Pages/Login"
 
 import ProductDetail from './Pages/product/ProductDetail';
 import BlogDetail from './Pages/blog/BlogDetail';
@@ -27,7 +30,7 @@ import Cookies from "js-cookie";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 
 export default function UserMain() {
-  const token = Cookies.get("session_token");
+  const token = Cookies.get("user_token");
 
   let [loading, setLoading] = useState(true);
   let [name, setName] = useState(null);
@@ -41,21 +44,31 @@ export default function UserMain() {
     .catch(() => setLoading(false));
   }, []);
 
-  if (location.pathname === "/")
-    return loading ? <PleaseWait /> : (
-      <Router>
-        <Header name={name} avatar={avatar} />
-        
-        <Routes>
-          <Route exact path="/" element={<Home />} />
-        </Routes>
+  if (location.pathname === "/") return loading ? <PleaseWait /> : (
+    <Router>
+      <Header name={name} avatar={avatar} />
+      
+      <Routes>
+        <Route exact path="/" element={<Home />} />
+      </Routes>
 
-        <BackToTop />
-        <Footer />
+      <BackToTop />
+      <Footer />
+    </Router>
+  )
+
+  else if (location.pathname === "/admin" || location.pathname === "/admin/")
+    return (
+      <Router>
+        <Routes>
+          <Route path="/admin" element={ <><ALogin /> <PageTitle title="Trang đăng nhập quản trị viên" /></> } />
+        </Routes>
       </Router>
     )
-  else if (!location.pathname.includes("/admin"))
-    return loading ? <PleaseWait /> : (
+
+  else if (location.pathname.includes("/admin")) return <FourOThree />
+    
+  else return loading ? <PleaseWait /> : (
       <Router>
         <Header name={name} avatar={avatar} />
         
@@ -116,7 +129,7 @@ export default function UserMain() {
               (<Navigate to="/dang-nhap" replace />)
             } />
             <Route path="/thanh-toan/hoan-tat" element={
-              username !== null ? <><OrderFinished /> <PageTitle title="Thanh toán thành công" /></> :
+              username !== null ? <><OrderFinished /> <PageTitle title="Kết quả thanh toán" /></> :
               (<Navigate to="/dang-nhap" replace />)
             } />
           </Routes>

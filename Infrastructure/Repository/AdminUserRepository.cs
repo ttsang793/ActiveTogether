@@ -36,7 +36,7 @@ public class AdminUserRepository : BaseRepository<AdminUser>, IAdminUserReposito
     {
         try
         {
-            var user = await GetDbSet().Where(u => u.FirebaseUid == uid).FirstAsync();
+            var user = await GetDbSet().Include(u => u.Role).ThenInclude(r => r.RolePermissions).Where(u => u.FirebaseUid == uid).FirstAsync();
             return user;
         }
         catch
@@ -116,8 +116,8 @@ public class AdminUserRepository : BaseRepository<AdminUser>, IAdminUserReposito
             user.Phone = null;
             user.Email = null;
             user.RoleId = 0;
-            user.IsActive = false;
             user.Avatar = null;
+            user.IsActive = false;
             
             await DeleteImage(id);
             GetDbSet().Update(user);

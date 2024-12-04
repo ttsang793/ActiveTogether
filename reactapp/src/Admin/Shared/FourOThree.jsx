@@ -1,13 +1,17 @@
-import "./FourOThree.css"
+import "./FourOFour.css"
 
 export default function FourOThree() {
   return (
-    <div className="four-o-three d-flex flex-column align-items-center justify-content-center">
-      <img src="/403.png" alt="Stop" className="stop" />
-      <div className="detail text-center my-5">KHÔNG PHẬN SỰ MIỄN VÀO</div>
-      <button className="btn btn-danger fs-3" onClick={() => history.back()}>
-        QUAY VỀ TRANG TRƯỚC
-      </button>
-    </div>
+    <main className="a-four-o-four-container">
+      <img src="/empty-product.png" alt="Lỗi 403" className="four-o-four-img" />
+      <h1 className="fw-bold">KHÔNG CÓ QUYỀN TRUY CẬP</h1>
+      <div className="four-o-four-detail">Vui lòng liên hệ với quản trị viên!</div>
+      <div>
+        <a href="/admin/home">
+          <button className="at-btn me-2">Trang chủ</button>
+        </a>
+        <button className="at-btn" onClick={() => history.back()}>Quay về trang trước</button>
+      </div>
+    </main>
   )
 }

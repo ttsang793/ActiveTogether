@@ -1,4 +1,5 @@
 import FormTextBox from "/src/Components/shared/FormTextBox"
+import Cookies from "js-cookie";
 import { useState } from 'react'
 import { auth } from "/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -58,8 +59,11 @@ export default function ALogin() {
           'Accept': 'application/json'
         }
       });
-      console.log(response);
-      if (response.status === 200) { alert("Đăng nhập thành công!"); location.href = "/admin/home" };
+      if (response.status === 200) {
+        Cookies.set("employee_token", idToken, { expires: 0.5, secure: true, sameSite: "Strict" });
+        alert("Đăng nhập thành công!");
+        location.href = "/admin/home"
+      };
     }
     catch { setErrorPassword("Sai mật khẩu, vui lòng nhập lại."); }
   }

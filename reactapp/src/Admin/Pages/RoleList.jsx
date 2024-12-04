@@ -16,7 +16,7 @@ export default function RoleList({roles}) {
   }
 
   return (
-    <div className="col-4">
+    <div className="col-3">
       <div>
         <a href="/admin/chi-tiet-vai-tro">
           <button className="at-btn"><i className="bi bi-plus-circle"></i> Tạo vai trò mới</button>

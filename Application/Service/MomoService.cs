@@ -51,8 +51,6 @@ public class MomoService : IMomoService
         request.AddParameter("application/json", JsonConvert.SerializeObject(requestData), ParameterType.RequestBody);
 
         var response = await client.ExecuteAsync(request);
-        Console.WriteLine(response.Content);
-
         return JsonConvert.DeserializeObject<MomoPaymentResponseModel>(response.Content);
     }
 

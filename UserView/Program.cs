@@ -31,7 +31,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
     options.AddPolicy("AllowVNPay", policy =>
     {
-        policy.WithOrigins("https://sandbox.vnpayment.vn").AllowAnyHeader().AllowAnyMethod();
+        policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
     }
 ));
 builder.Services.AddDistributedMemoryCache();

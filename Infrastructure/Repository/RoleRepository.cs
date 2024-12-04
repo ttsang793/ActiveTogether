@@ -21,7 +21,7 @@ public class RoleRepository : BaseRepository<Role>, IRoleRepository
 
     public async Task<Role> GetAllRolePermissionsById(int id)
     {
-        return GetDbSet().Include(rp => rp.RolePermissions).First(r => r.Id == id);
+        return await GetDbSet().Include(rp => rp.RolePermissions).FirstAsync(r => r.Id == id);
     }
 
     public void Insert(Role role)

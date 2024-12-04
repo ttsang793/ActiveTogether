@@ -12,9 +12,9 @@ public partial class AdminUser : BaseEntity
 
     public int? RoleId { get; set; }
 
-    public bool? IsActive { get; set; }
-
     public string? Avatar { get; set; }
+
+    public bool? IsActive { get; set; }
 
     public virtual ICollection<BlogArticle> BlogArticles { get; set; } = new List<BlogArticle>();
 

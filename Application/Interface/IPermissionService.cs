@@ -22,5 +22,5 @@ public interface IPermissionService
 
 	Task<Role> GetAllRolePermissionsById(int id);
 
-	Task<IEnumerable<Permission>> GelAllPermission();
+	Task<IEnumerable<Permission>> GetAllPermission();
 }

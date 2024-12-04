@@ -2,7 +2,7 @@ import "/src/Pages/user/Login.css";
 import { useState } from 'react';
 import FormTextBox from "/src/Components/shared/FormTextBox";
 import { auth } from "/firebase";
-import { updatePassword } from "firebase/auth";
+import { signOut, updatePassword } from "firebase/auth";
 
 export default function ChangePassword() {
   let [oldPass, setOldPass] = useState("");
@@ -70,8 +70,10 @@ export default function ChangePassword() {
     if (confirm("Bạn có muốn cập nhật mật khẩu?")) {
       const user = auth.currentUser;
       updatePassword(user, newPass).then(() => {
-        alert("Cập nhật mật khẩu thành công. Vui lòng đăng nhập lại!");
-        fetch("/user/logout", { method: "POST" }).then(() => location.reload());
+        fetch("/user/logout", { method: "POST" }).then(() => signOut(auth).then(() => {
+          alert("Cập nhật mật khẩu thành công. Vui lòng đăng nhập lại!");
+          location.reload();
+        }));
       }).catch(err => {
         console.error(err);
         alert("Đã có lỗi xảy ra, cập nhật mật khẩu thất bại.");

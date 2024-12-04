@@ -3,6 +3,7 @@ import FormTextBox from "/src/Components/shared/FormTextBox"
 import { useState } from 'react'
 import Register from "/src/Pages/user/Register";
 import ForgetPassword from "/src/Pages/user/ForgetPassword";
+import Cookies from "js-cookie";
 import { auth, provider } from "/firebase";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
@@ -79,7 +80,10 @@ export default function Login() {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         }
-      }).then(() => { alert("Đăng nhập thành công!"); location.href = "/" })
+      }).then(() => {
+        Cookies.set("user_token", idToken, { secure: true, sameSite: "Lax" });
+        alert("Đăng nhập thành công!"); location.href = "/"
+      })
     }
     catch (err) {
       if (err.message.includes("auth/invalid-credential")) setErrorPassword("Sai mật khẩu, vui lòng nhập lại.");
@@ -93,15 +97,17 @@ export default function Login() {
 
     try {
       const credential = await signInWithPopup(auth, provider);
+      const idToken = credential._tokenResponse.idToken;
       const availableResponse = await fetch(`/user/login/check`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({ tempToken: credential._tokenResponse.idToken, email: credential.user.email })
+        body: JSON.stringify({ tempToken: idToken, email: credential.user.email })
       });
       if (availableResponse.status == 200) {
+        Cookies.set("user_token", idToken, { secure: true, sameSite: "Lax" });
         fetch(`/user/login?token=${idToken}`, {
           method: 'POST',
           headers: {

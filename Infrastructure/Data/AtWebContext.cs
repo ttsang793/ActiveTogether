@@ -36,6 +36,8 @@ public partial class AtWebContext : DbContext
 
     public virtual DbSet<Permission> Permissions { get; set; }
 
+    public virtual DbSet<PermissionGroup> PermissionGroups { get; set; }
+
     public virtual DbSet<Product> Products { get; set; }
 
     public virtual DbSet<ProductColor> ProductColors { get; set; }
@@ -92,13 +94,13 @@ public partial class AtWebContext : DbContext
                 .HasMaxLength(200)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("full_name");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("is_active");
             entity.Property(e => e.Phone)
                 .HasMaxLength(15)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("phone");
-            entity.Property(e => e.IsActive)
-                .HasDefaultValueSql("'1'")
-                .HasColumnName("is_active");
             entity.Property(e => e.RoleId)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnType("int(11)")
@@ -466,6 +468,30 @@ public partial class AtWebContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("name");
+            entity.Property(e => e.PermissionGroupId)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("int(11)")
+                .HasColumnName("permission_group_id");
+
+            entity.HasOne(d => d.PermissionGroup).WithMany(p => p.Permissions)
+                .HasForeignKey(d => d.PermissionGroupId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Permission_PermissionGroup");
+        });
+
+        modelBuilder.Entity<PermissionGroup>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("permission_group");
+
+            entity.Property(e => e.Id)
+                .HasColumnType("int(11)")
+                .HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(40)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("name");
         });

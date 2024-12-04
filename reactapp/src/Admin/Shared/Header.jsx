@@ -1,4 +1,7 @@
 import "./Header.css"
+import { auth } from "/firebase";
+import { signOut } from "firebase/auth";
+import Cookies from "js-cookie";
 
 export default function AHeader(props) {
   const handleSetting = () => {
@@ -7,7 +10,10 @@ export default function AHeader(props) {
 
   const handleLogout = () => {
     if (confirm("Bạn có muốn đăng xuất ra khỏi hệ thống admin?")) {
-      fetch("/api/adminuser/logout", { method: 'POST'} ).then(() => location.href = "/admin");
+      fetch("/api/adminuser/logout", { method: "POST" }).then(() => signOut(auth).then(() => {
+        Cookies.remove("employee_token");
+        location.href = "/admin"
+      }));
     }
   }
 

@@ -1,5 +1,8 @@
 import "./Header.css"
 import { useState } from "react";
+import { auth } from "/firebase";
+import { signOut } from "firebase/auth";
+import Cookies from "js-cookie";
 
 export default function Header(props) {
   const [search, setSearch] = useState("");
@@ -27,7 +30,11 @@ export default function Header(props) {
   }
 
   async function Logout() {
-    fetch("/user/logout", { method: "POST" }).then(() => location.href = "/");
+    Cookies.remove("employee_token");
+    fetch("/user/logout", { method: "POST" }).then(() => {
+      Cookies.remove("user_token");
+      signOut(auth).then(() => location.href = "/" )}
+    );
   }
 
   function RedirectToSearch() {

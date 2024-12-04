@@ -73,7 +73,7 @@ public class OrderService : IOrderService
 
     public async Task<bool> CancelOrder(int id)
     {
-        _unitOfWork.Orders.CancelOrder(id);
+        await _unitOfWork.Orders.CancelOrder(id);
         return await _unitOfWork.SaveChangesAsync();
     }
     
