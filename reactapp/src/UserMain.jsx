@@ -49,7 +49,7 @@ export default function UserMain() {
       <Header name={name} avatar={avatar} />
       
       <Routes>
-        <Route exact path="/" element={<Home />} />
+        <Route exact path="/" element={<Home username={username} />} />
       </Routes>
 
       <BackToTop />

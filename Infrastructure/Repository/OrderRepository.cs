@@ -3,6 +3,9 @@ using Core.Entity;
 using Core.DTO;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Net.WebSockets;
+using System.Collections.Generic;
 
 namespace Infrastructure.Repository;
 public class OrderRepository : BaseRepository<Order>, IOrderRepository
@@ -156,5 +159,79 @@ public class OrderRepository : BaseRepository<Order>, IOrderRepository
     public void ChangeRefundStatus(int id, bool status)
     {
         GetOrderDetailById(id).IsReturn = status;
+    }
+
+    public IEnumerable<OrderStatisticDTO> GetRevenueByDay(DateTime dateStart, DateTime dateEnd)
+    {
+        List<DateTime> statisticDays = new List<DateTime>();
+        DateTime temp = dateStart;
+        while (DateTime.Compare(temp, dateEnd) <= 0)
+        {
+            statisticDays.Add(temp);
+            temp = temp.AddDays(1);
+        }
+
+        var revenue = (from d in statisticDays
+                       join o in GetDbSet() on new { d.Day, d.Month, d.Year } equals new { o.DateReceived.Value.Day, o.DateReceived.Value.Month, o.DateReceived.Value.Year } into ordersInDay
+                       from o in ordersInDay.DefaultIfEmpty()
+                       group o by d.ToString("yyyy-MM-dd") into g
+                       select new OrderStatisticDTO { Month = g.Key, Revenue = g.Sum(o => o?.Total ?? 0) }).ToList();
+
+        var imports = (from d in statisticDays
+                       join i in GetDbContext().Imports on new { d.Day, d.Month, d.Year } equals new { i.DateImport.Value.Day, i.DateImport.Value.Month, i.DateImport.Value.Year } into importsInDay
+                       from i in importsInDay.DefaultIfEmpty()
+                       group i by d.ToString("yyyy-MM-dd") into g
+                       select new OrderStatisticDTO { Month = g.Key, ImportCost = g.Sum(i => i?.Total ?? 0) }).ToList();
+        
+        for (int i = 0; i < revenue.Count(); i++)
+            revenue[i].ImportCost = imports[i].ImportCost ?? 0;
+
+        return revenue;
+    }
+
+    public IEnumerable<OrderStatisticDTO> GetRevenueByWeek(DateTime dateStart, DateTime dateEnd)
+    {
+        var dayRevenue = GetRevenueByDay(dateStart, dateEnd).ToList();
+        List<OrderStatisticDTO> weekRevenue = new List<OrderStatisticDTO>();
+
+        for (int i = 0; i < dayRevenue.Count(); i++)
+        {
+            if (i % 7 == 0) weekRevenue.Add(new OrderStatisticDTO { Revenue = 0, ImportCost = 0 });
+            weekRevenue[i / 7].Revenue += dayRevenue[i].Revenue;
+            weekRevenue[i / 7].ImportCost += dayRevenue[i].ImportCost;
+            if (i % 6 == 0 || i == dayRevenue.Count() - 1) weekRevenue[i / 7].Month = dayRevenue[i].Month;
+        }
+        
+        return weekRevenue;
+    }
+
+    public IEnumerable<OrderStatisticDTO> GetRevenueByMonth(DateTime dateStart, DateTime dateEnd)
+    {
+        List<DateTime> statisticMonths = new List<DateTime>();
+        DateTime temp = dateEnd;
+        while (DateTime.Compare(temp, dateStart) >= 0)
+        {
+            statisticMonths.Insert(0, temp);
+            temp = temp.AddMonths(-1);
+        }
+
+        var revenue = (from m in statisticMonths
+                      join o in GetDbSet() on new { m.Month, m.Year } equals new { ((DateTime)o.DateReceived!).Month, ((DateTime)o.DateReceived).Year } into ordersInMonth
+                      from o in ordersInMonth.DefaultIfEmpty()
+                      where (DateTime.Compare((DateTime)o.DateReceived, dateStart) >= 0 && DateTime.Compare((DateTime)o.DateReceived, dateEnd) <= 0)
+                      group o by m.ToString("yyyy-MM") into g
+                      select new OrderStatisticDTO { Month = g.Key, Revenue = g.Sum(o => o.Total) }).ToList();
+
+        var imports = (from m in statisticMonths
+                      join i in GetDbContext().Imports on new { m.Month, m.Year } equals new { ((DateTime)i.DateImport!).Month, ((DateTime)i.DateImport).Year } into importsInMonth
+                      from i in importsInMonth.DefaultIfEmpty()
+                      where (DateTime.Compare((DateTime)i.DateImport, dateStart) >= 0 && DateTime.Compare((DateTime)i.DateImport, dateEnd) <= 0)
+                      group i by m.ToString("yyyy-MM") into g
+                      select new OrderStatisticDTO { Month = g.Key, ImportCost = g.Sum(i => i.Total) }).ToList();
+
+        for (int i = 0; i < revenue.Count(); i++)
+            revenue[i].ImportCost = imports[i].ImportCost;
+
+        return revenue;
     }
 }

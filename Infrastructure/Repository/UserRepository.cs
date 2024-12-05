@@ -83,9 +83,9 @@ public class UserRepository : BaseRepository<User>, IUserRepository
         }
     }
 
-    public void GainPoint(int? userId, int? point)
+    public async Task GainPoint(int? userId, int? point)
     {
-        var u = GetDbSet().First(u => u.Id == userId);
+        var u = await GetDbSet().FirstAsync(u => u.Id == userId);
         u.Point += point;
     }
 

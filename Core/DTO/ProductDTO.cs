@@ -45,3 +45,8 @@ public class ProductReviewReadDTO : BaseDTO
 
     public DateTime? DatePublish { get; set; }
 }
+
+public class ProductRecentLocalDTO : BaseDTO
+{
+    public string[]? UrlName { get; set; }
+}

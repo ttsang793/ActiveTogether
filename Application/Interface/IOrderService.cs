@@ -20,4 +20,6 @@ public interface IOrderService
     Task<bool> ReceiveOrder(int id);
 
     Task<bool> ChangeStatus(OrderVertifyDTO o);
+
+    IEnumerable<OrderStatisticDTO> ListSaleRevenue(DateTime dateStart, DateTime dateEnd);
 }

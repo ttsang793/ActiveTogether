@@ -16,5 +16,12 @@ public interface IProductRepository : IInsert<Product>, IUpdate<Product>, ILock,
 
     List<FilterListDTO> GetAllFilter();
 
+    Task<IEnumerable<Product>> ListTop5Seller(DateTime dateStart);
+
+    Task<IEnumerable<StatisticDTO>> ListBestSeller(DateTime dateStart, DateTime dateEnd);
+
+    Task<IEnumerable<StatisticDTO>> ListSaleByBrand(DateTime dateStart, DateTime dateEnd);
+
     IEnumerable<Product> GetAllProducts();
+
 }

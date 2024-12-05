@@ -10,6 +10,12 @@ public interface IProductService
 
     Task<IEnumerable<Product>> GetAllProductsRead(List<SearchListDTO>? search = null, int sort = 0);
 
+    Task<IEnumerable<StatisticDTO>> ListBestSeller(DateTime dateStart, DateTime dateEnd);
+
+    Task<IEnumerable<Product>> ListTop5Seller(DateTime dateStart);
+
+    Task<IEnumerable<StatisticDTO>> ListSaleByBrand(DateTime dateStart, DateTime dateEnd);
+
     List<FilterListDTO> GetAllFilter();
 
     Task<bool> Insert(Product product);

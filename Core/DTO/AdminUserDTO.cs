@@ -1,5 +1,3 @@
-using Core.Entity;
-
 namespace Core.DTO;
 
 public class AdminPageDTO : BaseDTO
@@ -43,4 +41,20 @@ public class LoginAdminDTO : BaseDTO
     public int? Role { get; set; }
 
     public List<int>? PermissionGroup { get; set; }
+}
+
+public class StatisticDTO : BaseDTO
+{
+    public int? Id { get; set; }
+
+    public string? Name { get; set; }
+
+    public decimal? Total { get; set; }
+}
+
+public class StatisticDateDTO : BaseDTO
+{
+    public DateTime DateStart { get; set; }
+
+    public string? DateEnd { get; set; }
 }

@@ -11,13 +11,15 @@ namespace UserView.Controllers;
 public class ProductController : ControllerBase
 {
     private readonly ILogger<BlogController> _logger;
+    private readonly IConfiguration _configuration;
     private readonly IProductService _productService;
     private readonly IProductDetailService _productDetailService;
     private readonly IProductReviewService _productReviewService;
 
-    public ProductController(ILogger<BlogController> logger, IProductService productService, IProductDetailService productDetailService, IProductReviewService productReviewService)
+    public ProductController(ILogger<BlogController> logger, IConfiguration configuration, IProductService productService, IProductDetailService productDetailService, IProductReviewService productReviewService)
     {
         _logger = logger;
+        _configuration = configuration;
         _productService = productService;
         _productDetailService = productDetailService;
         _productReviewService = productReviewService;
@@ -33,6 +35,19 @@ public class ProductController : ControllerBase
     public IEnumerable<ProductDetailDTO> GetProductByUrlName(string urlName)
     {
         return _productDetailService.GetProductByUrlName(urlName);
+    }
+
+    [HttpGet("get/top")]
+    public async Task<IEnumerable<Product>> GetTop5Products()
+    {
+        DateTime dateStart = DateTime.Parse(_configuration["FirstDay"]);
+        return await _productService.ListTop5Seller(dateStart);
+    }
+
+    [HttpPost("get/recent/local")]
+    public async Task<IEnumerable<Product>> GetRecentViewProduct([Bind("UrlName")] ProductRecentLocalDTO product)
+    {
+        return await _productService.GetAllProducts(p => product.UrlName.Contains(p.UrlName));
     }
 
     [HttpGet("img")]

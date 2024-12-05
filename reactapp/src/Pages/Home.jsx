@@ -94,11 +94,11 @@ export default class Home extends Component {
             // Sản phẩm mới nhất + Sản phẩm đã xem (có thể xem như là 1 component)
           }
           <div className="otherProducts main-margin py-5">
-            <ProductSuggestion title="Sản phẩm liên quan" />
+            <ProductSuggestion title="Sản phẩm bán chạy" filter="top" />
           </div>
 
           <div className="watchedProducts main-margin py-5">
-            <ProductSuggestion title="Sản phẩm đã xem" />
+            <ProductSuggestion title="Sản phẩm đã xem" filter="recent" username={this.props.username} />
           </div>
 
           {

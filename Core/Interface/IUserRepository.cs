@@ -17,7 +17,7 @@ public interface IUserRepository : IUploadImage
 
     Task UpdateInfo(UserUpdateInfoDTO user, string username);
 
-    void GainPoint(int? userId, int? point);
+    Task GainPoint(int? userId, int? point);
 
     Task Lock(string username);
 }

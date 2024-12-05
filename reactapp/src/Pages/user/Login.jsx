@@ -82,7 +82,9 @@ export default function Login() {
         }
       }).then(() => {
         Cookies.set("user_token", idToken, { secure: true, sameSite: "Lax" });
-        alert("Đăng nhập thành công!"); location.href = "/"
+        alert("Đăng nhập thành công!");
+        localStorage.removeItem("recent");
+        location.href = "/"
       })
     }
     catch (err) {
@@ -114,7 +116,7 @@ export default function Login() {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           }
-        }).then(() => { alert("Đăng nhập thành công!"); location.href = "/" })
+        }).then(() => { alert("Đăng nhập thành công!"); localStorage.removeItem("recent"); location.href = "/" })
       }
       else {
         alert("Vui lòng đăng ký tài khoản để hoàn thành đăng nhập!");

@@ -5,7 +5,7 @@ import ProductReview from "/src/Components/product/ProductReview";
 import AddToCart from "/src/Components/product/AddToCart";
 import { DisplayPrice } from "/src/Scripts/Utility.js"
 import { useParams } from "react-router-dom";
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 export default function ProductDetail(props) {
   let { urlName, colorId } = useParams();
@@ -16,9 +16,23 @@ export default function ProductDetail(props) {
   let [ index, setIndex ] = useState(0);
   let [ sku, setSku ] = useState("");
   let [ loading, setLoading ] = useState(true);
+  const hasRead = useRef(false);
 
   useEffect(() => {
+    if (hasRead.current) return;
+
+    if (props.username === null) {
+      let recentArray = []
+      try {
+        recentArray = JSON.parse(localStorage.getItem("recent")).urlName
+        if (recentArray.length === 5) recentArray = recentArray.slice(0, 4);
+      }
+      catch {}
+      localStorage.setItem("recent", JSON.stringify({ urlName: [urlName, ...recentArray] }));
+    }
     populateProductDetail(urlName);
+
+    hasRead.current = true;
   }, []);
 
   function handleIndexChange(newIndex, total) {
@@ -168,12 +182,12 @@ export default function ProductDetail(props) {
 
         <ProductReview review={review} sizeList={sizeList} colorList={colorList} idList={idList} sku={product[0].sku} />
 
-        <div className="otherProducts pt-5">
-          <ProductSuggestion title="Sản phẩm liên quan" />
+        <div className="otherProducts main-margin py-5">
+          <ProductSuggestion title="Sản phẩm bán chạy" filter="top" />
         </div>
 
-        <div className="watchedProducts pt-5">
-          <ProductSuggestion title="Sản phẩm đã xem" />
+        <div className="watchedProducts main-margin py-5">
+          <ProductSuggestion title="Sản phẩm đã xem" filter="recent" username={props.username} />
         </div>
       </main>
     )

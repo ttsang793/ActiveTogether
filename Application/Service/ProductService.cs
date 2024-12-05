@@ -36,7 +36,23 @@ public class ProductService : IProductService
             _ => new List<Product>(),
         };
     }
-    
+
+    public async Task<IEnumerable<Product>> ListTop5Seller(DateTime dateStart)
+    {
+        return await _unitOfWork.Products.ListTop5Seller(dateStart);
+    }
+
+    public async Task<IEnumerable<StatisticDTO>> ListBestSeller(DateTime dateStart, DateTime dateEnd)
+    {
+        return await _unitOfWork.Products.ListBestSeller(dateStart, dateEnd);
+    }
+
+    public async Task<IEnumerable<StatisticDTO>> ListSaleByBrand(DateTime dateStart, DateTime dateEnd)
+    {
+        return await _unitOfWork.Products.ListSaleByBrand(dateStart, dateEnd);
+    }
+
+
     public List<FilterListDTO> GetAllFilter()
     {
         return _unitOfWork.Products.GetAllFilter();

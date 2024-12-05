@@ -3,6 +3,7 @@ using Core.Entity;
 using Core.Interface;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Linq.Expressions;
 
 namespace Infrastructure.Repository;
@@ -81,7 +82,6 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
             {
                 searchDTO[gender].DetailArray = searchDTO[gender].DetailString!.Split("_").ToList();
                 searchDTO[gender].DetailArray!.Add("2");
-                foreach (var s in searchDTO[gender].DetailArray) Console.WriteLine(s);
                 productQuery = productQuery.Where(p => searchDTO[gender].DetailArray!.Contains(p.Gender.ToString()));
             }
         }
@@ -130,6 +130,62 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
         });
 
         return filters;
+    }
+
+    public async Task<IEnumerable<Product>> ListTop5Seller(DateTime dateStart)
+    {
+        var bestSeller = (await ListBestSeller(dateStart, DateTime.Now)).Take(5).ToList();
+        List<int?> bestSellerId = new List<int?>();
+        foreach (var b in bestSeller) bestSellerId.Add(b.Id);
+        IQueryable<Product> productQuery = GetDbSet().Include(p => p.ProductColors).ThenInclude(p => p.ProductImages)
+            .Include(p => p.ProductSports).Include(p => p.PromotionDetails).Where(p => bestSellerId.Contains(p.Id));
+
+        return await productQuery.ToListAsync();
+    }
+
+    public async Task<IEnumerable<StatisticDTO>> ListBestSeller(DateTime dateStart, DateTime dateEnd)
+    {
+        var result = await (from p in GetDbSet()
+                      join pc in GetDbContext().ProductColors on p.Id equals pc.ProductId
+                      join pd in GetDbContext().ProductDetails on pc.Id equals pd.ProductColorId
+                      join od in GetDbContext().OrderDetails on pd.Sku equals od.Sku into orderDetails
+                      from od in orderDetails.DefaultIfEmpty()
+                      join o in GetDbContext().Orders on od.OrderId equals o.Id into orders
+                      from o in orders.DefaultIfEmpty()
+                      where o == null || (o.DateReceived >= dateStart && o.DateReceived <= dateEnd)
+                      group new { p, pc, pd, od } by p.Id into g
+                      orderby g.Sum(x => x.od.Quantity) descending
+                      select new StatisticDTO
+                      {
+                          Id = g.Key,
+                          Name = g.Select(x => x.p.Name).First(),
+                          Total = g.Sum(x => x.od.Quantity ?? 0)
+                      }).ToListAsync();
+
+        return result;
+    }
+
+    public async Task<IEnumerable<StatisticDTO>> ListSaleByBrand(DateTime dateStart, DateTime dateEnd)
+    {
+        var result = await (from p in GetDbSet()
+                            join pc in GetDbContext().ProductColors on p.Id equals pc.ProductId
+                            join pd in GetDbContext().ProductDetails on pc.Id equals pd.ProductColorId
+                            join b in GetDbContext().Brands on p.BrandId equals b.Id
+                            join od in GetDbContext().OrderDetails on pd.Sku equals od.Sku into orderDetails
+                            from od in orderDetails.DefaultIfEmpty()
+                            join o in GetDbContext().Orders on od.OrderId equals o.Id into orders
+                            from o in orders.DefaultIfEmpty()
+                            where (o.DateReceived >= dateStart && o.DateReceived <= dateEnd)
+                            group new { p, pc, pd, b, od } by b.Id into g
+                            orderby g.Sum(x => x.od.Price * x.od.Quantity) descending
+                            select new StatisticDTO
+                            {
+                                Id = g.Key,
+                                Name = g.Select(x => x.b.Name).First(),
+                                Total = g.Sum(x => x.od.Price * x.od.Quantity ?? 0)
+                            }).ToListAsync();
+
+        return result;
     }
 
     private Product GetById(int id)

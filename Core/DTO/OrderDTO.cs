@@ -103,3 +103,12 @@ public class BillDetailAdminDTO : BaseDTO
 
     public int? Quantity { get; set; }
 }
+
+public class OrderStatisticDTO : BaseDTO
+{
+    public string? Month { get; set; }
+
+    public decimal? Revenue { get; set; }
+
+    public decimal? ImportCost { get; set; }
+}

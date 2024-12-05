@@ -48,13 +48,9 @@ public class OrderService : IOrderService
             PaymentMethod = o.PaymentMethod,
             IsPaid = (o.PaymentMethod != "Tiền mặt"),
             Status = 0
-        };
-        
+        };        
         order.Point = (int)(order.UserId > 0 ? o.Total / 10000 : 0);
-
-        Console.WriteLine("Hello world");
         int id = _unitOfWork.Orders.AddOrder(order);
-        Console.WriteLine("finished");
 
         foreach (var odDTO in o.OrderDetails)
         {
@@ -83,17 +79,12 @@ public class OrderService : IOrderService
 
         var order = _unitOfWork.Orders.GetOrderById(id);
         if (order.UserId > 0)
-            _unitOfWork.Users.GainPoint(order.UserId, order.Point);
+            await _unitOfWork.Users.GainPoint(order.UserId, order.Point);
 
         var orderDetails = await _unitOfWork.Orders.GetOrderDetailsById(id);
 
         foreach (var od in orderDetails)
-        {
-            /*bool valid = await _unitOfWork.ProductDetails.CheckChangeQuantity(od.Sku, (int)(od.Quantity * -1));
-            if (!valid) return false;*/
-
             await _unitOfWork.ProductDetails.ChangeQuantity(od.Sku, (int)(od.Quantity * -1));
-        }
 
         return await _unitOfWork.SaveChangesAsync();
     }
@@ -102,5 +93,15 @@ public class OrderService : IOrderService
     {
         _unitOfWork.Orders.ChangeStatus(o);
         return await _unitOfWork.SaveChangesAsync();
+    }
+
+    public IEnumerable<OrderStatisticDTO> ListSaleRevenue(DateTime dateStart, DateTime dateEnd)
+    {
+        int monthDifference = (dateEnd.Year - dateStart.Year) * 12 + dateEnd.Month - dateStart.Month;
+        if (monthDifference > 1) return _unitOfWork.Orders.GetRevenueByMonth(dateStart, dateEnd);
+
+        TimeSpan dayDifference = dateEnd - dateStart;
+        if (monthDifference == 0 && dayDifference.Days < 14) return _unitOfWork.Orders.GetRevenueByDay(dateStart, dateEnd);
+        return _unitOfWork.Orders.GetRevenueByWeek(dateStart, dateEnd);
     }
 }

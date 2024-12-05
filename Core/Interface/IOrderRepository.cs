@@ -26,10 +26,16 @@ public interface IOrderRepository
     void AddOrderDetail(OrderDetail od);
 
     Task<bool> CancelOrder(int id);
-    
+
     void ReceiveOrder(int id);
 
     void ChangeStatus(OrderVertifyDTO o);
 
     void ChangeRefundStatus(int id, bool status);
+
+    IEnumerable<OrderStatisticDTO> GetRevenueByDay(DateTime dateStart, DateTime dateEnd);
+
+    IEnumerable<OrderStatisticDTO> GetRevenueByWeek(DateTime dateStart, DateTime dateEnd);
+
+    IEnumerable<OrderStatisticDTO> GetRevenueByMonth(DateTime dateStart, DateTime dateEnd);
 }
