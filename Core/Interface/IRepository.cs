@@ -19,11 +19,6 @@ public interface IUpdate<T> where T : BaseEntity
     void Update(T entity);
 }
 
-public interface IDelete
-{
-    void Delete(int id);
-}
-
 public interface ILock
 {
     void Lock(int id);

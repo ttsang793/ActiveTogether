@@ -50,3 +50,10 @@ public class ProductRecentLocalDTO : BaseDTO
 {
     public string[]? UrlName { get; set; }
 }
+
+public class ProductHistoryDTO : BaseDTO
+{
+    public string? Username { get; set; }
+
+    public string? Urlname { get; set; }
+}

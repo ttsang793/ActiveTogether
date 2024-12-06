@@ -104,4 +104,45 @@ public class ProductDetailRepository : BaseRepository<ProductDetail>, IProductDe
         productDetail.IsActive = true;
         return true;
     }
+
+    private async Task<bool> DeleteImage(string name)
+    {
+        try
+        {
+            string[] files = Directory.GetFiles(_uploadDirectory, name + "-*");
+            if (files.Any())
+            {
+                foreach (string file in files) File.Delete(file);
+                return true;
+            }
+            else return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> UploadImages(IFormFile[] files, int id)
+    {
+        if (files == null || files.Length == 0) return false;
+        var filePaths = new List<string>();
+
+        foreach (var file in files)
+        {
+            if (file.Length > 0)
+            {
+                var filePath = Path.Combine(_uploadDirectory, file.FileName);
+
+                await DeleteImage(file.FileName); //Lay phan dau cua file
+                
+                using var stream = new FileStream(filePath, FileMode.Create));
+                await file.CopyToAsync(stream);
+                
+                filePaths.Add(filePath);
+            }
+        }
+
+        return true;
+    }
 }

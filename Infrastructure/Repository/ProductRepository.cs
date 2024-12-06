@@ -136,11 +136,12 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
         var bestSeller = (await ListBestSeller(dateStart, DateTime.Now)).Take(5).ToList();
         List<int?> bestSellerId = new List<int?>();
-        foreach (var b in bestSeller) bestSellerId.Add(b.Id);
+        foreach (var b in bestSeller) bestSellerId.Add( b.Id);
         IQueryable<Product> productQuery = GetDbSet().Include(p => p.ProductColors).ThenInclude(p => p.ProductImages)
             .Include(p => p.ProductSports).Include(p => p.PromotionDetails).Where(p => bestSellerId.Contains(p.Id));
 
-        return await productQuery.ToListAsync();
+        var result = await productQuery.ToListAsync();
+        return result.OrderBy(p => bestSellerId.IndexOf(p.Id)).ToList();
     }
 
     public async Task<IEnumerable<StatisticDTO>> ListBestSeller(DateTime dateStart, DateTime dateEnd)

@@ -87,7 +87,8 @@ export default function UserMain() {
               (<Navigate to="/nguoi-dung" replace />)
             } />
             <Route path="/lan-dau-google" element={(<><RedirectRegister /> <PageTitle title="Đăng ký tài khoản" /></>)} />
-            <Route path="*" element={<><FourOFour /> <PageTitle title="404 | Trang không tìm thấy"/></>} />
+            <Route path="/404" element={<><FourOFour /> <PageTitle title="404 | Trang không tìm thấy"/></>} />
+            <Route path="/*" element={<><FourOFour /> <PageTitle title="404 | Trang không tìm thấy"/></>} />
 
             {
               // Trang con của Sản phẩm

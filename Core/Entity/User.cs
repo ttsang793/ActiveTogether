@@ -4,7 +4,7 @@ public partial class User : BaseEntity
 {
     public string? FirebaseUid { get; set; }
 
-    public string? Username { get; set; } = null!;
+    public string Username { get; set; } = null!;
 
     public string? FullName { get; set; }
 
@@ -21,6 +21,8 @@ public partial class User : BaseEntity
     public virtual ICollection<CartDetail> CartDetails { get; set; } = new List<CartDetail>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public virtual ICollection<ProductHistory> ProductHistories { get; set; } = new List<ProductHistory>();
 
     public virtual ICollection<ProductReview> ProductReviews { get; set; } = new List<ProductReview>();
 

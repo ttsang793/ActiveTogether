@@ -22,4 +22,6 @@ public interface IProductDetailRepository
     Task<bool> Lock(string sku);
   
     Task<bool> Unlock(string sku);
+
+    Task<bool> UploadImages(IFormFile[] files, int id);
 }

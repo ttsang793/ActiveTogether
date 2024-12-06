@@ -16,6 +16,10 @@ public interface IProductService
 
     Task<IEnumerable<StatisticDTO>> ListSaleByBrand(DateTime dateStart, DateTime dateEnd);
 
+    Task<IEnumerable<Product>> GetRecentViewProduct(string username);
+
+    Task<bool> UpdateRecentViewProduct(ProductHistory productHistory);
+    
     List<FilterListDTO> GetAllFilter();
 
     Task<bool> Insert(Product product);

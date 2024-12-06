@@ -28,6 +28,8 @@ public partial class Product : BaseEntity
 
     public virtual ICollection<ProductColor> ProductColors { get; set; } = new List<ProductColor>();
 
+    public virtual ICollection<ProductHistory> ProductHistories { get; set; } = new List<ProductHistory>();
+
     public virtual ICollection<ProductReview> ProductReviews { get; set; } = new List<ProductReview>();
 
     public virtual ICollection<ProductSport> ProductSports { get; set; } = new List<ProductSport>();

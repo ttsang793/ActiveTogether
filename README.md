@@ -11,7 +11,7 @@
 Với phương châm <q><i>Together, we'll build an Active community</i></q>, Active Together tập trung vào các sản phẩm liên quan đến các môn thể thao đồng đội như bóng đá, bóng rổ, cầu lông... hướng đến xã hội năng động và phát triển cùng nhau.
 </p>
 
-### _Mục tiêu của Active Togeher:_
+### _Mục tiêu của Active Together:_
 * Cung cấp các sản phẩm đa dạng với các môn thể thao.
 * Am hiểu nhu cầu của khách hàng.
 * Mang tính độc đáo đa dạng và phong phú cao.

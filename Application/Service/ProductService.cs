@@ -52,6 +52,17 @@ public class ProductService : IProductService
         return await _unitOfWork.Products.ListSaleByBrand(dateStart, dateEnd);
     }
 
+    public async Task<IEnumerable<Product>> GetRecentViewProduct(string username)
+    {
+        var productHistory = (await _unitOfWork.ProductHistories.GetAllAsync(p => p.Username == username)).ToList();
+        return (await _unitOfWork.Products.GetAllProducts(p => productHistory.Contains(p.UrlName))).OrderBy(p => productHistory.IndexOf(p.UrlName));
+    }
+
+    public async Task<bool> UpdateRecentViewProduct(ProductHistory productHistory)
+    {
+        await _unitOfWork.ProductHistories.Update(productHistory);
+        return await _unitOfWork.SaveChangesAsync();
+    }
 
     public List<FilterListDTO> GetAllFilter()
     {

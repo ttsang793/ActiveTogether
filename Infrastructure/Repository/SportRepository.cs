@@ -48,12 +48,32 @@ public class SportRepository : BaseRepository<Sport>, ISportRepository
         sport.IsActive = true;
     }
 
+    private async Task<bool> DeleteImage(string name)
+    {
+        try
+        {
+            string[] files = Directory.GetFiles(_uploadDirectory, name + ".*");
+            if (files.Any())
+            {
+                foreach (string file in files) File.Delete(file);
+                return true;
+            }
+            else return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     public async Task<bool> UploadImage(IFormFile file, string name)
     {
         try
         {
             var fileName = name + Path.GetExtension(file.FileName);
             var filePath = Path.Combine(_uploadDirectory, fileName);
+
+            await DeleteImage(name);
 
             using var stream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(stream);

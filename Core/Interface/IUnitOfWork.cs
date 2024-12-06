@@ -13,6 +13,7 @@ public interface IUnitOfWork
     IProductRepository Products { get; }
     IProductColorRepository ProductColors { get; }
     IProductDetailRepository ProductDetails { get; }
+    IProductHistoryRepository ProductHistories { get; }
     IProductReviewRepository ProductReviews { get; }
     IPromotionRepository Promotions { get; }
     IRefundRepository Refunds { get; }

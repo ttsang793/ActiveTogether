@@ -16,6 +16,7 @@ public class UnitOfWork : IUnitOfWork
     private IProductRepository? _productRepository;
     private IProductColorRepository? _productColorRepository;
     private IProductDetailRepository? _productDetailRepository;
+    private IProductHistoryRepository? _productHistoryRepository;
     private IProductReviewRepository? _productReviewRepository;
     private IPromotionRepository? _promotionRepository;
     private IRefundRepository? _refundRepository;
@@ -41,6 +42,7 @@ public class UnitOfWork : IUnitOfWork
     public IProductRepository Products => _productRepository ??= new ProductRepository(_dbContext);
     public IProductColorRepository ProductColors => _productColorRepository ??= new ProductColorRepository(_dbContext);
     public IProductDetailRepository ProductDetails => _productDetailRepository ??= new ProductDetailRepository(_dbContext);
+    public IProductHistoryRepository ProductHistories => _productHistoryRepository ??= new ProductHistoryRepository(_dbContext);
     public IProductReviewRepository ProductReviews => _productReviewRepository ??= new ProductReviewRepository(_dbContext);
     public IPromotionRepository Promotions => _promotionRepository ??= new PromotionRepository(_dbContext);
     public IRefundRepository Refunds => _refundRepository ??= new RefundRepository(_dbContext);

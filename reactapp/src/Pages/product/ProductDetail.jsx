@@ -20,18 +20,7 @@ export default function ProductDetail(props) {
 
   useEffect(() => {
     if (hasRead.current) return;
-
-    if (props.username === null) {
-      let recentArray = []
-      try {
-        recentArray = JSON.parse(localStorage.getItem("recent")).urlName
-        if (recentArray.length === 5) recentArray = recentArray.slice(0, 4);
-      }
-      catch {}
-      localStorage.setItem("recent", JSON.stringify({ urlName: [urlName, ...recentArray] }));
-    }
     populateProductDetail(urlName);
-
     hasRead.current = true;
   }, []);
 
@@ -196,29 +185,58 @@ export default function ProductDetail(props) {
   return loading ? <PleaseWait /> : renderProductDetail(product, image, review);
 
   async function populateProductDetail(url) {
-    const response = await fetch(`/product?urlName=${url}`);
-    if (!response.ok) throw new Error('Network response was not ok');
-    const productData = await response.json();
+    try {
+      const response = await fetch(`/product?urlName=${url}`);
+      if (!response.ok) throw new Error('Network response was not ok');
+      const productData = await response.json();
 
-    const imageResponse = await fetch(`/product/img?urlName=${url}`);
-    if (!imageResponse.ok) throw new Error('Network response was not ok');
-    const imageData = await imageResponse.json();
+      const imageResponse = await fetch(`/product/img?urlName=${url}`);
+      if (!imageResponse.ok) throw new Error('Network response was not ok');
+      const imageData = await imageResponse.json();
 
-    const reviewResponse = await fetch(`/product/review/get?urlName=${url}`);
-    if (!reviewResponse.ok) throw new Error('Network response was not ok');
-    const reviewData = await reviewResponse.json();
-    
-    const skuData = []
-    productData.forEach(p => {
-      if (skuData.findIndex(s => s.sku.includes(p.sku.substring(0,5))) === -1) skuData.push(p);
-    })
+      const reviewResponse = await fetch(`/product/review/get?urlName=${url}`);
+      if (!reviewResponse.ok) throw new Error('Network response was not ok');
+      const reviewData = await reviewResponse.json();
+      
+      const skuData = []
+      productData.forEach(p => {
+        if (skuData.findIndex(s => s.sku.includes(p.sku.substring(0,5))) === -1) skuData.push(p);
+      })
 
-    //Set Item
-    setProduct(product = productData);
-    setSku(sku = skuData[colorId].sku);
-    setIndex(index = Number(skuData[colorId].image) - 1);
-    setImage(image = imageData);
-    setReview(review = reviewData);
-    setLoading(loading = false);
+      //Set Item
+      setProduct(product = productData);
+      setSku(sku = skuData[colorId].sku);
+      setIndex(index = Number(skuData[colorId].image) - 1);
+      setImage(image = imageData);
+      setReview(review = reviewData);
+      setLoading(loading = false);
+
+
+      if (props.username === null) {
+        let recentArray = []
+        try {
+          recentArray = JSON.parse(localStorage.getItem("recent")).urlName;
+          const index = recentArray.findIndex(u => u == urlName)
+          if (index >= 0) recentArray = [...recentArray.slice(0,index), ...recentArray.slice(index + 1)]
+          if (recentArray.length === 5) recentArray = recentArray.slice(0, 4);
+        }
+        catch {}
+        localStorage.setItem("recent", JSON.stringify({ urlName: [urlName, ...recentArray] }));
+      }
+      else {
+        console.log(product);
+        fetch('/product/update/recent', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json`'
+          },
+          body: JSON.stringify({ username: props.username, productId: product[0].id, urlName })
+        });
+      }
+    }
+    catch {
+      location.href = "./404"
+    }
   }
 }

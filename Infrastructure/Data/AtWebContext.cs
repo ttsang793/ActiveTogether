@@ -44,6 +44,8 @@ public partial class AtWebContext : DbContext
 
     public virtual DbSet<ProductDetail> ProductDetails { get; set; }
 
+    public virtual DbSet<ProductHistory> ProductHistories { get; set; }
+
     public virtual DbSet<ProductImage> ProductImages { get; set; }
 
     public virtual DbSet<ProductReview> ProductReviews { get; set; }
@@ -637,6 +639,41 @@ public partial class AtWebContext : DbContext
                 .HasForeignKey(d => d.ProductColorId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_ProductDetail_ProductColor");
+        });
+
+        modelBuilder.Entity<ProductHistory>(entity =>
+        {
+            entity.HasKey(e => new { e.Username, e.ProductId }).HasName("PRIMARY");
+
+            entity.ToTable("product_history");
+
+            entity.HasIndex(e => e.ProductId, "FK_ProductHistory_Product");
+
+            entity.Property(e => e.Username)
+                .HasMaxLength(50)
+                .HasColumnName("username");
+            entity.Property(e => e.ProductId)
+                .HasColumnType("int(11)")
+                .HasColumnName("product_id");
+            entity.Property(e => e.Timestamp)
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValueSql("'current_timestamp()'")
+                .HasColumnType("timestamp")
+                .HasColumnName("timestamp");
+            entity.Property(e => e.UrlName).HasColumnName("url_name");
+
+            entity.Ignore(e => e.Id);
+
+            entity.HasOne(d => d.Product).WithMany(p => p.ProductHistories)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_ProductHistory_Product");
+
+            entity.HasOne(d => d.UsernameNavigation).WithMany(p => p.ProductHistories)
+                .HasPrincipalKey(p => p.Username)
+                .HasForeignKey(d => d.Username)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_ProductHistory_User");
         });
 
         modelBuilder.Entity<ProductImage>(entity =>

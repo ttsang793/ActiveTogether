@@ -47,10 +47,27 @@ public class ProductController : ControllerBase
     [HttpPost("get/recent/local")]
     public async Task<IEnumerable<Product>> GetRecentViewProduct([Bind("UrlName")] ProductRecentLocalDTO product)
     {
-        return await _productService.GetAllProducts(p => product.UrlName.Contains(p.UrlName));
+        if (product.UrlName.Any())
+        {
+            var recentProduct = await _productService.GetAllProducts(p => product.UrlName.Contains(p.UrlName));
+            return recentProduct.OrderBy(p => Array.IndexOf(product.UrlName, p.UrlName)).ToList();
+        }
+        else return new List<Product>();
     }
 
-    [HttpGet("img")]
+    [HttpPost("get/recent")]
+    public async Task<IEnumerable<Product>> GetRecentViewProduct(string username)
+    {
+        return await _productService.GetRecentViewProduct(username);
+    }
+
+    [HttpPost("update/recent")]
+    public async Task<bool> UpdateRecentViewProduct([Bind("Username", "ProductId", "UrlName")] ProductHistory productHistory)
+    {
+        return await _productService.UpdateRecentViewProduct(productHistory);
+    }
+
+        [HttpGet("img")]
     public IEnumerable<ProductImage> GetProductImagesByUrlName(string urlName)
     {
         return _productDetailService.GetProductImagesByUrlName(urlName);
