@@ -59,10 +59,10 @@ export default class ABlogArticle extends Component {
         <table className="table table-striped table-bordered table-hover pointer mt-3">
           <thead>
             <tr>
-              <th className="text-center">ID</th>
-              <th className="text-center w-10">Hình minh họa</th>
-              <th className="text-center">Tiêu đề</th>
-              <th className="text-center">Tác giả</th>
+              <th className="text-center align-middle">ID</th>
+              <th className="text-center align-middle w-10">Hình minh họa</th>
+              <th className="text-center align-middle">Tiêu đề</th>
+              <th className="text-center align-middle">Tác giả</th>
               <th className="w-120px"></th>
             </tr>
           </thead>

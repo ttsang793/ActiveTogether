@@ -1,5 +1,6 @@
 ﻿using Core.DTO;
 using Core.Entity;
+using Microsoft.AspNetCore.Http;
 using System.Linq.Expressions;
 
 namespace Core.Interface;
@@ -15,4 +16,8 @@ public interface IBlogRepository : IInsert<BlogArticle>, IUpdate<BlogArticle>, I
     IEnumerable<BlogArticle> GetAllBlogs(Expression<Func<BlogArticle, bool>> expression = null);
 
     BlogArticle GetBlogById(int id);
+
+    string[] GetBlogImageById(int id);
+
+    Task<bool> UploadImages(IFormFile[] files, string id);
 }

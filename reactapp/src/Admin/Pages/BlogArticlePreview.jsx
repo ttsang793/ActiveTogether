@@ -1,16 +1,24 @@
-import { useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import "./BlogArticlePreview.css"
+import PleaseWait from '/src/Shared/PleaseWait';
 
 export default function ABlogArticlePreview() {
-  const article = JSON.parse(localStorage.getItem("article-load"));
+  let [article, setArticle] = useState({});
+  const hasLoad = useRef(false);
 
   useEffect(() => {
-    localStorage.removeItem("article-load");
-  }, [article]);
+    if (hasLoad.current) return;
+  
+    setArticle(article = JSON.parse(localStorage.getItem("article-load")));
 
-  document.title = article.title;
+    setTimeout(() => {
+      localStorage.removeItem("article-load");
+      document.title = article.title;
+    }, 500);
+    hasLoad.current = true;
+  }, []);  
 
-  return (
+  return (!hasLoad.current) ? <PleaseWait /> : (
     <main className="admin-main blog-article">
       <h1 className="flex-grow-1 text-center fw-bold">{article.title.toUpperCase()}</h1>
       <hr />

@@ -156,8 +156,8 @@ export default function ProductDetail(props) {
             </div>
             <hr />
 
-            {(sizeList.length > 1) && renderSize(sizeList)}
             {(colorList.length > 1) && renderColor(colorList, idList)}
+            {(sizeList.length > 1) && renderSize(sizeList)}
 
             {<AddToCart type="text" product={product.find(p => p.sku === sku)} username={props.username} image={image[index].image} />}
           </div>

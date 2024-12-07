@@ -17,6 +17,10 @@ public interface IProductDetailService
 
     Task<bool> ChangeQuantity(string sku, int change);
 
+    Task<bool> Insert(ProductDetailAdminDTO productDetail);
+
+    Task<bool> Update(ProductDetailAdminDTO productDetail);
+
     Task<bool> Lock(string sku);
   
     Task<bool> Unlock(string sku);

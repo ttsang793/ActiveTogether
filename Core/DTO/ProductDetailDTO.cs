@@ -21,3 +21,20 @@ public class ProductDetailDTO
 
     public string? Description { get; set; }
 }
+
+public class ProductDetailAdminDTO
+{
+    public int ProductId { get; set; }
+
+    public int? ProductColorId { get; set; }
+
+    public int? Id { get; set; }
+
+    public string Sku { get; set; } = null!;
+
+    public string? Size { get; set; } = null!;
+
+    public decimal? Price { get; set; }
+
+    public string? Note { get; set; }
+}

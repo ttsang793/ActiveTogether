@@ -3,11 +3,13 @@ using Core.Entity;
 using Core.Interface;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Repository;
 
 public class ProductDetailRepository : BaseRepository<ProductDetail>, IProductDetailRepository
 {
+    
     public ProductDetailRepository(AtWebContext dbContext) : base(dbContext)
     {
     }
@@ -91,6 +93,23 @@ public class ProductDetailRepository : BaseRepository<ProductDetail>, IProductDe
         return true;
     }
 
+    public void Insert(ProductDetail productDetail)
+    {
+        GetDbSet().Add(productDetail);
+    }
+
+    public void Update(ProductDetail productDetail)
+    {
+        var findProductDetail = GetDbSet().FirstOrDefault(p => p.Sku == productDetail.Sku);
+        if (findProductDetail != null)
+        {
+            findProductDetail.Price = productDetail.Price;
+            findProductDetail.Note = productDetail.Note;
+
+            GetDbSet().Update(findProductDetail);
+        }
+    }
+
     public async Task<bool> Lock(string sku)
     {
         var productDetail = await GetProductDetailBySku(sku);
@@ -102,47 +121,6 @@ public class ProductDetailRepository : BaseRepository<ProductDetail>, IProductDe
     {
         var productDetail = await GetProductDetailBySku(sku);
         productDetail.IsActive = true;
-        return true;
-    }
-
-    private async Task<bool> DeleteImage(string name)
-    {
-        try
-        {
-            string[] files = Directory.GetFiles(_uploadDirectory, name + "-*");
-            if (files.Any())
-            {
-                foreach (string file in files) File.Delete(file);
-                return true;
-            }
-            else return false;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    public async Task<bool> UploadImages(IFormFile[] files, int id)
-    {
-        if (files == null || files.Length == 0) return false;
-        var filePaths = new List<string>();
-
-        foreach (var file in files)
-        {
-            if (file.Length > 0)
-            {
-                var filePath = Path.Combine(_uploadDirectory, file.FileName);
-
-                await DeleteImage(file.FileName); //Lay phan dau cua file
-                
-                using var stream = new FileStream(filePath, FileMode.Create));
-                await file.CopyToAsync(stream);
-                
-                filePaths.Add(filePath);
-            }
-        }
-
         return true;
     }
 }

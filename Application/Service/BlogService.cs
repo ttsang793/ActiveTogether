@@ -41,6 +41,11 @@ public class BlogService : IBlogService
         return _unitOfWork.Blogs.GetBlogById(id);
     }
 
+    public string[] GetBlogImageById(int id)
+    {
+        return _unitOfWork.Blogs.GetBlogImageById(id);
+    }
+
     public async Task<bool> Insert(BlogArticle blog)
     {
         _unitOfWork.Blogs.Insert(blog);
@@ -56,6 +61,11 @@ public class BlogService : IBlogService
     public async Task<bool> UploadImage(IFormFile file, string name)
     {
         return (await _unitOfWork.Blogs.UploadImage(file, name));
+    }
+
+    public async Task<bool> UploadImages(IFormFile[] file, string name)
+    {
+        return (await _unitOfWork.Blogs.UploadImages(file, name));
     }
 
     public async Task<bool> Lock(int id)

@@ -25,7 +25,7 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
 
         var currentDate = DateTime.Now;
         IQueryable<Product> productQuery = GetDbSet().Include(p => p.ProductColors).ThenInclude(p => p.ProductImages)
-            .Include(p => p.ProductSports).Include(p => p.PromotionDetails);
+            .Include(p => p.ProductSports).Include(p => p.PromotionDetails).Where(p => p.IsActive == true);
         List<string> sizeList = new();
 
         if (searchDTO != null)
@@ -94,10 +94,10 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
     public List<FilterListDTO> GetAllFilter()
     {
         List<FilterListDTO> filters = new List<FilterListDTO>();
-        var brand = (from b in GetDbContext().Brands select new FilterDTO { Id = b.Id.ToString(), Name = b.Name }).ToArray();
+        var brand = (from b in GetDbContext().Brands where b.IsActive == true select new FilterDTO { Id = b.Id.ToString(), Name = b.Name }).ToArray();
         filters.Add(new FilterListDTO { Params = "brand", Title = "Thương hiệu", Details = brand });
 
-        var sport = (from s in GetDbContext().Sports where s.Id > 0 select new FilterDTO { Id = s.Id.ToString(), Name = s.Name }).ToArray();
+        var sport = (from s in GetDbContext().Sports where s.Id > 0 && s.IsActive == true select new FilterDTO { Id = s.Id.ToString(), Name = s.Name }).ToArray();
         filters.Add(new FilterListDTO { Params = "sport", Title = "Thể thao", Details = sport });
 
         var clothSize = (from p in GetDbSet()
@@ -115,7 +115,7 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
                         select new FilterDTO { Id = d.Size, Name = d.Size }).Distinct().ToArray();
         filters.Add(new FilterListDTO { Params = "shoe", Title = "Size giày", Details = shoeSize });
 
-        var colors = (from c in GetDbContext().Colors select new FilterDTO { Id = c.Code, Name = c.Name }).Distinct().ToArray();
+        var colors = (from c in GetDbContext().Colors where c.IsActive == true select new FilterDTO { Id = c.Code, Name = c.Name }).Distinct().ToArray();
         filters.Add(new FilterListDTO { Params = "color", Title = "Màu sắc", Details = colors });
 
         filters.Add(new FilterListDTO
@@ -232,6 +232,14 @@ public class ProductRepository : BaseRepository<Product>, IProductRepository
         if (oldSport.Any()) GetDbContext().ProductSports.RemoveRange(oldSport);
 
         GetDbContext().ProductSports.AddRange(productSports);
+    }
+
+    public void UpdatePrice(int id)
+    {
+        var minPrice = GetDbContext().ProductDetails.Min(p => p.Price);
+        var product = GetDbSet().First(p => p.Id == id);
+        product.Price = minPrice;
+        GetDbSet().Update(product);
     }
 
     public void Lock(int id)

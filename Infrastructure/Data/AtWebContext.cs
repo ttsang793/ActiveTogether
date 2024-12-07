@@ -38,6 +38,8 @@ public partial class AtWebContext : DbContext
 
     public virtual DbSet<PermissionGroup> PermissionGroups { get; set; }
 
+    public virtual DbSet<PolicyArticle> PolicyArticles { get; set; }
+
     public virtual DbSet<Product> Products { get; set; }
 
     public virtual DbSet<ProductColor> ProductColors { get; set; }
@@ -496,6 +498,39 @@ public partial class AtWebContext : DbContext
                 .HasMaxLength(40)
                 .HasDefaultValueSql("'NULL'")
                 .HasColumnName("name");
+        });        
+
+        modelBuilder.Entity<PolicyArticle>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("policy_article");
+
+            entity.HasIndex(e => e.Title, "title").IsUnique();
+
+            entity.HasIndex(e => e.UrlName, "url_name").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasColumnType("int(11)")
+                .HasColumnName("id");
+            entity.Property(e => e.Content)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("content");
+            entity.Property(e => e.DatePublish)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnType("date")
+                .HasColumnName("date_publish");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("is_active");
+            entity.Property(e => e.Title)
+                .HasMaxLength(200)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("title");
+            entity.Property(e => e.UrlName)
+                .HasMaxLength(200)
+                .HasDefaultValueSql("'NULL'")
+                .HasColumnName("url_name");
         });
 
         modelBuilder.Entity<Product>(entity =>

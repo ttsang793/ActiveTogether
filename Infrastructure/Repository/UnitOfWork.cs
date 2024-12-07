@@ -13,6 +13,7 @@ public class UnitOfWork : IUnitOfWork
     private IColorRepository? _colorRepository;
     private IImportRepository? _importRepository;
     private IOrderRepository? _orderRepository;
+    private IPolicyRepository? _policyRepository;
     private IProductRepository? _productRepository;
     private IProductColorRepository? _productColorRepository;
     private IProductDetailRepository? _productDetailRepository;
@@ -33,12 +34,13 @@ public class UnitOfWork : IUnitOfWork
 
     public IAdminUserRepository AdminUsers => _adminUserRepository ??= new AdminUserRepository(_dbContext);
     public IBrandRepository Brands => _brandRepository ??= new BrandRepository(_dbContext);
-    public IBlogRepository Blogs => _blogRepository ??= new BlogRepository(_dbContext);    
+    public IBlogRepository Blogs => _blogRepository ??= new BlogRepository(_dbContext);
     public ICartRepository Carts => _cartRepository ??= new CartRepository(_dbContext);
     public ICategoryRepository Categories => _categoryRepository ??= new CategoryRepository(_dbContext);
     public IColorRepository Colors => _colorRepository ??= new ColorRepository(_dbContext);
     public IImportRepository Imports => _importRepository ??= new ImportRepository(_dbContext);
     public IOrderRepository Orders => _orderRepository ??= new OrderRepository(_dbContext);
+    public IPolicyRepository Policies => _policyRepository ??= new PolicyRepository(_dbContext);
     public IProductRepository Products => _productRepository ??= new ProductRepository(_dbContext);
     public IProductColorRepository ProductColors => _productColorRepository ??= new ProductColorRepository(_dbContext);
     public IProductDetailRepository ProductDetails => _productDetailRepository ??= new ProductDetailRepository(_dbContext);

@@ -29,6 +29,14 @@
     border-bottom: 1px solid rgba(70,70,70,0.25);
     line-height: 3rem;
   }
+  
+  .ql-align-center {
+    text-align: center;
+  }
+
+  .ql-align-justify {
+    text-align: justify;
+  }
 
   img {
     height: 20dvw;

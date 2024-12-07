@@ -4,9 +4,9 @@ public partial class BlogArticle : BaseEntity
 {
     public string? Title { get; set; }
 
-    public string? Brief { get; set; }
-
     public string? UrlName { get; set; }
+
+    public string? Brief { get; set; }
 
     public string? Thumbnail { get; set; }
 

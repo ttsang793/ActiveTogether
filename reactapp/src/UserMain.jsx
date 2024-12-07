@@ -14,6 +14,7 @@ import ALogin from "./Admin/Pages/Login"
 
 import ProductDetail from './Pages/product/ProductDetail';
 import BlogDetail from './Pages/blog/BlogDetail';
+import PolicyDetail from './Pages/blog/PolicyDetail';
 import UserDetail from './Pages/user/UserDetail';
 import ChangePassword from './Pages/user/ChangePassword';
 import OrdersHistory from './Pages/user/OrdersHistory';
@@ -100,6 +101,7 @@ export default function UserMain() {
               //Trang con của Tin tức, blog
             }
             <Route path="/tin-tuc/*" element={<BlogDetail />} />
+            <Route path="/ho-tro/*" element={<PolicyDetail />} />
 
             {
               //Trang con của Người dùng

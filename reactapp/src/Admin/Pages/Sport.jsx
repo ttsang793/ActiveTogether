@@ -1,8 +1,8 @@
-import React, { Component } from "react"
+import React, { Component } from "react";
 import axios from 'axios';
-import { CamelToKebab } from "/src/Scripts/Utility"
+import { CamelToKebab } from "/src/Scripts/Utility";
 import AdminTextBox from "/src/Admin/Components/AdminTextBox";
-import "./Sport.css"
+import "./Sport.css";
 
 export default class ASport extends Component {
   static displayName = ASport.name;

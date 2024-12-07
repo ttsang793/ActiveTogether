@@ -78,7 +78,6 @@ public class ProductService : IProductService
 
     public async Task<bool> Update(Product product)
     {
-        Console.WriteLine("hello world");
         _unitOfWork.Products.Update(product);
         _unitOfWork.Products.Update(product.ProductSports.ToList(), product.Id);
         return await _unitOfWork.SaveChangesAsync();

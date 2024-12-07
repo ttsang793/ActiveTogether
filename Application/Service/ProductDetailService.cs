@@ -44,7 +44,25 @@ public class ProductDetailService : IProductDetailService
         await _unitOfWork.ProductDetails.ChangeQuantity(sku, change);
         return await _unitOfWork.SaveChangesAsync();
     }
-    
+
+    public async Task<bool> Insert(ProductDetailAdminDTO productDetail)
+    {
+        var pDetail = new ProductDetail { ProductColorId = productDetail.ProductColorId, Quantity = 0, Sku = productDetail.Sku, Size = productDetail.Size, Price = productDetail.Price, Note = productDetail.Note };
+        
+        _unitOfWork.ProductDetails.Insert(pDetail);
+        _unitOfWork.Products.UpdatePrice(productDetail.ProductId);
+        return await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<bool> Update(ProductDetailAdminDTO productDetail)
+    {
+        var pDetail = new ProductDetail { Sku = productDetail.Sku, Size = productDetail.Size, Price = productDetail.Price, Note = productDetail.Note };
+
+        _unitOfWork.ProductDetails.Update(pDetail);
+        _unitOfWork.Products.UpdatePrice(productDetail.ProductId);
+        return await _unitOfWork.SaveChangesAsync();
+    }
+
     public async Task<bool> Lock(string sku)
     {
         await _unitOfWork.ProductDetails.Lock(sku);

@@ -15,15 +15,14 @@ create table sport (
 
 create table `user` (
 	id int primary key auto_increment,
-	username varchar(50),
-	`password` longtext,
+    firebase_uid varchar(255) unique,
+	username varchar(50) not null unique,
 	full_name varchar(200),
 	date_created date,
 	phone varchar(15),
 	email varchar(150),
 	`point` int default 0,
-	avatar longtext,
-	is_active boolean default false  
+	avatar longtext
 );
 
 create table user_address (
@@ -35,40 +34,56 @@ create table user_address (
 );
 
 create table `role` (
-	id int primary key auto_increment,
+	id int primary key,
     `name` varchar(100)
+);
+
+create table `permission_group` (
+	id int primary key auto_increment,
+	`name` varchar(40)
 );
 
 create table permission (
 	id int primary key auto_increment,
-    `name` varchar(100)
+    `name` varchar(100),
+	permission_group_id int,
+	constraint FK_Permission_PermissionGroup foreign key (permission_group_id) references `permission_group`(id)
 );
 
 create table role_permission (
+	id int primary key auto_increment,
 	role_id int not null,
     permission_id int not null,
     constraint FK_RolePermission_Role foreign key (role_id) references `role`(id),
-    constraint FK_RolePermission_Permission foreign key (permission_id) references permission(id),
-    constraint primary key (role_id, permission_id)
+    constraint FK_RolePermission_Permission foreign key (permission_id) references permission(id)
 );
 
 create table admin_user (
 	id int primary key,
-	`password` longtext,
+    firebase_uid varchar(255) unique,
 	full_name varchar(200),
 	phone varchar(15),
 	email longtext,
     role_id int,
+    is_active bool default true,
 	avatar longtext,
-	is_active boolean default true,
     constraint FK_Admin_Role foreign key (role_id) references `role`(id)
 );
 
-CREATE TABLE `blog_article` (
+CREATE TABLE policy_article (
 	id int auto_increment primary key,
-	title varchar(200),
+	title varchar(200) unique,
+	url_name varchar(200) unique,
+	content longtext,
+	date_publish date,
+	is_active boolean default true
+)
+
+CREATE TABLE blog_article (
+	id int auto_increment primary key,
+	title varchar(200) unique,
 	brief varchar(512),
-	url_name varchar(200),
+	url_name varchar(200) unique,
 	thumbnail longtext,
 	written_admin int,
 	content longtext,
@@ -92,6 +107,8 @@ CREATE TABLE product (
 	`description` longtext,
 	gender smallint,
 	is_children boolean default false,
+	price decimal(10,0),
+	quantity int,
 	is_active boolean default true,
     constraint FK_Product_Brand foreign key (brand_id) references brand(id),
     constraint FK_Product_Category foreign key (category_id) references category(id)
@@ -110,13 +127,10 @@ CREATE TABLE `product_detail` (
 	id int primary key auto_increment,
 	sku varchar(50) unique,
 	product_color_id int,
-	size varchar(5),
+	`size` varchar(5),
 	price decimal(10,0),
-	old_price decimal(10,0),
 	quantity int,
 	note longtext,
-	date_start date,
-	date_end date,
 	is_active boolean default true,
     constraint FK_ProductDetail_ProductColor foreign key (product_color_id) references product_color(id)
 );
@@ -149,6 +163,16 @@ CREATE TABLE `product_sport` (
     constraint FK_ProductSport_Sport foreign key (sport_id) references sport(id)
 );
 
+create table `product_history` (
+    `username` varchar(50) not null,
+    `product_id` int not null,
+    `url_name` longtext not null,
+    `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    constraint FK_ProductHistory_User foreign key (username) REFERENCES `user`(username),
+    constraint FK_ProductHistory_Product foreign key (product_id) REFERENCES `product`(id),
+    constraint PK_ProductHistory primary key (`username`, product_id)
+);
+
 CREATE TABLE `order` (
 	`id` int primary key auto_increment,
 	`user_id` int,
@@ -164,6 +188,8 @@ CREATE TABLE `order` (
 	`date_canceled` datetime,
 	`status` smallint default 0,
 	`vertify_admin` int,
+    `is_paid` boolean,
+    `payment_method` varchar(30),
     constraint FK_Order_User foreign key (user_id) references `user`(id),
     constraint FK_Order_Admin foreign key (vertify_admin) references admin_user(id)
 );
@@ -241,51 +267,77 @@ CREATE TABLE `cart_detail` (
 /* Dua du lieu */
 INSERT INTO `sport` (`id`, `name`, `image`) VALUES (0, 'Tất cả', '');
 
-INSERT INTO permission (`name`) VALUES
-('Xem sản phẩm'),
-('Thêm sản phẩm'),
-('Sửa sản phẩm'),
-('Khóa sản phẩm'),
-('Xem loại sản phẩm'),
-('Thêm loại sản phẩm'),
-('Sửa loại sản phẩm'),
-('Khóa loại sản phẩm'),
-('Xem thương hiệu'),
-('Thêm thương hiệu'),
-('Sửa thương hiệu'),
-('Khóa thương hiệu'),
-('Xem môn thể thao'),
-('Thêm môn thể thao'),
-('Sửa môn thể thao'),
-('Khóa môn thể thao'),
-('Xem danh sách nhập kho'),
-('Lập phiếu nhập kho'),
-('Xem danh sách đơn hàng'),
-('Cập nhật trạng thái đơn hàng'),
-('Xem danh sách hoàn trả'),
-('Cập nhật trạng thái hoàn trả'),
-('Xem các chương trình giảm giá'),
-('Lập chương trình giảm giá'),
-('Sửa chương trình giảm giá'),
-('Khóa chương trình giảm giá'),
-('Thêm sản phẩm vào chương trình giảm giá'),
-('Xóa sản phẩm ra khỏi chương trình giảm giá'),
-('Xem danh sách bài blog'),
-('Viết bài blog'),
-('Cập nhật bài blog'),
-('Xóa bài blog'),
-('Xem danh sách vai trò'),
-('Thêm vài trò'),
-('Cập nhật quyền cho vai trò'),
-('Sửa vai trò'),
-('Khóa vai trò');
 
-INSERT INTO `role` (`name`) values ('Adminstrator');
+INSERT INTO permission_group (`name`) VALUES
+('Sản phẩm'),
+('Loại sản phẩm'),
+('Thương hiệu'),
+('Thể thao'),
+('Màu sắc'),
+('Nhập kho'),
+('Hóa đơn'),
+('Hoàn trả'),
+('Giảm giá'),
+('Blog'),
+('Phân quyền');
 
-INSERT INTO `admin_user` (`id`, `password`, `full_name`, `phone`, `email`, `role_id`, `avatar`) VALUES
-(240101, '#YWRtaW5#Ub2c6ZX#RoJGVyY#WRtaW5j#dCQkaXZ#hQEBl', 'Admin', '0123456789', 'admin@gmail.com', 1, "/src/images/avatar/default.jpg"),
+INSERT INTO permission (`name`, `permission_group_id`) VALUES
+('Xem sản phẩm', 1),
+('Thêm sản phẩm', 1),
+('Sửa sản phẩm', 1),
+('Khóa sản phẩm', 1),
+('Xem chi tiết màu sắc sản phẩm', 1),
+('Thêm chi tiết màu sắc sản phẩm', 1),
+('Sửa chi tiết màu sắc sản phẩm', 1),
+('Khóa chi tiết màu sắc sản phẩm', 1),
+('Xem chi tiết SKU', 1),
+('Thêm chi tiết SKU', 1),
+('Sửa chi tiết SKU', 1),
+('Khóa chi tiết SKU', 1),
+('Xem loại sản phẩm', 2),
+('Thêm loại sản phẩm', 2),
+('Sửa loại sản phẩm', 2),
+('Khóa loại sản phẩm', 2),
+('Xem thương hiệu', 3),
+('Thêm thương hiệu', 3),
+('Sửa thương hiệu', 3),
+('Khóa thương hiệu', 3),
+('Xem môn thể thao', 4),
+('Thêm môn thể thao', 4),
+('Sửa môn thể thao', 4),
+('Khóa môn thể thao', 4),
+('Xem màu sắc', 5),
+('Thêm màu sắc', 5),
+('Sửa màu sắc', 5),
+('Khóa màu sắc', 5),
+('Xem danh sách nhập kho', 6),
+('Lập phiếu nhập kho', 6),
+('Xem danh sách đơn hàng', 7),
+('Cập nhật trạng thái đơn hàng', 7),
+('Xem danh sách hoàn trả', 8),
+('Cập nhật trạng thái hoàn trả', 8),
+('Xem các chương trình giảm giá', 9),
+('Lập chương trình giảm giá', 9),
+('Sửa chương trình giảm giá', 9),
+('Khóa chương trình giảm giá', 9),
+('Xem danh sách chương trình giảm giá', 9),
+('Thêm sản phẩm vào chương trình giảm giá', 9),
+('Xóa sản phẩm ra khỏi chương trình giảm giá', 9),
+('Xem danh sách bài blog', 10),
+('Viết bài blog', 10),
+('Cập nhật bài blog', 10),
+('Xóa bài blog', 10),
+('Xem danh sách vai trò', 11),
+('Thêm vài trò', 11),
+('Sửa vai trò', 11),
+('Khóa vai trò', 11),
+('Cập nhật quyền cho vai trò', 11),
+('Thêm nhân viên', 11),
+('Cập nhật vai trò cho nhân viên', 11);
 
-INSERT INTO role_permission (role_id, permission_id) VALUES
+INSERT INTO `role` (`id`, `name`) values (0, 'Không có'), (1, 'Adminstrator')
+
+INSERT INTO `role_permission` (`role_id`, `permission_id`) VALUES
 ('1', '1'),
 ('1', '2'),
 ('1', '3'),
@@ -322,4 +374,23 @@ INSERT INTO role_permission (role_id, permission_id) VALUES
 ('1', '34'),
 ('1', '35'),
 ('1', '36'),
-('1', '37');
+('1', '37'),
+('1', '38'),
+('1', '39'),
+('1', '40'),
+('1', '41'),
+('1', '42'),
+('1', '43'),
+('1', '44'),
+('1', '45'),
+('1', '46'),
+('1', '47'),
+('1', '48'),
+('1', '49'),
+('1', '50'),
+('1', '51'),
+('1', '52');
+
+/*Chú ý: Nên tạo Google Firebase trước khi chèn bảng sau*/
+INSERT INTO `admin_user` (`id`, `firebase_uid`, `full_name`, `phone`, `email`, `role_id`, `avatar`) VALUES
+(240101, '', 'Admin', '0123456789', 'admin@gmail.com', 1, "/src/images/avatar/default.jpg");

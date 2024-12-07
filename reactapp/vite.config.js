@@ -33,6 +33,10 @@ export default defineConfig({
                 target: 'https://localhost:7126/',
                 secure: false
             },
+            '^/policy/*': {
+                target: 'https://localhost:7126/',
+                secure: false
+            },
             '^/api/*': {
                 target: 'https://localhost:7267/',
                 secure: false

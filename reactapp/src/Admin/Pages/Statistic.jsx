@@ -134,31 +134,33 @@ export default function Statistic() {
 
   /* 0 la thang, 1 la tuan, 2 la ngay */
   async function FillStatistic(dateStart = "2024-01-01", dateEnd = "") {
-    fetch(`/api/statistic/product?dateStart=${dateStart}&dateEnd=${dateEnd}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({ dateStart, dateEnd })
-    }).then(response => response.json()).then(data => setProduct(data));
+    const condition = (dateEnd === "") ? `dateStart=${dateStart}` : `dateStart=${dateStart}&dateEnd=${dateEnd}`
 
-    fetch(`/api/statistic/brand?dateStart=${dateStart}&dateEnd=${dateEnd}`, {
+    fetch(`/api/statistic/product?${condition}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
       body: JSON.stringify({ dateStart, dateEnd })
-    }).then(response => response.json()).then(data => setBrand(data));
+    }).then(response => response.json()).then(data => setProduct(data)).catch(() => {});
 
-    fetch(`/api/statistic/revenue?dateStart=${dateStart}&dateEnd=${dateEnd}`, {
+    fetch(`/api/statistic/brand?${condition}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
       body: JSON.stringify({ dateStart, dateEnd })
-    }).then(response => response.json()).then(data => { setLoading(false); setRevenue(data); console.log(data) });
+    }).then(response => response.json()).then(data => setBrand(data)).catch(() => {});
+
+    fetch(`/api/statistic/revenue?${condition}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ dateStart, dateEnd })
+    }).then(response => response.json()).then(data => { setLoading(false); setRevenue(data) }).catch(() => setLoading(false));
   }
 }

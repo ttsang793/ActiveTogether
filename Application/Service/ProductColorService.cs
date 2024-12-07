@@ -2,6 +2,8 @@ using Application.Interface;
 using Core.DTO;
 using Core.Entity;
 using Core.Interface;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Service;
 
@@ -13,7 +15,11 @@ public class ProductColorService : IProductColorService
     {
         _unitOfWork = unitOfWork;
     }
-    
+    public int GetProductColorLength()
+    {
+        return _unitOfWork.ProductColors.GetProductColorLength();
+    }
+
     public IEnumerable<ProductColor> GetProductColorByProductId(int productId)
     {
         return _unitOfWork.ProductColors.GetProductColorByProductId(productId);
@@ -29,6 +35,11 @@ public class ProductColorService : IProductColorService
     {
         _unitOfWork.ProductColors.Update(productColor);
         return await _unitOfWork.SaveChangesAsync();
+    }
+    public async Task<bool> UploadImages(IFormFile[] file, int id, int productId)
+    {
+        bool upload = await _unitOfWork.ProductColors.UploadImages(file, id, productId);
+        return (!upload) ? false : await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<bool> Lock(int id)

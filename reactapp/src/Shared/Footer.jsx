@@ -1,14 +1,27 @@
 import "./Footer.css"
+import {useState, useEffect, useRef} from 'react';
 
-function Footer() {
+export default function Footer() {
+  let [policies, setPolicies] = useState([]);
+  const hasLoad = useRef(false);
+
+  useEffect(() => {
+    if (hasLoad.current) return;
+
+    fetch('/policy/get/').then(response => response.json()).then(data => setPolicies(policies = data));
+
+    hasLoad.current = true;
+  }, [])
+
   return (
     <footer>
       <div className="row detail-address">
         <div className="col px-1 left">
           <h1>HỖ TRỢ</h1>
           <ul>
-            <li><a href="/tin-tuc/chinh-sach-giao-hang">Chính sách giao hàng</a></li>
-            <li><a href="/tin-tuc/chinh-sach-tra-hang">Chính sách trả hàng</a></li>
+            {
+              policies.map(p => <li key={p.urlName}><a href={`/ho-tro/${p.urlName}`}>{p.title}</a></li>)
+            }
             <li><a href="">Báo cáo</a></li>
           </ul>
         </div>
@@ -34,5 +47,3 @@ function Footer() {
     </footer>
   );
 }
-
-export default Footer;

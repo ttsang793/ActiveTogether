@@ -67,7 +67,7 @@ public class ProductController : ControllerBase
         return await _productService.UpdateRecentViewProduct(productHistory);
     }
 
-        [HttpGet("img")]
+    [HttpGet("img")]
     public IEnumerable<ProductImage> GetProductImagesByUrlName(string urlName)
     {
         return _productDetailService.GetProductImagesByUrlName(urlName);
@@ -86,7 +86,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost("review/upload")]
-    public async Task<StatusCodeResult> Upload ([Bind("ProductId", "Sku", "UserName", "Review", "Star")]ProductReviewReadDTO review)
+    public async Task<StatusCodeResult> Upload([Bind("ProductId", "Sku", "UserName", "Review", "Star")]ProductReviewReadDTO review)
     {
         return (await _productReviewService.Upload(review)) ? StatusCode(200) : StatusCode(404);
     }

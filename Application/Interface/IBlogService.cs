@@ -17,11 +17,15 @@ public interface IBlogService
     
     BlogArticle GetBlogById(int id);
 
+    string[] GetBlogImageById(int id);
+
     Task<bool> Insert(BlogArticle blog);
 
     Task<bool> Update(BlogArticle blog);
 
     Task<bool> UploadImage(IFormFile file, string id);
+
+    Task<bool> UploadImages(IFormFile[] file, string name);
 
     Task<bool> Lock(int id);
 

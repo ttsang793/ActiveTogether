@@ -48,7 +48,7 @@ export default function AdminTextBox(props) {
       </div>
     )
   }
-  else if (props.type === "textarea") (
+  else if (props.type === "textarea") return (
     <div className="mb-3">
       <label htmlFor={props.detail} className="fw-semibold">{props.placeholder}:</label>
       <textarea
@@ -70,7 +70,7 @@ export default function AdminTextBox(props) {
         id={props.detail}
         value={props.value}
         className="form-control mt-1"
-        readOnly={props.readonly}
+        readOnly={props.readOnly}
         placeholder={props.placeholder}
         onChange={handleChange}
       />

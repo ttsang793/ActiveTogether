@@ -10,7 +10,7 @@ public class BlogController : ControllerBase
 {
     private readonly ILogger<BlogController> _logger;
     private readonly IBlogService _blogService;
-    private static string id;
+    private static string id = "1";
 
     public BlogController(ILogger<BlogController> logger, IBlogService blogService)
     {
@@ -36,6 +36,12 @@ public class BlogController : ControllerBase
         return _blogService.GetBlogById(id);
     }
 
+    [HttpGet("get/detail/image")]
+    public string[] GetBlogImageById(int id)
+    {
+        return _blogService.GetBlogImageById(id);
+    }
+
     private string[] DataValidation(BlogArticle blog, bool isUpdate)
     {
 
@@ -50,17 +56,22 @@ public class BlogController : ControllerBase
         else if (!isUpdate && _blogService.GetAllBlogs(b => b.UrlName == blog.UrlName).Any())
         {
             errorFlag = true;
-            result[1] = "Tiêu đề bài blog không được trùng với các bài khác";
+            result[0] = "Tiêu đề bài blog không được trùng với các bài khác";
         }
         else if (_blogService.GetAllBlogs(b => b.UrlName == blog.UrlName && b.Id != blog.Id).Any())
         {
             errorFlag = true;
-            result[1] = "Tiêu đề bài blog không được trùng với các bài khác";
+            result[0] = "Tiêu đề bài blog không được trùng với các bài khác";
+        }
+        if (string.IsNullOrEmpty(blog.Brief))
+        {
+            errorFlag = true;
+            result[1] = "Vui lòng nhập tóm tắt bài viết";
         }
         if (blog.Thumbnail == null)
         {
             errorFlag = true;
-            result[2] = "Vui lòng chọn hình tiêu đề cho bài blog (ưu tiên tỉ lệ 3:1)";
+            result[2] = "Vui lòng chọn hình tiêu đề cho bài blog (ưu tiên tỉ lệ 2:1)";
         }
         if (string.IsNullOrEmpty(blog.Title))
         {
@@ -75,7 +86,12 @@ public class BlogController : ControllerBase
     {
         string[] validationResult = DataValidation(blog, false);
         if (validationResult.Length > 0) return BadRequest(new { errors = validationResult });
-        id = (GetAllBlogs().OrderByDescending(b => b.Id).First().Id + 1).ToString();
+        try
+        {
+            id = (GetAllBlogs().OrderByDescending(b => b.Id).First().Id + 1).ToString();
+        }
+        catch { }
+
         blog.Thumbnail = "/src/images/blog/thumbnail_" + id + blog.Thumbnail;
         return (await _blogService.Insert(blog)) ? StatusCode(200) : StatusCode(404);
     }
@@ -89,10 +105,16 @@ public class BlogController : ControllerBase
         return (await _blogService.Update(blog)) ? StatusCode(200) : StatusCode(404);
     }
 
-    [HttpPost("thumbnail/upload")]
+    [HttpPost("upload/thumbnail")]
     public async Task<StatusCodeResult> UploadImage(IFormFile file)
     {
         return (await _blogService.UploadImage(file, id)) ? StatusCode(200) : StatusCode(404);
+    }
+
+    [HttpPost("upload/image")]
+    public async Task<StatusCodeResult> UploadImages(IFormFile[] file)
+    {
+        return (await _blogService.UploadImages(file, id)) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("lock")]

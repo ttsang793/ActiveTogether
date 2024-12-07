@@ -10,6 +10,7 @@ public interface IUnitOfWork
     IColorRepository Colors { get; }
     IImportRepository Imports { get; }
     IOrderRepository Orders { get; }
+    IPolicyRepository Policies { get; }
     IProductRepository Products { get; }
     IProductColorRepository ProductColors { get; }
     IProductDetailRepository ProductDetails { get; }

@@ -5,6 +5,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http;
+using System.Xml.Linq;
 
 namespace Infrastructure.Repository;
 public class BlogRepository : BaseRepository<BlogArticle>, IBlogRepository
@@ -17,8 +18,8 @@ public class BlogRepository : BaseRepository<BlogArticle>, IBlogRepository
     public async Task<IEnumerable<BlogReadDTO>> GetAllReadBlogs(Expression<Func<BlogArticle, bool>> expression = null)
     {
         var blogList = await ((expression == null) ?
-            GetDbSet().Include(b => b.WrittenAdminNavigation).OrderByDescending(b => b.DatePublish).ToListAsync() :
-            GetDbSet().Include(b => b.WrittenAdminNavigation).Where(expression).OrderByDescending(b => b.DatePublish).ToListAsync());
+            GetDbSet().Include(b => b.WrittenAdminNavigation).Where(b => b.IsActive == true).OrderByDescending(b => b.DatePublish).ToListAsync() :
+            GetDbSet().Include(b => b.WrittenAdminNavigation).Where(b => b.IsActive == true).Where(expression).OrderByDescending(b => b.DatePublish).ToListAsync());
 
         return blogList.Select(b => new BlogReadDTO
         {
@@ -64,6 +65,11 @@ public class BlogRepository : BaseRepository<BlogArticle>, IBlogRepository
         return GetDbSet().First(b => b.Id == id);
     }
 
+    public string[] GetBlogImageById(int id)
+    {
+        return Directory.GetFiles(_uploadDirectory, "img_" + id + "_*");
+    }
+
     public void Insert(BlogArticle blog)
     {
         blog.DatePublish = DateTime.Now;
@@ -87,12 +93,32 @@ public class BlogRepository : BaseRepository<BlogArticle>, IBlogRepository
         blog.IsActive = true;
     }
 
+    private async Task<bool> DeleteImage(string name)
+    {
+        try
+        {
+            string[] files = Directory.GetFiles(_uploadDirectory, name + ".*");
+            if (files.Any())
+            {
+                File.Delete(files[0]);
+                return true;
+            }
+            else return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     public async Task<bool> UploadImage(IFormFile file, string id)
     {
         try
         {
             var fileName = "thumbnail_" + id + Path.GetExtension(file.FileName);
             var filePath = Path.Combine(_uploadDirectory, fileName);
+
+            await DeleteImage("thumbnail_" + id); //Lay phan dau cua file
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
@@ -105,5 +131,31 @@ public class BlogRepository : BaseRepository<BlogArticle>, IBlogRepository
         {
             return false;
         }
+    }
+
+    public async Task<bool> UploadImages(IFormFile[] files, string id)
+    {
+        if (files == null || files.Length == 0) return false;
+        var filePaths = new List<string>();
+
+        for (int i = 0; i < files.Length; i++)
+        {
+            var file = files[i];
+            if (file.Length > 0)
+            {
+                var fileName = "img_" + id + "_" + i + Path.GetExtension(file.FileName);
+
+                var filePath = Path.Combine(_uploadDirectory, fileName);
+
+                await DeleteImage("img_" + id + "_" + i);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await file.CopyToAsync(stream);
+
+                filePaths.Add(filePath);
+            }
+        }
+
+        return true;
     }
 }

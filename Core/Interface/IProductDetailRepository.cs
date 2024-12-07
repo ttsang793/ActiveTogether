@@ -3,7 +3,7 @@ using Core.DTO;
 
 namespace Core.Interface;
 
-public interface IProductDetailRepository
+public interface IProductDetailRepository : IInsert<ProductDetail>, IUpdate<ProductDetail>
 {    
     IEnumerable<ProductDetailDTO> GetProductByUrlName(string urlName);
     
@@ -22,6 +22,4 @@ public interface IProductDetailRepository
     Task<bool> Lock(string sku);
   
     Task<bool> Unlock(string sku);
-
-    Task<bool> UploadImages(IFormFile[] files, int id);
 }

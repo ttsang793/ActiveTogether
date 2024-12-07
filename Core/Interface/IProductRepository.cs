@@ -14,6 +14,8 @@ public interface IProductRepository : IInsert<Product>, IUpdate<Product>, ILock,
 
     void Update(List<ProductSport> productSports, int id);
 
+    void UpdatePrice(int id);
+
     List<FilterListDTO> GetAllFilter();
 
     Task<IEnumerable<Product>> ListTop5Seller(DateTime dateStart);

@@ -1,6 +1,7 @@
 using Application.Interface;
 using Core.Entity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
 
 namespace AdminView.Controllers;
 
@@ -10,6 +11,8 @@ public class ProductColorController : ControllerBase
 {
     private readonly ILogger<ProductColorController> _logger;
     private readonly IProductColorService _productColorService;
+    private static int _id;
+    private static int _productId;
     public ProductColorController(ILogger<ProductColorController> logger, IProductColorService productColorService)
     {
         _logger = logger;
@@ -25,13 +28,23 @@ public class ProductColorController : ControllerBase
     [HttpPost("add")]
     public async Task<StatusCodeResult> Insert([Bind("ProductId", "ColorCode")]ProductColor productColor)
     {
+        _id = _productColorService.GetProductColorLength() + 1;
+        _productId = (int)productColor.ProductId;
         return (await _productColorService.Insert(productColor)) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("update")]
-    public async Task<StatusCodeResult> Update([Bind("Id", "ColorCode")] ProductColor productColor)
+    public async Task<StatusCodeResult> Update([Bind("Id", "ProductId", "ColorCode")] ProductColor productColor)
     {
+        _id = productColor.Id;
+        _productId = (int)productColor.ProductId;
         return (await _productColorService.Update(productColor)) ? StatusCode(200) : StatusCode(404);
+    }
+
+    [HttpPost("upload/image")]
+    public async Task<StatusCodeResult> UploadImages(IFormFile[] file)
+    {
+        return (await _productColorService.UploadImages(file, _id, _productId)) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("lock")]

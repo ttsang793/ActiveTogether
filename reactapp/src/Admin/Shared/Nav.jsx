@@ -20,6 +20,7 @@ export default function Nav({permission}) {
         { permission.includes(8) && <NavButton url="/admin/don-hoan-tra" icon="bi-cart-dash" name="Đơn hoàn trả" /> }
         { permission.includes(9) && <NavButton url="/admin/giam-gia" icon="bi-graph-down-arrow" name="Chương trình giảm giá" /> }
         { permission.includes(10) && <NavButton url="/admin/bai-blog" icon="bi-newspaper" name="Bài blog" /> }
+        { permission.includes(10) && <NavButton url="/admin/chinh-sach" icon="bi-body-text" name="Chính sách" /> }
         { permission.includes(11) && <NavButton url="/admin/phan-quyen" icon="bi-person-fill-gear" name="Phân quyền" /> }
       </ul>
     </nav>
