@@ -7,11 +7,9 @@ public interface IPromotionRepository : ILock, IUnlock
 {
     IEnumerable<Promotion> GetAllPromotions(Expression<Func<Promotion, bool>> expression = null);
 
-    IEnumerable<PromotionDetail> GetAllPromotionDetails();
+    Promotion GetPromotionById(int id);
 
     void Insert(PromotionAdminDTO promotionDTO);
 
     void Update(PromotionAdminDTO promotionDTO);
-
-    void UpdateDetail(int id, List<PromotionDetail> promotionDetails);
 }

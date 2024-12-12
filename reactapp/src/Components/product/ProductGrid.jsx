@@ -9,11 +9,11 @@ export default function ProductGrid(props) {
 
   return (
     <div className="product-grid">
-      <a href={`/san-pham/${props.urlName}`} className="w-100 text-center">
+      <a href={`/san-pham/${props.urlName}/${props.productColors[0].id}`} className="w-100 text-center">
         <img src={image} alt={props.name} className="product-thumbnail w-100" />
       </a>
       
-      <a href={`/san-pham/${props.urlName}`} className="product-name">
+      <a href={`/san-pham/${props.urlName}/${props.productColors[0].id}`} className="product-name">
         <p>{props.name}</p>
       </a>
       
@@ -27,7 +27,7 @@ export default function ProductGrid(props) {
         (props.productColors !== undefined && props.productColors.length > 1) ?
           props.productColors.map((c, i) =>
             <div className="product-color pointer mt-3" style={{backgroundColor: `${c.colorCode}`}} key={`${i}_${c.colorCode}`} onMouseOver={() => handleImage(i)}
-              onMouseLeave={() => restoreImage()} onClick={() => location.href = `/san-pham/${props.urlName}/${i}`}>
+              onMouseLeave={() => restoreImage()} onClick={() => location.href = `/san-pham/${props.urlName}/${props.productColors[i].id}`}>
             </div>
           ) : <></>
       }

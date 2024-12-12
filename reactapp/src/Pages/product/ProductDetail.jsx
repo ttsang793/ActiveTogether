@@ -9,7 +9,7 @@ import React, { useState, useEffect, useRef } from 'react'
 
 export default function ProductDetail(props) {
   let { urlName, colorId } = useParams();
-  colorId = colorId === undefined ? 0 : colorId;
+  colorId = colorId === undefined ? 0 : Number(colorId);
   let [ product, setProduct ] = useState([]);
   let [ image, setImage ] = useState([]);
   let [ review, setReview ] = useState([]);
@@ -202,11 +202,11 @@ export default function ProductDetail(props) {
       productData.forEach(p => {
         if (skuData.findIndex(s => s.sku.includes(p.sku.substring(0,5))) === -1) skuData.push(p);
       })
+      const colorIndex = skuData.findIndex(s => s.image == colorId);
 
-      //Set Item
       setProduct(product = productData);
-      setSku(sku = skuData[colorId].sku);
-      setIndex(index = Number(skuData[colorId].image) - 1);
+      setSku(sku = skuData[colorIndex].sku);
+      setIndex(index = imageData.findIndex(s => s.productColorId == colorId));
       setImage(image = imageData);
       setReview(review = reviewData);
       setLoading(loading = false);
@@ -224,7 +224,6 @@ export default function ProductDetail(props) {
         localStorage.setItem("recent", JSON.stringify({ urlName: [urlName, ...recentArray] }));
       }
       else {
-        console.log(product);
         fetch('/product/update/recent', {
           method: 'POST',
           headers: {
@@ -235,8 +234,9 @@ export default function ProductDetail(props) {
         });
       }
     }
-    catch {
-      location.href = "./404"
+    catch (err) {
+      console.error(err);
+      //location.href = "./404"
     }
   }
 }

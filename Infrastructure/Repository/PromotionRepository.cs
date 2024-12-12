@@ -17,12 +17,7 @@ public class PromotionRepository : BaseRepository<Promotion>, IPromotionReposito
       else return GetDbSet().Where(expression).ToList();
     }
 
-    public IEnumerable<PromotionDetail> GetAllPromotionDetails()
-    {
-        return GetDbContext().PromotionDetails.ToList();
-    }
-
-    private Promotion GetById(int id)
+    public Promotion GetPromotionById(int id)
     {
         return GetDbSet().First(b => b.Id == id);
     }
@@ -42,7 +37,7 @@ public class PromotionRepository : BaseRepository<Promotion>, IPromotionReposito
 
     public void Update(PromotionAdminDTO promotionDTO)
     {
-        Promotion promotion = GetById((int)promotionDTO.Id);
+        Promotion promotion = GetPromotionById((int)promotionDTO.Id);
         promotion.Title = promotionDTO.Title;
         promotion.DateStart = DateTime.Parse(promotionDTO.DateStart);
         promotion.DateEnd = DateTime.Parse(promotionDTO.DateEnd);
@@ -50,24 +45,15 @@ public class PromotionRepository : BaseRepository<Promotion>, IPromotionReposito
         GetDbSet().Update(promotion);
     }
 
-    public void UpdateDetail(int id, List<PromotionDetail> promotionDetails)
-    {
-        GetDbContext().PromotionDetails.RemoveRange(GetDbContext().PromotionDetails.Where(p => p.PromotionId == id));
-        foreach (var pDetail in promotionDetails)
-        {
-            GetDbContext().PromotionDetails.Add(pDetail);
-        }
-    }
-
     public void Lock(int id)
     {
-        var promotion = GetById(id);
+        var promotion = GetPromotionById(id);
         promotion.IsActive = false;
     }
 
     public void Unlock(int id)
     {
-        var promotion = GetById(id);
+        var promotion = GetPromotionById(id);
         promotion.IsActive = true;
     }
 }

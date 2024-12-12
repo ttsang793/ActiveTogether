@@ -20,9 +20,9 @@ public class PromotionService : IPromotionService
         return _unitOfWork.Promotions.GetAllPromotions(expression);
     }
 
-    public IEnumerable<PromotionDetail> GetAllPromotionDetails()
+    public Promotion GetPromotionById(int id)
     {
-        return _unitOfWork.Promotions.GetAllPromotionDetails();
+        return _unitOfWork.Promotions.GetPromotionById(id);
     }
 
     public async Task<bool> Insert(PromotionAdminDTO promotionDTO)
@@ -34,12 +34,6 @@ public class PromotionService : IPromotionService
     public async Task<bool> Update(PromotionAdminDTO promotionDTO)
     {
         _unitOfWork.Promotions.Update(promotionDTO);
-        return await _unitOfWork.SaveChangesAsync();
-    }
-
-    public async Task<bool> UpdateDetail(int id, List<PromotionDetail> promotionDetails)
-    {
-        _unitOfWork.Promotions.UpdateDetail(id, promotionDetails);
         return await _unitOfWork.SaveChangesAsync();
     }
 

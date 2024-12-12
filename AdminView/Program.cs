@@ -24,6 +24,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductColorService, ProductColorService>(); 
 builder.Services.AddScoped<IProductDetailService, ProductDetailService>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
+builder.Services.AddScoped<IPromotionDetailService, PromotionDetailService>();
 builder.Services.AddScoped<IRefundService, RefundService>();
 builder.Services.AddScoped<ISportService, SportService>();
 builder.Services.AddControllers().AddJsonOptions(x =>

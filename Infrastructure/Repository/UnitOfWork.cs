@@ -20,6 +20,7 @@ public class UnitOfWork : IUnitOfWork
     private IProductHistoryRepository? _productHistoryRepository;
     private IProductReviewRepository? _productReviewRepository;
     private IPromotionRepository? _promotionRepository;
+    private IPromotionDetailRepository? _promotionDetailRepository;
     private IRefundRepository? _refundRepository;
     private IRoleRepository? _roleRepository;
     private IRolePermissionRepository? _rolePermissionRepository;
@@ -47,6 +48,7 @@ public class UnitOfWork : IUnitOfWork
     public IProductHistoryRepository ProductHistories => _productHistoryRepository ??= new ProductHistoryRepository(_dbContext);
     public IProductReviewRepository ProductReviews => _productReviewRepository ??= new ProductReviewRepository(_dbContext);
     public IPromotionRepository Promotions => _promotionRepository ??= new PromotionRepository(_dbContext);
+    public IPromotionDetailRepository PromotionDetails => _promotionDetailRepository ??= new PromotionDetailRepository(_dbContext);
     public IRefundRepository Refunds => _refundRepository ??= new RefundRepository(_dbContext);
     public IRoleRepository Roles => _roleRepository ??= new RoleRepository(_dbContext);
     public IRolePermissionRepository RolePermissions => _rolePermissionRepository ??= new RolePermissionRepository(_dbContext);

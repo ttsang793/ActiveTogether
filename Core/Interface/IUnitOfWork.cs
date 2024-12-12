@@ -17,6 +17,7 @@ public interface IUnitOfWork
     IProductHistoryRepository ProductHistories { get; }
     IProductReviewRepository ProductReviews { get; }
     IPromotionRepository Promotions { get; }
+    IPromotionDetailRepository PromotionDetails { get; }
     IRefundRepository Refunds { get; }
     IRoleRepository Roles { get; }
     IRolePermissionRepository RolePermissions { get; }

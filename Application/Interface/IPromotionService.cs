@@ -8,13 +8,11 @@ public interface IPromotionService
 {
     IEnumerable<Promotion> GetAllPromotions(Expression<Func<Promotion, bool>> expression = null);
 
-    IEnumerable<PromotionDetail> GetAllPromotionDetails();
+    Promotion GetPromotionById(int id);
 
     Task<bool> Insert(PromotionAdminDTO promotionDTO);
 
     Task<bool> Update(PromotionAdminDTO promotionDTO);
-
-    Task<bool> UpdateDetail(int id, List<PromotionDetail> promotionDetails);
 
     Task<bool> Lock(int id);
 

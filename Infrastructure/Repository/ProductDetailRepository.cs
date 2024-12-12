@@ -16,8 +16,8 @@ public class ProductDetailRepository : BaseRepository<ProductDetail>, IProductDe
     
     private static string GetImageCode(string path)
     {
-        int length = path.IndexOf('.') - path.IndexOf('-') - 1;
-        return path.Substring(path.IndexOf('-') + 1, length);
+        int length = path.IndexOf('-') - path.IndexOf('_') - 1;
+        return path.Substring(path.IndexOf('_') + 1, length);
     }
 
     public IEnumerable<ProductDetailDTO> GetProductByUrlName(string urlName)

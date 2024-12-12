@@ -17,22 +17,22 @@ public class PromotionController : ControllerBase
         _promotionService = promotionService;
     }
 
-    [HttpGet("get")]
+    [HttpGet("get/all")]
     public IEnumerable<Promotion> GetAllPromotions()
     {
         return _promotionService.GetAllPromotions();
+    }
+
+    [HttpGet("get")]
+    public Promotion GetPromotionById(int id)
+    {
+        return _promotionService.GetPromotionById(id);
     }
 
     [HttpGet("find")]
     public IEnumerable<Promotion> GetAllPromotions(string title)
     {
         return _promotionService.GetAllPromotions(p => p.Title.ToLower().Contains(title.ToLower()));
-    }
-
-    [HttpGet("detail/get")]
-    public IEnumerable<PromotionDetail> GetAllPromotionDetails()
-    {
-        return _promotionService.GetAllPromotionDetails();
     }
 
     private string[] DataValidation(PromotionAdminDTO promotionDTO)
@@ -76,13 +76,6 @@ public class PromotionController : ControllerBase
         string[] validationResult = DataValidation(promotionDTO);
         if (validationResult.Length > 0) return BadRequest(new { errors = validationResult });
         return (await _promotionService.Update(promotionDTO)) ? StatusCode(200) : StatusCode(404);
-    }
-
-    [HttpPost("detail/save")]
-    public async Task<StatusCodeResult> UpdateDetail([Bind("Id", "PromotionDetail")] Promotion promotion)
-    {
-        int id = promotion.Id;
-        return (await _promotionService.UpdateDetail(id, promotion.PromotionDetails.ToList())) ? StatusCode(200) : StatusCode(404);
     }
 
     [HttpPut("lock")]

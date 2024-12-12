@@ -12,7 +12,7 @@ public class ImportRepository : BaseRepository<Import>, IImportRepository
 
     public IEnumerable<ImportReadDTO> GetAllImports()
     {
-        return (from i in GetDbSet() join au in GetDbContext().AdminUsers on i.CheckAdmin equals au.Id
+        return (from i in GetDbSet() join au in GetDbContext().AdminUsers on i.CheckAdmin equals au.Id orderby i.Id descending
                 select new ImportReadDTO
                 {
                     Id = i.Id,

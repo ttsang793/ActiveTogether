@@ -64,7 +64,7 @@ export default function AdminMain() {
       body: JSON.stringify({ id: pageId })
     })
     .then(response => response.json())
-    .then(data => { console.log(data); setLoading(false); setName(name = data.name); setUsername(username = data.username); setAvatar(avatar = data.avatar); setRole(role = data.roleId); setPermission(data.permissionGroup) })
+    .then(data => { setLoading(false); setName(name = data.name); setUsername(username = data.username); setAvatar(avatar = data.avatar); setRole(role = data.roleId); setPermission(data.permissionGroup) })
     .catch(() => setLoading(false))
   }, []);
 
@@ -104,7 +104,7 @@ export default function AdminMain() {
           <Routes>
             <Route path="/admin/home" element={<><AStatistic /> <PageTitle title="Trang chủ của quản trị viên" /></>} />
             <Route path="/admin/thong-ke" element={<><AStatistic /> <PageTitle title="Trang chủ của quản trị viên" /></>} />
-            <Route path="/admin/cai-dat-tai-khoan" element={<><ASetting username={username} /> <PageTitle title="Cài đặt tài khoản" username={username} /></>} />
+            <Route path="/admin/cai-dat-tai-khoan" element={<><ASetting username={username} /> <PageTitle title="Cài đặt tài khoản"/></>} />
             <Route path="/admin/san-pham" element={permission.includes(1) ? <><AProduct /> <PageTitle title="Quản lý sản phẩm" /></> : <FourOThree />} />
             <Route path="/admin/thong-tin-san-pham/:id" element={permission.includes(1) ? <><AProductColor /> <PageTitle title="Quản lý màu sắc sản phẩm" /></> : <FourOThree />} />
             <Route path="/admin/thong-tin-mau-sac-san-pham/:id/:colorId" element={permission.includes(1) ? <><AProductDetail /> <PageTitle title="Quản lý chi tiết màu sắc sản phẩm" /></> : <FourOThree />} />
@@ -113,13 +113,13 @@ export default function AdminMain() {
             <Route path="/admin/the-thao" element={permission.includes(4) ? <><ASport /> <PageTitle title="Quản lý môn thể thao" /></> : <FourOThree />} />
             <Route path="/admin/mau-sac" element={permission.includes(5) ? <><AColor /> <PageTitle title="Quản lý màu sắc" /></> : <FourOThree />} />
             <Route path="/admin/nhap-kho" element={permission.includes(6) ? <><AImport /> <PageTitle title="Quản lý nhập hàng" /></> : <FourOThree />} />
-            <Route path="/admin/thong-tin-nhap-kho" element={permission.includes(6) ? <><AImportDetail /> <PageTitle title="Thông tin nhập hàng" /></> : <FourOThree />} />
+            <Route path="/admin/thong-tin-nhap-kho" element={permission.includes(6) ? <><AImportDetail name={name} /> <PageTitle title="Thông tin nhập hàng" /></> : <FourOThree />} />
             <Route path="/admin/don-hang" element={permission.includes(7) ? <><AOrder /> <PageTitle title="Quản lý đơn hàng đã đặt" /></> : <FourOThree />} />
             <Route path="/admin/don-hoan-tra" element={permission.includes(8) ? <><ARefund /> <PageTitle title="Quản lý trả hàng" /></> : <FourOThree />} />
             <Route path="/admin/giam-gia" element={permission.includes(9) ? <><APromotion /> <PageTitle title="Quản lý giảm giá" /></> : <FourOThree />} />
-            <Route path="/admin/chuong-trinh-giam-gia/*" element={permission.includes(9) ? <><APromotionDetail /> <PageTitle title="Chi tiết chương trình giám giá" /></> : <FourOThree />} />
+            <Route path="/admin/chuong-trinh-giam-gia/:id" element={permission.includes(9) ? <><APromotionDetail /> <PageTitle title="Chi tiết chương trình giám giá" /></> : <FourOThree />} />
             <Route path="/admin/bai-blog" element={permission.includes(10) ? <><ABlogArticle /> <PageTitle title="Quản lý bài blog" /></> : <FourOThree />} />
-            <Route path="/admin/thong-tin-bai-blog" element={permission.includes(10) ? <><ABlogArticleDetail /> <PageTitle title="Quản lý thông tin trang blog" username={username} /></> : <FourOThree />} />
+            <Route path="/admin/thong-tin-bai-blog" element={permission.includes(10) ? <><ABlogArticleDetail username={username} /> <PageTitle title="Quản lý thông tin trang blog" /></> : <FourOThree />} />
             <Route path="/admin/xem-bai-blog" element={permission.includes(10) ? <ABlogArticlePreview /> : <FourOThree />} />
             <Route path="/admin/chinh-sach" element={permission.includes(10) ? <><APolicyArticle /> <PageTitle title="Quản lý chính sách" /></> : <FourOThree />} />
             <Route path="/admin/thong-tin-chinh-sach" element={permission.includes(10) ? <><APolicyArticleDetail /> <PageTitle title="Quản lý thông tin chính sách" /></> : <FourOThree />} />

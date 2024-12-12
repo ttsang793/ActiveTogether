@@ -112,7 +112,7 @@ export default function Statistic() {
 
           <div className="disabled" id="all-product">
             <div className="statistic-box">
-              <h2 className="statistic-detail py-2 px-3 fw-bold text-center">DOANH THU CÁC SẢN PHẨM</h2>
+              <h2 className="statistic-detail py-2 px-3 fw-bold text-center">DOANH SỐ TẤT CẢ SẢN PHẨM</h2>
               <div className="py-2 text-end">
                 <a className="view-all pointer fst-italic" id="view-top-10" onClick={handleProduct}>Xem top 10 sản phẩm bán chạy...</a>
               </div>

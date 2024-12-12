@@ -60,8 +60,6 @@ public class AdminUserController : ControllerBase
         {
             var firebaseId = (await _firebaseAuthService.VerifyIdToken(HttpContext.Session.GetString("atoken"))).Uid;
             AdminUser user = await _adminUserService.GetUserByFirebaseUid(firebaseId);
-            Console.WriteLine(permissionGroup.Count);
-
             return new LoginAdminDTO { Name = user.FullName, Username = user.Id, Avatar = user.Avatar, Role = user.RoleId, PermissionGroup = permissionGroup  };
         }
         catch

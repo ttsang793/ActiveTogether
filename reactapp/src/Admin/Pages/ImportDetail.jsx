@@ -84,7 +84,7 @@ export default class AImportDetail extends Component {
           <tbody>
             <tr>
               <td colSpan={4} className="fst-italic">
-                Người lập: Trần Tuấn Sang<br />
+                Người lập: {this.props.name}<br />
                 Ngày lập: {new Date().toLocaleDateString("en-CA")}
               </td>
             </tr>

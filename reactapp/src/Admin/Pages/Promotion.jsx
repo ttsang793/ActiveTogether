@@ -8,8 +8,8 @@ export default class APromotion extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { loading: true, promotion: [], pId: "", pName: "", pDateStart: new Date().toLocaleDateString('en-CA'),
-                    pDateEnd: new Date().toLocaleDateString('en-CA'), pNameError: "", pDateStartError: "", pDateEndError: "", pSearch: "" }
+    this.state = { loading: true, promotion: [], pId: "", pTitle: "", pDateStart: new Date().toLocaleDateString('en-CA'),
+                    pDateEnd: new Date().toLocaleDateString('en-CA'), pTitleError: "", pDateStartError: "", pDateEndError: "", pSearch: "" }
   }
 
   componentDidMount() {
@@ -30,7 +30,7 @@ export default class APromotion extends Component {
                 <a href={`/admin/chuong-trinh-giam-gia/${p.id}`}>
                   <i className="bi bi-eye"></i>
                 </a>
-                <i className="bi bi-gear" onClick={() => this.setState({ pId: p.id, pTitle: p.title, pDateStart: DisplayDate(p.dateStart), pDateEnd: DisplayDate(p.dateEnd) }, () => console.log(this.state))}></i>
+                <i className="bi bi-gear" onClick={() => this.setState({ pId: p.id, pTitle: p.title, pDateStart: DisplayDate(p.dateStart), pDateEnd: DisplayDate(p.dateEnd) })}></i>
                 <i className={`bi bi-${p.isActive ? "lock" : "unlock"}`} onClick={() => deletePromotion(p.id, p.isActive)}></i>
               </td>
             </tr>
@@ -49,9 +49,9 @@ export default class APromotion extends Component {
         <div className="row">
           <div className="col-3">
             <AdminTextBox type="text" detail="id" value={this.state.pId} readOnly placeholder="Mã chương trình" />
-            <AdminTextBox type="text" detail="name" onChange={(e) => this.setState({pName: e.target.value})} value={this.state.pName} errorValue={this.state.pNameError} placeholder="Tên môn chương trình" />
-            <AdminTextBox type="date" detail="date-start" onChange={(e) => this.setState({pDateStart: e.target.value})} value={this.state.pDateStart} errorValue={this.state.pDateStartError} placeholder="Ngày bắt đầu" />
-            <AdminTextBox type="date" detail="date-end" onChange={(e) => this.setState({pDateEnd: e.target.value})} value={this.state.pDateEnd} errorValue={this.state.pDateEndError} placeholder="Ngày kết thúc" />
+            <AdminTextBox type="text" detail="name" onChange={e => this.setState({pTitle: e.target.value})} value={this.state.pTitle} errorValue={this.state.pTitleError} placeholder="Tên môn chương trình" />
+            <AdminTextBox type="date" detail="date-start" onChange={e => this.setState({pDateStart: e.target.value})} value={this.state.pDateStart} errorValue={this.state.pDateStartError} placeholder="Ngày bắt đầu" />
+            <AdminTextBox type="date" detail="date-end" onChange={e => this.setState({pDateEnd: e.target.value})} value={this.state.pDateEnd} errorValue={this.state.pDateEndError} placeholder="Ngày kết thúc" />
             <input type="submit" value="Lưu" onClick={e => this.saveNewPromotion(e)} className="at-btn mt-3 me-2" />
             <input type="button" value="Hủy" onClick={() => this.cancelPromotion()} className="at-btn-secondary mt-3" />
           </div>
@@ -113,7 +113,7 @@ export default class APromotion extends Component {
       if (response.ok) { alert("Thêm chương trình khuyến mãi thành công"); location.reload(); }
       else if (response.status === 400) {
         const data = await response.json();
-        this.setState({pNameError: data.errors[0], pDateStartError: data.errors[1], pDateEndError: data.errors[2]})
+        this.setState({pTitleError: data.errors[0], pDateStartError: data.errors[1], pDateEndError: data.errors[2]})
       }
       else alert("Đã có lỗi xảy ra, thêm chương trình khuyến mãi thất bại");
     }
@@ -141,7 +141,7 @@ export default class APromotion extends Component {
   }
 
   async populatePromotionDetail() {    
-    fetch("/api/promotion/get").then(response => response.json()).then(data => this.setState({loading: false, promotion: data}));
+    fetch("/api/promotion/get/all").then(response => response.json()).then(data => this.setState({loading: false, promotion: data}));
   }
 }
 

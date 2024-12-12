@@ -17,16 +17,11 @@ export default function RedirectRegister() {
   let [errorConfirmPassword, setErrorConfirmPassword] = useState("");
   let [errorPhone, setErrorPhone] = useState("");
   let [errorAddress, setErrorAddress] = useState("");
-  let userLeaving = false;
 
   useEffect(() => {
     fetch('/user/login/tempToken').then(response => {if (!response.ok) throw new Exception("No token")})
       .catch(() => fetch('/user/login/cleartemp', {method: 'DELETE'}).finally(() => location.href = "/"))
   }, [])
-  
-  window.addEventListener('beforeunload', () => {
-    fetch('/user/login/cleartemp', {method: 'DELETE'}).then(() => { alert("Đăng ký thất bại!"); location.href = '/'; })
-  });
 
   const handleUsername = e => {
     setUsername(username = e.target.value);
